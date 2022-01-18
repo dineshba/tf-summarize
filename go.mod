@@ -1,4 +1,4 @@
-module terraform-state-summary
+module terraform-plan-summary
 
 go 1.17
 

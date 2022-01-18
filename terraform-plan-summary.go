@@ -36,7 +36,6 @@ func main() {
 	// check if there is somethinig to read on STDIN
 	stat, _ := os.Stdin.Stat()
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		fmt.Printf("Reading from stdio")
 		scanner := bufio.NewScanner(os.Stdin)
 		buf := make([]byte, 0, 64*1024)
 		scanner.Buffer(buf, 1024*1024)
@@ -86,8 +85,6 @@ func main() {
 			tableString = append(tableString, []string{change, changedresource.Address})
 		}
 	}
-
-	fmt.Printf("\n%+v\n", tableString)
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Change", "Name"})
