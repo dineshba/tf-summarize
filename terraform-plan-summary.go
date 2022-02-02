@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"log"
+	"io"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -36,14 +36,16 @@ func main() {
 	// check if there is somethinig to read on STDIN
 	stat, _ := os.Stdin.Stat()
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		scanner := bufio.NewScanner(os.Stdin)
-		buf := make([]byte, 0, 64*1024)
-		scanner.Buffer(buf, 1024*1024)
-		for scanner.Scan() {
-			input = append(input, scanner.Bytes()...)
+		f := os.Stdin
+		r := bufio.NewReader(f)
+		line, err := r.ReadBytes('\n')
+		for err == nil {
+			input = append(input, line...)
+			line, err = r.ReadBytes('\n')
 		}
-		if err := scanner.Err(); err != nil {
-			log.Fatal(err)
+		if err != io.EOF {
+			fmt.Println(err)
+			return
 		}
 	} else {
 		if len(os.Args) < 2 {
