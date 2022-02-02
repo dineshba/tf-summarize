@@ -4,7 +4,7 @@ help: ## prints help (only for tasks with comment)
 
 
 build: ## build the binary
-	go build terraform-plan-summary.go
+	go build .
 
 install: build ## build and install to /usr/local/bin/
 	cp terraform-plan-summary /usr/local/bin/terraform-plan-summary

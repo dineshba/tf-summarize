@@ -33,7 +33,7 @@ func main() {
 
 	var input []byte
 
-	// check if there is somethinig to read on STDIN
+	// check if there is something to read on STDIN
 	stat, _ := os.Stdin.Stat()
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
 		f := os.Stdin
@@ -81,10 +81,17 @@ func main() {
 		"recreated": recreatedResources,
 	}
 
+	trees := CreateTree(resources)
+
+	for _, tree := range trees {
+		printTree(tree, "")
+	}
+	return
+
 	tableString := make([][]string, 0, 4)
-	for change, changedresources := range allChanges {
-		for _, changedresource := range changedresources {
-			tableString = append(tableString, []string{change, changedresource.Address})
+	for change, changedResources := range allChanges {
+		for _, changedResource := range changedResources {
+			tableString = append(tableString, []string{change, changedResource.Address})
 		}
 	}
 
@@ -95,6 +102,13 @@ func main() {
 	table.AppendBulk(tableString)
 	table.Render()
 
+}
+
+func printTree(tree *Tree, prefix string) {
+	fmt.Printf("%s%s\n", prefix, tree.name)
+	for _, c := range tree.children {
+		printTree(c, fmt.Sprintf("%s----", prefix))
+	}
 }
 
 func addedResources(resources ResourceChanges) ResourceChanges {
