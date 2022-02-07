@@ -104,8 +104,37 @@ func main() {
 
 }
 
+var colorReset = "\033[0m"
+var colorRed = "\033[31m"
+var colorGreen = "\033[32m"
+var colorYellow = "\033[33m"
+
 func printTree(tree *Tree, prefix string) {
-	fmt.Printf("%s%s\n", prefix, tree.name)
+	if tree.value != nil {
+		actions := tree.value.Change.Actions
+		colorPrefix := ""
+		suffix := ""
+		if len(actions) == 1 {
+			if actions[0] == "create" {
+				colorPrefix = colorGreen
+				suffix = "(+)"
+			} else if actions[0] == "delete" {
+				colorPrefix = colorRed
+				suffix = "(-)"
+			} else {
+				colorPrefix = colorYellow
+				suffix = "(~)"
+			}
+		}
+		if len(actions) == 2 {
+			colorPrefix = colorRed
+			suffix = "(+/-)"
+		}
+		fmt.Printf("%s%s%s%s%s\n", prefix, colorPrefix, tree.name, suffix, colorReset)
+	} else {
+		fmt.Printf("%s%s\n", prefix, tree.name)
+	}
+
 	for _, c := range tree.children {
 		printTree(c, fmt.Sprintf("%s----", prefix))
 	}
