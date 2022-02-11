@@ -13,6 +13,7 @@ import (
 func main() {
 	tree := flag.Bool("tree", false, "tree format")
 	separateTree := flag.Bool("separate-tree", false, "separate tree format")
+	drawable := flag.Bool("drawable", false, "drawable tree format")
 	flag.Parse()
 
 	newReader, err := createReader(os.Stdin, os.Args)
@@ -34,15 +35,18 @@ func main() {
 	ts.filterNoOpResources()
 	allChanges := ts.AllChanges()
 
-	trees := CreateTree(ts.ResourceChanges)
-	drawableTree := trees.DrawableTree()
-	fmt.Println(drawableTree)
-
 	if *separateTree {
 		for k, v := range allChanges {
 			trees := CreateTree(v)
 			if len(v) > 0 {
 				fmt.Println(k)
+
+				if *drawable {
+					drawableTree := trees.DrawableTree()
+					fmt.Println(drawableTree)
+					continue
+				}
+
 				for _, tree := range trees {
 					printTree(tree, "")
 				}
@@ -54,6 +58,12 @@ func main() {
 
 	if *tree {
 		trees := CreateTree(ts.ResourceChanges)
+
+		if *drawable {
+			drawableTree := trees.DrawableTree()
+			fmt.Println(drawableTree)
+			return
+		}
 
 		for _, tree := range trees {
 			printTree(tree, "")
