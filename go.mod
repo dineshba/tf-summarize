@@ -3,6 +3,7 @@ module terraform-plan-summary
 go 1.17
 
 require (
+	github.com/m1gwings/treedrawer v0.3.3-beta
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/stretchr/testify v1.7.0
 )

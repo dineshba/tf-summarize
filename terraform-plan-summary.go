@@ -86,6 +86,10 @@ func main() {
 		"recreated": recreatedResources,
 	}
 
+	trees := CreateTree(resources)
+	drawableTree := trees.DrawableTree()
+	fmt.Println(drawableTree)
+
 	if *separateTree {
 		for k, v := range allChanges {
 			trees := CreateTree(v)

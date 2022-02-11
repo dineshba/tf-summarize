@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/m1gwings/treedrawer/tree"
 	"strings"
 )
 
@@ -17,6 +18,27 @@ func (t Tree) String() string {
 }
 
 type Trees []*Tree
+
+func (t Trees) DrawableTree() *tree.Tree {
+	newTree := tree.NewTree(tree.NodeString("."))
+	for _, t1 := range t {
+		t1.AddChild(newTree)
+	}
+	return newTree
+}
+
+func (t *Tree) AddChild(parent *tree.Tree) {
+	childNode := tree.NodeString(t.name)
+	currentChildIndex := len(parent.Children())
+	parent.AddChild(childNode)
+	currentTree, err := parent.Child(currentChildIndex)
+	for _, c := range t.children {
+		if err != nil {
+			panic(err)
+		}
+		c.AddChild(currentTree)
+	}
+}
 
 func (t Trees) String() string {
 	result := ""
