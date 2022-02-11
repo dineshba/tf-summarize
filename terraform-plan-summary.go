@@ -11,33 +11,12 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-type ResourceChange struct {
-	Address       string `json:"address"`
-	ModuleAddress string `json:"module_address"`
-	Mode          string `json:"mode"`
-	Type          string `json:"type"`
-	Name          string `json:"name"`
-	ProviderName  string `json:"provider_name"`
-	Change        struct {
-		Actions []string `json:"actions"`
-	} `json:"change"`
-	ActionReason string `json:"action_reason,omitempty"`
-}
-
-type ResourceChanges []ResourceChange
-
-type terraformState struct {
-	ResourceChanges ResourceChanges `json:"resource_changes"`
-}
-
 func main() {
-
-	var input []byte
-
 	tree := flag.Bool("tree", false, "tree format")
 	separateTree := flag.Bool("separate-tree", false, "separate tree format")
 	flag.Parse()
 
+	var input []byte
 	// check if there is something to read on STDIN
 	stat, _ := os.Stdin.Stat()
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
@@ -72,21 +51,10 @@ func main() {
 		panic(fmt.Sprintf("Error when parsing input: %s", err))
 	}
 
-	resources := filterNoOpResources(ts.ResourceChanges)
+	ts.filterNoOpResources()
+	allChanges := ts.AllChanges()
 
-	addedResources := addedResources(resources)
-	deletedResources := deletedResources(resources)
-	updatedResources := updatedResources(resources)
-	recreatedResources := recreatedResources(resources)
-
-	allChanges := map[string]ResourceChanges{
-		"added":     addedResources,
-		"deleted":   deletedResources,
-		"updated":   updatedResources,
-		"recreated": recreatedResources,
-	}
-
-	trees := CreateTree(resources)
+	trees := CreateTree(ts.ResourceChanges)
 	drawableTree := trees.DrawableTree()
 	fmt.Println(drawableTree)
 
@@ -105,7 +73,7 @@ func main() {
 	}
 
 	if *tree {
-		trees := CreateTree(resources)
+		trees := CreateTree(ts.ResourceChanges)
 
 		for _, tree := range trees {
 			printTree(tree, "")
@@ -162,46 +130,4 @@ func printTree(tree *Tree, prefix string) {
 	for _, c := range tree.children {
 		printTree(c, fmt.Sprintf("%s----", prefix))
 	}
-}
-
-func addedResources(resources ResourceChanges) ResourceChanges {
-	return filterResources(resources, "create")
-}
-
-func updatedResources(resources ResourceChanges) ResourceChanges {
-	return filterResources(resources, "update")
-}
-
-func recreatedResources(resources ResourceChanges) ResourceChanges {
-	acc := make(ResourceChanges, 0)
-	for _, r := range resources {
-		if len(r.Change.Actions) == 2 { // if Change is two, it will be create, delete
-			acc = append(acc, r)
-		}
-	}
-	return acc
-}
-
-func deletedResources(resources ResourceChanges) ResourceChanges {
-	return filterResources(resources, "delete")
-}
-
-func filterNoOpResources(resources ResourceChanges) ResourceChanges {
-	acc := make(ResourceChanges, 0)
-	for _, r := range resources {
-		if len(r.Change.Actions) == 1 && r.Change.Actions[0] != "no-op" {
-			acc = append(acc, r)
-		}
-	}
-	return acc
-}
-
-func filterResources(resources ResourceChanges, action string) ResourceChanges {
-	acc := make(ResourceChanges, 0)
-	for _, r := range resources {
-		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == action {
-			acc = append(acc, r)
-		}
-	}
-	return acc
 }
