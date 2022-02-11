@@ -1,12 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"os"
+	"terraform-plan-summary/reader"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -16,37 +15,18 @@ func main() {
 	separateTree := flag.Bool("separate-tree", false, "separate tree format")
 	flag.Parse()
 
-	var input []byte
-	// check if there is something to read on STDIN
-	stat, _ := os.Stdin.Stat()
-	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		f := os.Stdin
-		r := bufio.NewReader(f)
-		line, err := r.ReadBytes('\n')
-		for err == nil {
-			input = append(input, line...)
-			line, err = r.ReadBytes('\n')
-		}
-		if err != io.EOF {
-			fmt.Println(err)
-			return
-		}
-	} else {
-		if len(os.Args) < 2 {
-			panic("Should either have stdin through pipe or first argument should be file")
-		}
+	newReader, err := createReader(os.Stdin, os.Args)
+	if err != nil {
+		panic(fmt.Errorf("error creating input reader: %s", err.Error()))
+	}
 
-		fileName := os.Args[1]
-
-		data, err := os.ReadFile(fileName)
-		if err != nil {
-			panic(fmt.Sprintf("Error when reading from file %s: %s", fileName, err))
-		}
-		input = data
+	input, err := newReader.Read()
+	if err != nil {
+		panic(fmt.Errorf("error reading from input: %s", err.Error()))
 	}
 
 	ts := terraformState{}
-	err := json.Unmarshal(input, &ts)
+	err = json.Unmarshal(input, &ts)
 	if err != nil {
 		panic(fmt.Sprintf("Error when parsing input: %s", err))
 	}
@@ -94,6 +74,18 @@ func main() {
 	table.AppendBulk(tableString)
 	table.Render()
 
+}
+
+func createReader(stdin *os.File, args []string) (reader.Reader, error) {
+	stat, _ := stdin.Stat()
+	if (stat.Mode() & os.ModeCharDevice) == 0 {
+		return reader.NewStdinReader(), nil
+	}
+	if len(args) < 2 {
+		return nil, fmt.Errorf("should either have stdin through pipe or first argument should be file")
+	}
+	fileName := os.Args[1]
+	return reader.NewFileReader(fileName), nil
 }
 
 var colorReset = "\033[0m"
