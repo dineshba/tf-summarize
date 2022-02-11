@@ -9,4 +9,7 @@ build: ## build the binary
 install: build ## build and install to /usr/local/bin/
 	cp terraform-plan-summary /usr/local/bin/terraform-plan-summary
 
+test:
+	go test ./...
+
 i: install ## build and install to /usr/local/bin/

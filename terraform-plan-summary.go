@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -32,6 +33,10 @@ type terraformState struct {
 func main() {
 
 	var input []byte
+
+	tree := flag.Bool("tree", false, "tree format")
+	separateTree := flag.Bool("separate-tree", false, "separate tree format")
+	flag.Parse()
 
 	// check if there is something to read on STDIN
 	stat, _ := os.Stdin.Stat()
@@ -81,13 +86,28 @@ func main() {
 		"recreated": recreatedResources,
 	}
 
-	trees := CreateTree(resources)
-
-	for _, tree := range trees {
-		printTree(tree, "")
+	if *separateTree {
+		for k, v := range allChanges {
+			trees := CreateTree(v)
+			if len(v) > 0 {
+				fmt.Println(k)
+				for _, tree := range trees {
+					printTree(tree, "")
+				}
+				fmt.Println("------------------------------")
+			}
+		}
+		return
 	}
-	return
 
+	if *tree {
+		trees := CreateTree(resources)
+
+		for _, tree := range trees {
+			printTree(tree, "")
+		}
+		return
+	}
 	tableString := make([][]string, 0, 4)
 	for change, changedResources := range allChanges {
 		for _, changedResource := range changedResources {
