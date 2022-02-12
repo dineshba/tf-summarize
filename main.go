@@ -17,31 +17,28 @@ func main() {
 
 	args := flag.Args()
 	err := validateFlags(*tree, *separateTree, *drawable, args)
-	if err != nil {
-		panic(fmt.Errorf("invalid input flags: %s", err.Error()))
-	}
+	logIfErrorAndExit("invalid input flags: %s", err)
 
 	newReader, err := reader.CreateReader(os.Stdin, args)
-	if err != nil {
-		panic(fmt.Errorf("error creating input reader: %s", err.Error()))
-	}
+	logIfErrorAndExit("error creating input reader: %s", err)
 
 	input, err := newReader.Read()
-	if err != nil {
-		panic(fmt.Errorf("error reading from input: %s", err.Error()))
-	}
+	logIfErrorAndExit("error reading from input: %s", err)
 
 	terraformState, err := terraform_state.Parse(input)
-	if err != nil {
-		panic(fmt.Errorf("%s", err.Error()))
-	}
+	logIfErrorAndExit("%s", err)
 
 	terraformState.FilterNoOpResources()
 
 	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, terraformState)
 	err = newWriter.Write(os.Stdout)
+	logIfErrorAndExit("error writing: %s", err)
+}
+
+func logIfErrorAndExit(format string, err error) {
 	if err != nil {
-		panic(fmt.Errorf("error writing: %s", err.Error()))
+		_, _ = fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", format), err.Error())
+		os.Exit(1)
 	}
 }
 
