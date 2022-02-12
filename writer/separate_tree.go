@@ -7,7 +7,7 @@ import (
 	"terraform-plan-summary/terraform_state"
 )
 
-const SEPARATOR = "------------------------------"
+const SEPARATOR = "###################"
 
 type SeparateTree struct {
 	changes  map[string]terraform_state.ResourceChanges
@@ -18,7 +18,7 @@ func (s SeparateTree) Write(writer io.Writer) error {
 	var err error
 	for k, v := range s.changes {
 		if len(v) > 0 {
-			_, err = fmt.Fprintf(writer, "%s%s%s\n", SEPARATOR, strings.ToUpper(k), SEPARATOR)
+			_, err = fmt.Fprintf(writer, "%s %s %s\n", SEPARATOR, strings.ToUpper(k), SEPARATOR)
 			if err != nil {
 				return fmt.Errorf("error writing to %s: %s", writer, err)
 			}
@@ -27,7 +27,7 @@ func (s SeparateTree) Write(writer io.Writer) error {
 			if err != nil {
 				return fmt.Errorf("error writing to %s: %s", writer, err)
 			}
-			_, err = fmt.Fprintf(writer, "%s\n", SEPARATOR)
+			_, err = fmt.Fprintf(writer, "\n\n")
 			if err != nil {
 				return fmt.Errorf("error writing to %s: %s", writer, err)
 			}
