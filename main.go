@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"terraform-plan-summary/reader"
 	"terraform-plan-summary/terraform_state"
@@ -13,6 +14,7 @@ func main() {
 	tree := flag.Bool("tree", false, "tree format")
 	separateTree := flag.Bool("separate-tree", false, "separate tree format")
 	drawable := flag.Bool("draw", false, "drawable tree format")
+	outputFileName := flag.String("out", "", "write output to file")
 	flag.Parse()
 
 	args := flag.Args()
@@ -31,8 +33,16 @@ func main() {
 	terraformState.FilterNoOpResources()
 
 	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, terraformState)
-	err = newWriter.Write(os.Stdout)
+
+	outputFile, err := getOutputFile(*outputFileName)
+	logIfErrorAndExit("%s", err)
+
+	err = newWriter.Write(outputFile)
 	logIfErrorAndExit("error writing: %s", err)
+
+	if err == nil && *outputFileName != "" {
+		_, _ = fmt.Fprintf(os.Stderr, "Written plan summary to %s\n", *outputFileName)
+	}
 }
 
 func logIfErrorAndExit(format string, err error) {
@@ -53,4 +63,15 @@ func validateFlags(tree, separateTree, drawable bool, args []string) error {
 		return fmt.Errorf("only one argument is allowed which is filename, but got %v", args)
 	}
 	return nil
+}
+
+func getOutputFile(outputFileName string) (io.Writer, error) {
+	if outputFileName != "" {
+		file, err := os.OpenFile(outputFileName, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			return nil, fmt.Errorf("error opening file %s: %v", outputFileName, err.Error())
+		}
+		return file, nil
+	}
+	return os.Stdout, nil
 }
