@@ -19,7 +19,7 @@ func main() {
 		panic(fmt.Errorf("invalid input flags: %s", err.Error()))
 	}
 
-	newReader, err := reader.CreateReader(os.Stdin, os.Args)
+	newReader, err := reader.CreateReader(os.Stdin, flag.Args())
 	if err != nil {
 		panic(fmt.Errorf("error creating input reader: %s", err.Error()))
 	}
