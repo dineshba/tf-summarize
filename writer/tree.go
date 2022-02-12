@@ -3,7 +3,7 @@ package writer
 import (
 	"fmt"
 	"io"
-	"terraform-plan-summary/terraform-state"
+	"terraform-plan-summary/terraform_state"
 	"terraform-plan-summary/tree"
 )
 

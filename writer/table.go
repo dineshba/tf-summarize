@@ -3,7 +3,7 @@ package writer
 import (
 	"github.com/olekukonko/tablewriter"
 	"io"
-	"terraform-plan-summary/terraform-state"
+	"terraform-plan-summary/terraform_state"
 )
 
 type TableWriter struct {

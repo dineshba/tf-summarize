@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/m1gwings/treedrawer/tree"
 	"strings"
-	"terraform-plan-summary/terraform-state"
+	"terraform-plan-summary/terraform_state"
 )
 
 type Tree struct {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"terraform-plan-summary/reader"
-	"terraform-plan-summary/terraform-state"
+	"terraform-plan-summary/terraform_state"
 	"terraform-plan-summary/writer"
 )
 
