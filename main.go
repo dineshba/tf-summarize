@@ -12,14 +12,16 @@ import (
 func main() {
 	tree := flag.Bool("tree", false, "tree format")
 	separateTree := flag.Bool("separate-tree", false, "separate tree format")
-	drawable := flag.Bool("drawable", false, "drawable tree format")
+	drawable := flag.Bool("draw", false, "drawable tree format")
 	flag.Parse()
-	err := validateFlags(*tree, *separateTree, *drawable)
+
+	args := flag.Args()
+	err := validateFlags(*tree, *separateTree, *drawable, args)
 	if err != nil {
 		panic(fmt.Errorf("invalid input flags: %s", err.Error()))
 	}
 
-	newReader, err := reader.CreateReader(os.Stdin, flag.Args())
+	newReader, err := reader.CreateReader(os.Stdin, args)
 	if err != nil {
 		panic(fmt.Errorf("error creating input reader: %s", err.Error()))
 	}
@@ -43,12 +45,15 @@ func main() {
 	}
 }
 
-func validateFlags(tree, separateTree, drawable bool) error {
+func validateFlags(tree, separateTree, drawable bool, args []string) error {
 	if tree && separateTree {
 		return fmt.Errorf("both -tree and -seperate-tree should not be provided")
 	}
 	if !tree && !separateTree && drawable {
 		return fmt.Errorf("drawable should be provided with -tree or -seperate-tree")
+	}
+	if len(args) > 1 {
+		return fmt.Errorf("only one argument is allowed which is filename, but got %v", args)
 	}
 	return nil
 }
