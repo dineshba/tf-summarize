@@ -1,13 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
 	"terraform-plan-summary/reader"
-
-	"github.com/olekukonko/tablewriter"
+	"terraform-plan-summary/terraform-state"
+	"terraform-plan-summary/writer"
 )
 
 func main() {
@@ -15,6 +14,10 @@ func main() {
 	separateTree := flag.Bool("separate-tree", false, "separate tree format")
 	drawable := flag.Bool("drawable", false, "drawable tree format")
 	flag.Parse()
+	err := validateFlags(*tree, *separateTree, *drawable)
+	if err != nil {
+		panic(fmt.Errorf("invalid input flags: %s", err.Error()))
+	}
 
 	newReader, err := createReader(os.Stdin, os.Args)
 	if err != nil {
@@ -26,64 +29,59 @@ func main() {
 		panic(fmt.Errorf("error reading from input: %s", err.Error()))
 	}
 
-	ts := terraformState{}
-	err = json.Unmarshal(input, &ts)
+	terraformState, err := terraform_state.Parse(input)
 	if err != nil {
-		panic(fmt.Sprintf("Error when parsing input: %s", err))
+		panic(fmt.Errorf("%s", err.Error()))
 	}
 
-	ts.filterNoOpResources()
-	allChanges := ts.AllChanges()
+	terraformState.FilterNoOpResources()
 
-	if *separateTree {
-		for k, v := range allChanges {
-			trees := CreateTree(v)
-			if len(v) > 0 {
-				fmt.Println(k)
-
-				if *drawable {
-					drawableTree := trees.DrawableTree()
-					fmt.Println(drawableTree)
-					continue
-				}
-
-				for _, tree := range trees {
-					printTree(tree, "")
-				}
-				fmt.Println("------------------------------")
-			}
-		}
-		return
+	writer := createWriter(*tree, *separateTree, *drawable, terraformState)
+	err = writer.Write(os.Stdout)
+	if err != nil {
+		panic(fmt.Errorf("error writing: %s", err.Error()))
 	}
+}
 
-	if *tree {
-		trees := CreateTree(ts.ResourceChanges)
-
-		if *drawable {
-			drawableTree := trees.DrawableTree()
-			fmt.Println(drawableTree)
-			return
-		}
-
-		for _, tree := range trees {
-			printTree(tree, "")
-		}
-		return
+func validateFlags(tree, separateTree, drawable bool) error {
+	if tree && separateTree {
+		return fmt.Errorf("both -tree and -seperate-tree should not be provided")
 	}
-	tableString := make([][]string, 0, 4)
-	for change, changedResources := range allChanges {
-		for _, changedResource := range changedResources {
-			tableString = append(tableString, []string{change, changedResource.Address})
-		}
+	if !tree && !separateTree && drawable {
+		return fmt.Errorf("drawable should be provided with -tree or -seperate-tree")
 	}
+	return nil
+}
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Change", "Name"})
-	table.SetAutoMergeCells(true)
-	table.SetRowLine(true)
-	table.AppendBulk(tableString)
-	table.Render()
+func createWriter(tree, separateTree, drawable bool, terraformState terraform_state.TerraformState) writer.Writer {
+	if tree {
+		return writer.NewTreeWriter(terraformState.ResourceChanges, drawable)
+	}
+	if separateTree {
+		return writer.NewSeparateTree(terraformState.AllChanges(), drawable)
+	}
+	return writer.NewTableWriter(terraformState.AllChanges())
 
+	//if separateTree {
+	//	for k, v := range allChanges {
+	//		trees := tree2.CreateTree(v)
+	//		if len(v) > 0 {
+	//			fmt.Println(k)
+	//
+	//			if drawable {
+	//				drawableTree := trees.DrawableTree()
+	//				fmt.Println(drawableTree)
+	//				continue
+	//			}
+	//
+	//			for _, tree := range trees {
+	//				printTree(tree, "")
+	//			}
+	//			fmt.Println("------------------------------")
+	//		}
+	//	}
+	//	return
+	//}
 }
 
 func createReader(stdin *os.File, args []string) (reader.Reader, error) {
@@ -96,40 +94,4 @@ func createReader(stdin *os.File, args []string) (reader.Reader, error) {
 	}
 	fileName := os.Args[1]
 	return reader.NewFileReader(fileName), nil
-}
-
-var colorReset = "\033[0m"
-var colorRed = "\033[31m"
-var colorGreen = "\033[32m"
-var colorYellow = "\033[33m"
-
-func printTree(tree *Tree, prefix string) {
-	if tree.value != nil {
-		actions := tree.value.Change.Actions
-		colorPrefix := ""
-		suffix := ""
-		if len(actions) == 1 {
-			if actions[0] == "create" {
-				colorPrefix = colorGreen
-				suffix = "(+)"
-			} else if actions[0] == "delete" {
-				colorPrefix = colorRed
-				suffix = "(-)"
-			} else {
-				colorPrefix = colorYellow
-				suffix = "(~)"
-			}
-		}
-		if len(actions) == 2 {
-			colorPrefix = colorRed
-			suffix = "(+/-)"
-		}
-		fmt.Printf("%s%s%s%s%s\n", prefix, colorPrefix, tree.name, suffix, colorReset)
-	} else {
-		fmt.Printf("%s%s\n", prefix, tree.name)
-	}
-
-	for _, c := range tree.children {
-		printTree(c, fmt.Sprintf("%s----", prefix))
-	}
 }

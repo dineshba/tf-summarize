@@ -1,4 +1,9 @@
-package main
+package terraform_state
+
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type ResourceChange struct {
 	Address       string `json:"address"`
@@ -15,8 +20,17 @@ type ResourceChange struct {
 
 type ResourceChanges []ResourceChange
 
-type terraformState struct {
+type TerraformState struct {
 	ResourceChanges ResourceChanges `json:"resource_changes"`
+}
+
+func Parse(input []byte) (TerraformState, error) {
+	ts := TerraformState{}
+	err := json.Unmarshal(input, &ts)
+	if err != nil {
+		return TerraformState{}, fmt.Errorf("error when parsing input: %s", err.Error())
+	}
+	return ts, nil
 }
 
 func addedResources(resources ResourceChanges) ResourceChanges {
@@ -41,7 +55,7 @@ func deletedResources(resources ResourceChanges) ResourceChanges {
 	return filterResources(resources, "delete")
 }
 
-func (ts *terraformState) filterNoOpResources() {
+func (ts *TerraformState) FilterNoOpResources() {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
 		if len(r.Change.Actions) == 1 && r.Change.Actions[0] != "no-op" {
@@ -51,7 +65,7 @@ func (ts *terraformState) filterNoOpResources() {
 	ts.ResourceChanges = acc
 }
 
-func (ts *terraformState) AllChanges() map[string]ResourceChanges {
+func (ts *TerraformState) AllChanges() map[string]ResourceChanges {
 	addedResources := addedResources(ts.ResourceChanges)
 	deletedResources := deletedResources(ts.ResourceChanges)
 	updatedResources := updatedResources(ts.ResourceChanges)

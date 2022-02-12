@@ -1,20 +1,21 @@
-package main
+package tree
 
 import (
 	"fmt"
 	"github.com/m1gwings/treedrawer/tree"
 	"strings"
+	"terraform-plan-summary/terraform-state"
 )
 
 type Tree struct {
-	name     string
+	Name     string
 	level    int
-	value    *ResourceChange
-	children Trees
+	Value    *terraform_state.ResourceChange
+	Children Trees
 }
 
 func (t Tree) String() string {
-	return fmt.Sprintf("{name: %s, children: %+v}", t.name, t.children)
+	return fmt.Sprintf("{name: %s, children: %+v}", t.Name, t.Children)
 }
 
 type Trees []*Tree
@@ -28,11 +29,11 @@ func (t Trees) DrawableTree() *tree.Tree {
 }
 
 func (t *Tree) AddChild(parent *tree.Tree) {
-	childNode := tree.NodeString(t.name)
+	childNode := tree.NodeString(t.Name)
 	currentChildIndex := len(parent.Children())
 	parent.AddChild(childNode)
 	currentTree, err := parent.Child(currentChildIndex)
-	for _, c := range t.children {
+	for _, c := range t.Children {
 		if err != nil {
 			panic(err)
 		}
@@ -43,34 +44,34 @@ func (t *Tree) AddChild(parent *tree.Tree) {
 func (t Trees) String() string {
 	result := ""
 	for _, tree := range t {
-		result = fmt.Sprintf("%s,{name: %s, children: %+v}", result, tree.name, tree.children)
+		result = fmt.Sprintf("%s,{name: %s, children: %+v}", result, tree.Name, tree.Children)
 	}
 	return strings.TrimPrefix(result, ",")
 }
 
-func CreateTree(resources ResourceChanges) Trees {
-	result := &Tree{name: ".", children: Trees{}, level: 0}
+func CreateTree(resources terraform_state.ResourceChanges) Trees {
+	result := &Tree{Name: ".", Children: Trees{}, level: 0}
 	for _, r := range resources {
 		levels := strings.Split(r.Address, ".")
 		createTreeMultiLevel(r, levels, result)
 	}
-	return result.children
+	return result.Children
 }
 
-func createTreeMultiLevel(r ResourceChange, levels []string, currentTree *Tree) {
+func createTreeMultiLevel(r terraform_state.ResourceChange, levels []string, currentTree *Tree) {
 	parentTree := currentTree
 	for i, name := range levels {
-		matchedTree := getTree(name, parentTree.children)
+		matchedTree := getTree(name, parentTree.Children)
 		if matchedTree == nil {
-			var resourceChange *ResourceChange
+			var resourceChange *terraform_state.ResourceChange
 			if i+1 == len(levels) {
 				resourceChange = &r
 			}
 			newTree := &Tree{
-				name:  name,
-				value: resourceChange,
+				Name:  name,
+				Value: resourceChange,
 			}
-			parentTree.children = append(parentTree.children,
+			parentTree.Children = append(parentTree.Children,
 				newTree)
 			parentTree = newTree
 		} else {
@@ -81,7 +82,7 @@ func createTreeMultiLevel(r ResourceChange, levels []string, currentTree *Tree) 
 
 func getTree(name string, siblings Trees) *Tree {
 	for _, s := range siblings {
-		if s.name == name {
+		if s.Name == name {
 			return s
 		}
 	}
