@@ -11,10 +11,16 @@ import (
 )
 
 func main() {
-	tree := flag.Bool("tree", false, "tree format")
-	separateTree := flag.Bool("separate-tree", false, "separate tree format")
-	drawable := flag.Bool("draw", false, "drawable tree format")
-	outputFileName := flag.String("out", "", "write output to file")
+	tree := flag.Bool("tree", false, "[Optional] print changes in tree format")
+	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
+	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
+	outputFileName := flag.String("out", "", "[Optional] write output to file")
+
+	flag.Usage = func() {
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s [args] [tf-plan.json]\n\n", os.Args[0])
+		flag.PrintDefaults()
+	}
+
 	flag.Parse()
 
 	args := flag.Args()
