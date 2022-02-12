@@ -29,7 +29,16 @@ func (t Trees) DrawableTree() *tree.Tree {
 }
 
 func (t *Tree) AddChild(parent *tree.Tree) {
-	childNode := tree.NodeString(t.Name)
+	isLeafNode := len(t.Children) == 0
+
+	var childNode tree.NodeString
+	if isLeafNode {
+		_, suffix := t.Value.ColorPrefixAndSuffixText()
+		childNode = tree.NodeString(fmt.Sprintf("%s%s", t.Name, suffix))
+	} else {
+		childNode = tree.NodeString(t.Name)
+	}
+
 	currentChildIndex := len(parent.Children())
 	parent.AddChild(childNode)
 	currentTree, err := parent.Child(currentChildIndex)

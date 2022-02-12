@@ -5,6 +5,11 @@ import (
 	"fmt"
 )
 
+const ColorReset = "\033[0m"
+const ColorRed = "\033[31m"
+const ColorGreen = "\033[32m"
+const ColorYellow = "\033[33m"
+
 type ResourceChange struct {
 	Address       string `json:"address"`
 	ModuleAddress string `json:"module_address"`
@@ -16,6 +21,27 @@ type ResourceChange struct {
 		Actions []string `json:"actions"`
 	} `json:"change"`
 	ActionReason string `json:"action_reason,omitempty"`
+}
+
+func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
+	var colorPrefix, suffix string
+	actions := rc.Change.Actions
+	if len(actions) == 1 {
+		if actions[0] == "create" {
+			colorPrefix = ColorGreen
+			suffix = "(+)"
+		} else if actions[0] == "delete" {
+			colorPrefix = ColorRed
+			suffix = "(-)"
+		} else {
+			colorPrefix = ColorYellow
+			suffix = "(~)"
+		}
+	} else {
+		colorPrefix = ColorRed
+		suffix = "(+/-)"
+	}
+	return colorPrefix, suffix
 }
 
 type ResourceChanges []ResourceChange

@@ -7,11 +7,6 @@ import (
 	"terraform-plan-summary/tree"
 )
 
-const colorReset = "\033[0m"
-const colorRed = "\033[31m"
-const colorGreen = "\033[32m"
-const colorYellow = "\033[33m"
-
 type TreeWriter struct {
 	changes  terraform_state.ResourceChanges
 	drawable bool
@@ -42,27 +37,8 @@ func NewTreeWriter(changes terraform_state.ResourceChanges, drawable bool) Write
 func printTree(writer io.Writer, tree *tree.Tree, prefix string) error {
 	var err error
 	if tree.Value != nil {
-		actions := tree.Value.Change.Actions
-		colorPrefix := ""
-		suffix := ""
-		if len(actions) == 1 {
-			if actions[0] == "create" {
-				colorPrefix = colorGreen
-				suffix = "(+)"
-			} else if actions[0] == "delete" {
-				colorPrefix = colorRed
-				suffix = "(-)"
-			} else {
-				colorPrefix = colorYellow
-				suffix = "(~)"
-			}
-		}
-		if len(actions) == 2 {
-			colorPrefix = colorRed
-			suffix = "(+/-)"
-		}
-		_, err = fmt.Fprintf(writer, "%s%s%s%s%s\n", prefix, colorPrefix, tree.Name, suffix, colorReset)
-
+		colorPrefix, suffix := tree.Value.ColorPrefixAndSuffixText()
+		_, err = fmt.Fprintf(writer, "%s%s%s%s%s\n", prefix, colorPrefix, tree.Name, suffix, terraform_state.ColorReset)
 	} else {
 		_, err = fmt.Fprintf(writer, "%s%s\n", prefix, tree.Name)
 	}
