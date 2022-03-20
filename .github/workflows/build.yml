@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run Gosec Security Scanner
+      uses: securego/gosec@master
+      with:
+        args: -exclude=G104 ./...
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Build
+      run: go build
