@@ -14,7 +14,11 @@ func (f FileReader) Read() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error when opening file %s: %s", f.fileName, err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("Error closing file: %s\n", err)
+		}
+	}()
 
 	return readFile(file)
 }

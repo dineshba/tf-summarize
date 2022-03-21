@@ -40,8 +40,18 @@ func main() {
 
 	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, terraformState)
 
-	outputFile, err := getOutputFile(*outputFileName)
-	logIfErrorAndExit("%s", err)
+	var outputFile io.Writer = os.Stdout
+
+	if *outputFileName != "" {
+		file, err := os.OpenFile(*outputFileName, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0600)
+		logIfErrorAndExit("error opening file: %v", err)
+		defer func() {
+			if err := file.Close(); err != nil {
+				logIfErrorAndExit("Error closing file: %s\n", err)
+			}
+		}()
+		outputFile = file
+	}
 
 	err = newWriter.Write(outputFile)
 	logIfErrorAndExit("error writing: %s", err)
@@ -69,15 +79,4 @@ func validateFlags(tree, separateTree, drawable bool, args []string) error {
 		return fmt.Errorf("only one argument is allowed which is filename, but got %v", args)
 	}
 	return nil
-}
-
-func getOutputFile(outputFileName string) (io.Writer, error) {
-	if outputFileName != "" {
-		file, err := os.OpenFile(outputFileName, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			return nil, fmt.Errorf("error opening file %s: %v", outputFileName, err.Error())
-		}
-		return file, nil
-	}
-	return os.Stdout, nil
 }
