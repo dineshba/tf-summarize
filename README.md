@@ -1,5 +1,7 @@
 ## Terraform Plan Summary
 
+[![Build](https://github.com/dineshba/terraform-plan-summary/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/dineshba/terraform-plan-summary/actions/workflows/build.yml)
+
 `tf-plan-summarize` is a command-line utility to print the summary of the terraform plan
 
 ### Why do we need it ?
