@@ -1,0 +1,44 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install terraform-plan-summary
+      run: |
+        REPO="dineshba/terraform-plan-summary"
+        VERSION="latest"
+        FILE="terraform-plan-summary_linux_amd64.zip"
+        GITHUB="https://api.github.com"
+
+        function gh_curl() {
+          curl -H "Accept: application/vnd.github.v3.raw" \
+              $@
+        }
+
+        if [ "$VERSION" = "latest" ]; then
+          # Github should return the latest release first.
+          parser=".[0].assets | map(select(.name == \"$FILE\"))[0].id"
+        else
+          parser=". | map(select(.tag_name == \"$VERSION\"))[0].assets | map(select(.name == \"$FILE\"))[0].id"
+        fi;
+
+        response=$(gh_curl -s $GITHUB/repos/$REPO/releases)
+        printf "${YELLOW}Downloading dineshba/terraform-plan-summary $VERSION $NOCOLOR\n"
+        asset_id=`echo $response | jq "$parser"`
+        if [ "$asset_id" = "null" ]; then
+          printf "${RED}ERROR:$NOCOLOR version not found $VERSION\n"
+          exit 1
+        fi;
+
+        curl -H 'Accept:application/octet-stream' -LO https://api.github.com/repos/$REPO/releases/assets/$asset_id
