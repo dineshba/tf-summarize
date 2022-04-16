@@ -61,10 +61,34 @@ func (t Trees) String() string {
 func CreateTree(resources terraform_state.ResourceChanges) Trees {
 	result := &Tree{Name: ".", Children: Trees{}, level: 0}
 	for _, r := range resources {
-		levels := strings.Split(r.Address, ".")
+		levels := splitResources(r.Address)
 		createTreeMultiLevel(r, levels, result)
 	}
 	return result.Children
+}
+
+func splitResources(address string) []string {
+	acc := make([]string, 0)
+	var resource strings.Builder
+	for i := 0; i < len(address); i++ {
+		currentIndex := string(address[i])
+
+		if currentIndex == "[" {
+			lastIndex := strings.Index(address[i:], "]")
+			resource.WriteString(address[i : i+lastIndex+1])
+			i = i + lastIndex
+			continue
+		}
+
+		if currentIndex == "." {
+			acc = append(acc, resource.String())
+			resource = strings.Builder{}
+			continue
+		}
+		resource.Write([]byte{address[i]})
+	}
+	acc = append(acc, resource.String())
+	return acc
 }
 
 func createTreeMultiLevel(r terraform_state.ResourceChange, levels []string, currentTree *Tree) {

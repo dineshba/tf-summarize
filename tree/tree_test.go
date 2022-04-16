@@ -24,6 +24,26 @@ func TestCreateTreeForOneResourceChanges(t *testing.T) {
 	assert.Equal(t, expected, CreateTree(resourceChanges))
 }
 
+func TestCreateTreeWithQuotesInResources(t *testing.T) {
+	resourceChanges := terraform_state.ResourceChanges{
+		terraform_state.ResourceChange{Address: "a.b[\"c.d\"]"},
+	}
+	expected := Trees{
+		{
+			Name:  "a",
+			Value: nil,
+			Children: Trees{
+				{
+					Name:  "b[\"c.d\"]",
+					Value: &terraform_state.ResourceChange{Address: "a.b[\"c.d\"]"},
+				},
+			},
+		},
+	}
+	actual := CreateTree(resourceChanges)
+	assert.Equal(t, expected, actual)
+}
+
 func TestCreateTreeForOneResourceChangesMultiLevel(t *testing.T) {
 	resourceChanges := terraform_state.ResourceChanges{
 		terraform_state.ResourceChange{Address: "a.b.c"},
