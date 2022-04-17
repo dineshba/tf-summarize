@@ -1,0 +1,681 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: bash -l
+  
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: /private/tmp/terraform-plan-summary
+  
+  # Export additional ENV variables
+  env:
+    recording: true
+  
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 212
+  
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 57
+  
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+  
+  # Quality
+  # 1 - 100
+  quality: 100
+  
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+  
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: 2000
+  
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  frameBox:
+    type: floating
+    title: terraform-plan-summary
+    style:
+      border: 0px black solid
+      # boxShadow: none
+      # margin: 0px
+  
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+  
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+  
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  
+  # The size of the font
+  fontSize: 14
+  
+  # The height of lines
+  lineHeight: 1
+  
+  # The spacing between letters
+  letterSpacing: 0
+  
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#afafaf"
+    cursor: "#c7c7c7"
+    black: "#232628"
+    red: "#fc4384"
+    green: "#b3e33b"
+    yellow: "#ffa727"
+    blue: "#75dff2"
+    magenta: "#ae89fe"
+    cyan: "#708387"
+    white: "#d5d5d0"
+    brightBlack: "#626566"
+    brightRed: "#ff7fac"
+    brightGreen: "#c8ed71"
+    brightYellow: "#ebdf86"
+    brightBlue: "#75dff2"
+    brightMagenta: "#ae89fe"
+    brightCyan: "#b1c6ca"
+    brightWhite: "#f9f9f4"
+  
+# Records, feel free to edit them
+records:
+  - delay: 5739
+    content: "\e[1;32m❯\e[0m "
+  - delay: 2985
+    content: '#'
+  - delay: 1303
+    content: ' '
+  - delay: 146
+    content: l
+  - delay: 45
+    content: e
+  - delay: 88
+    content: t
+  - delay: 127
+    content: s
+  - delay: 176
+    content: ' '
+  - delay: 237
+    content: s
+  - delay: 200
+    content: e
+  - delay: 163
+    content: e
+  - delay: 206
+    content: ' '
+  - delay: 149
+    content: t
+  - delay: 102
+    content: h
+  - delay: 47
+    content: e
+  - delay: 128
+    content: ' '
+  - delay: 104
+    content: t
+  - delay: 129
+    content: e
+  - delay: 70
+    content: r
+  - delay: 157
+    content: r
+  - delay: 168
+    content: a
+  - delay: 412
+    content: f
+  - delay: 248
+    content: o
+  - delay: 117
+    content: r
+  - delay: 117
+    content: m
+  - delay: 172
+    content: ' '
+  - delay: 188
+    content: p
+  - delay: 186
+    content: l
+  - delay: 125
+    content: a
+  - delay: 160
+    content: 'n'
+  - delay: 500
+    content: "\r\n\e[?2004l\r"
+  - delay: 173
+    content: "\e[1;32m❯\e[0m "
+  - delay: 479
+    content: t
+  - delay: 88
+    content: e
+  - delay: 96
+    content: r
+  - delay: 282
+    content: r
+  - delay: 512
+    content: "\aaform"
+  - delay: 567
+    content: ' '
+  - delay: 141
+    content: p
+  - delay: 167
+    content: l
+  - delay: 157
+    content: a
+  - delay: 108
+    content: 'n'
+  - delay: 165
+    content: ' '
+  - delay: 269
+    content: '-'
+  - delay: 279
+    content: o
+  - delay: 146
+    content: u
+  - delay: 157
+    content: t
+  - delay: 193
+    content: '='
+  - delay: 171
+    content: t
+  - delay: 172
+    content: f
+  - delay: 203
+    content: p
+  - delay: 227
+    content: l
+  - delay: 208
+    content: a
+  - delay: 104
+    content: 'n'
+  - delay: 218
+    content: "\r\n\e[?2004l\r"
+  - delay: 1297
+    content: "\e[0m\e[1mmodule.github[\"terraform-plan-summary\"].github_branch.trail: Refreshing state... [id=terraform-plan-summary:trail]\e[0m\r\n\e[0m\e[1mmodule.github[\"terraform-plan-summary\"].github_repository.repository: Refreshing state... [id=terraform-plan-summary]\e[0m\r\n"
+  - delay: 611
+    content: "\e[0m\e[1mmodule.github[\"terraform-plan-summary\"].github_branch.main: Refreshing state... [id=terraform-plan-summary:main]\e[0m\r\n"
+  - delay: 288
+    content: "\r\nTerraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following\r\nsymbols:\r\n  \e[32m+\e[0m create\r\n  \e[33m~\e[0m update in-place\r\n  \e[31m-\e[0m destroy\r\n\e[0m\r\nTerraform will perform the following actions:\r\n\r\n\e[1m  # github_repository.terraform_plan_summary\e[0m will be created\e[0m\e[0m\r\n\e[0m  \e[32m+\e[0m\e[0m resource \"github_repository\" \"terraform_plan_summary\" {\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_auto_merge\e[0m\e[0m       = false\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_merge_commit\e[0m\e[0m     = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_rebase_merge\e[0m\e[0m     = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_squash_merge\e[0m\e[0m     = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0marchived\e[0m\e[0m               = false\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mbranches\e[0m\e[0m               = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mdefault_branch\e[0m\e[0m         = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mdelete_branch_on_merge\e[0m\e[0m = false\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mdescription\e[0m\e[0m            = \"A command-line utility to print the summary of the terraform plan\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0metag\e[0m\e[0m                   = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mfull_name\e[0m\e[0m              = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mgit_clone_url\e[0m\e[0m          = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_downloads\e[0m\e[0m          = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_issues\e[0m\e[0m             = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_projects\e[0m\e[0m           = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_wiki\e[0m\e[0m               = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhtml_url\e[0m\e[0m               = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhttp_clone_url\e[0m\e[0m         = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mid\e[0m\e[0m                     = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mname\e[0m\e[0m                   = \"terraform-plan-summary\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mnode_id\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mprivate\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mrepo_id\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mssh_clone_url\e[0m\e[0m          = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msvn_url\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mtopics\e[0m\e[0m                 = [\r\n          \e[32m+\e[0m \e[0m\"summary\",\r\n          \e[32m+\e[0m \e[0m\"terraform\",\r\n        ]\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mvisibility\e[0m\e[0m             = \"public\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mvulnerability_alerts\e[0m\e[0m   = false\r\n    }\r\n\r\n\e[1m  # module.github[\"demo-repository\"].github_branch.development\e[0m will be created\e[0m\e[0m\r\n\e[0m  \e[32m+\e[0m\e[0m resource \"github_branch\" \"development\" {\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mbranch\e[0m\e[0m        = \"development\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0metag\e[0m\e[0m          = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mid\e[0m\e[0m            = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mref\e[0m\e[0m           = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mrepository\e[0m\e[0m    = \"demo-repository\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msha\e[0m\e[0m           = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msource_branch\e[0m\e[0m = \"main\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msource_sha\e[0m\e[0m    = (known after apply)\r\n    }\r\n\r\n\e[1m  # module.github[\"demo-repository\"].github_branch.main\e[0m will be created\e[0m\e[0m\r\n\e[0m  \e[32m+\e[0m\e[0m resource \"github_branch\" \"main\" {\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mbranch\e[0m\e[0m        = \"main\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0metag\e[0m\e[0m          = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mid\e[0m\e[0m            = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mref\e[0m\e[0m           = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mrepository\e[0m\e[0m    = \"demo-repository\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msha\e[0m\e[0m           = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msource_branch\e[0m\e[0m = \"main\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msource_sha\e[0m\e[0m    = (known after apply)\r\n    }\r\n\r\n\e[1m  # module.github[\"demo-repository\"].github_repository.repository\e[0m will be created\e[0m\e[0m\r\n\e[0m  \e[32m+\e[0m\e[0m resource \"github_repository\" \"repository\" {\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_auto_merge\e[0m\e[0m       = false\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_merge_commit\e[0m\e[0m     = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_rebase_merge\e[0m\e[0m     = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mallow_squash_merge\e[0m\e[0m     = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0marchived\e[0m\e[0m               = false\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mbranches\e[0m\e[0m               = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mdefault_branch\e[0m\e[0m         = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mdelete_branch_on_merge\e[0m\e[0m = false\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mdescription\e[0m\e[0m            = \"description of the repo\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0metag\e[0m\e[0m                   = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mfull_name\e[0m\e[0m              = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mgit_clone_url\e[0m\e[0m          = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_downloads\e[0m\e[0m          = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_issues\e[0m\e[0m             = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_projects\e[0m\e[0m           = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhas_wiki\e[0m\e[0m               = true\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhtml_url\e[0m\e[0m               = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mhttp_clone_url\e[0m\e[0m         = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mid\e[0m\e[0m                     = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mname\e[0m\e[0m                   = \"demo-repository\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mnode_id\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mprivate\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mrepo_id\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mssh_clone_url\e[0m\e[0m          = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msvn_url\e[0m\e[0m                = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mtopics\e[0m\e[0m                 = [\r\n          \e[32m+\e[0m \e[0m\"tags\",\r\n        ]\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mvisibility\e[0m\e[0m             = \"public\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mvulnerability_alerts\e[0m\e[0m   = false\r\n    }\r\n\r\n\e[1m  # module.github[\"terraform-plan-summary\"].github_branch.development\e[0m will be created\e[0m\e[0m\r\n\e[0m  \e[32m+\e[0m\e[0m resource \"github_branch\" \"development\" {\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mbranch\e[0m\e[0m        = \"development\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0metag\e[0m\e[0m          = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mid\e[0m\e[0m            = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mref\e[0m\e[0m           = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0mrepository\e[0m\e[0m    = \"terraform-plan-summary\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msha\e[0m\e[0m           = (known after apply)\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msource_branch\e[0m\e[0m = \"main\"\r\n      \e[32m+\e[0m \e[0m\e[1m\e[0msource_sha\e[0m\e[0m    = (known after apply)\r\n    }\r\n\r\n\e[1m  # module.github[\"terraform-plan-summary\"].github_branch.trail\e[0m will be \e[1m\e[31mdestroyed\e[0m\r\n  # (because github_branch.trail is not in configuration)\e[0m\r\n\e[0m  \e[31m-\e[0m\e[0m resource \"github_branch\" \"trail\" {\r\n      \e[31m-\e[0m \e[0m\e[1m\e[0mbranch\e[0m\e[0m        = \"trail\" \e[90m->\e[0m \e[0m\e[90mnull\e[0m\e[0m\r\n      \e[31m-\e[0m \e[0m\e[1m\e[0metag\e[0m\e[0m          = \"W/\\\"2c138304ec0f031d3ffd19d45dae737be855a74a8d7e48f4fae4fc9213a6dbf6\\\"\" \e[90m->\e[0m \e[0m\e[90mnull\e[0m\e[0m\r\n      \e[31m-\e[0m \e[0m\e[1m\e[0mid\e[0m\e[0m            = \"terraform-plan-summary:trail\" \e[90m->\e[0m \e[0m\e[90mnull\e[0m\e[0m\r\n      \e[31m-\e[0m \e[0m\e[1m\e[0mref\e[0m\e[0m           = \"refs/heads/trail\" \e[90m->\e[0m \e[0m\e[90mnull\e[0m\e[0m\r\n      \e[31m-\e[0m \e[0m\e[1m\e[0mrepository\e[0m\e[0m    = \"terraform-plan-summary\" \e[90m->\e[0m \e[0m\e[90mnull\e[0m\e[0m\r\n      \e[31m-\e[0m \e[0m\e[1m\e[0msha\e[0m\e[0m           = \"2e3d2c0b4513373c72b96b29592b62581e271af9\" \e[90m->\e[0m \e[0m\e[90mnull\e[0m\e[0m\r\n      \e[31m-\e[0m \e[0m\e[1m\e[0msource_branch\e[0m\e[0m = \"main\" \e[90m->\e[0m \e[0m\e[90mnull\e[0m\e[0m\r\n    }\r\n\r\n\e[1m  # module.github[\"terraform-plan-summary\"].github_repository.repository\e[0m will be updated in-place\e[0m\e[0m\r\n\e[0m  \e[33m~\e[0m\e[0m resource \"github_repository\" \"repository\" {\r\n        \e[1m\e[0mid\e[0m\e[0m                     = \"terraform-plan-summary\"\r\n        \e[1m\e[0mname\e[0m\e[0m                   = \"terraform-plan-summary\"\r\n      \e[33m~\e[0m \e[0m\e[1m\e[0mvulnerability_alerts\e[0m\e[0m   = true \e[33m->\e[0m \e[0mfalse\r\n        \e[90m# (27 unchanged attributes hidden)\e[0m\e[0m\r\n    }\r\n\r\n\e[0m\e[1mPlan:\e[0m 5 to add, 1 to change, 1 to destroy.\r\n\e[0m\e[90m\r\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\e[0m\r\n\r\nSaved the plan to: tfplan\r\n\r\nTo perform exactly these actions, run the following command to apply:\r\n    terraform apply \"tfplan\"\r\n"
+  - delay: 129
+    content: "\e[1;32m❯\e[0m "
+  - delay: 2300
+    content: '#'
+  - delay: 220
+    content: ' '
+  - delay: 208
+    content: l
+  - delay: 101
+    content: e
+  - delay: 112
+    content: t
+  - delay: 134
+    content: s
+  - delay: 176
+    content: ' '
+  - delay: 148
+    content: s
+  - delay: 77
+    content: e
+  - delay: 199
+    content: e
+  - delay: 320
+    content: ' '
+  - delay: 128
+    content: t
+  - delay: 122
+    content: h
+  - delay: 44
+    content: e
+  - delay: 114
+    content: ' '
+  - delay: 102
+    content: s
+  - delay: 108
+    content: u
+  - delay: 223
+    content: m
+  - delay: 142
+    content: m
+  - delay: 90
+    content: a
+  - delay: 109
+    content: r
+  - delay: 219
+    content: 'y'
+  - delay: 154
+    content: ' '
+  - delay: 212
+    content: o
+  - delay: 133
+    content: f
+  - delay: 84
+    content: ' '
+  - delay: 118
+    content: i
+  - delay: 140
+    content: t
+  - delay: 305
+    content: "\r\n\e[?2004l\r"
+  - delay: 158
+    content: "\e[1;32m❯\e[0m "
+  - delay: 1715
+    content: t
+  - delay: 101
+    content: e
+  - delay: 92
+    content: r
+  - delay: 192
+    content: "\a"
+  - delay: 921
+    content: r
+  - delay: 197
+    content: "\aaform"
+  - delay: 526
+    content: ' '
+  - delay: 158
+    content: s
+  - delay: 113
+    content: h
+  - delay: 57
+    content: o
+  - delay: 73
+    content: w
+  - delay: 98
+    content: ' '
+  - delay: 394
+    content: '-'
+  - delay: 274
+    content: j
+  - delay: 130
+    content: s
+  - delay: 65
+    content: o
+  - delay: 75
+    content: 'n'
+  - delay: 193
+    content: ' '
+  - delay: 348
+    content: t
+  - delay: 157
+    content: f
+  - delay: 217
+    content: p
+  - delay: 192
+    content: l
+  - delay: 158
+    content: 'an '
+  - delay: 391
+    content: '|'
+  - delay: 291
+    content: ' '
+  - delay: 98
+    content: t
+  - delay: 173
+    content: f
+  - delay: 618
+    content: '-'
+  - delay: 222
+    content: 'plan-summarize '
+  - delay: 1430
+    content: "\r\n\e[?2004l\r"
+  - delay: 363
+    content: "+---------+----------------------------------------------------------------------+\r\n| CHANGE  |                                 NAME                                 |\r\n+---------+----------------------------------------------------------------------+\r\n| added   | github_repository.terraform_plan_summary                             |\r\n+         +----------------------------------------------------------------------+\r\n|         | module.github[\"demo-repository\"].github_branch.development           |\r\n+         +----------------------------------------------------------------------+\r\n|         | module.github[\"demo-repository\"].github_branch.main                  |\r\n+         +----------------------------------------------------------------------+\r\n|         | module.github[\"demo-repository\"].github_repository.repository        |\r\n+         +----------------------------------------------------------------------+\r\n|         | module.github[\"terraform-plan-summary\"].github_branch.development    |\r\n+---------+----------------------------------------------------------------------+\r\n| deleted | module.github[\"terraform-plan-summary\"].github_branch.trail          |\r\n+---------+----------------------------------------------------------------------+\r\n| updated | module.github[\"terraform-plan-summary\"].github_repository.repository |\r\n+---------+----------------------------------------------------------------------+\r\n"
+  - delay: 140
+    content: "\e[1;32m❯\e[0m "
+  - delay: 1303
+    content: '# result is grouped by Change'
+  - delay: 2430
+    content: "\r\n\e[?2004l\r"    
+  - delay: 140
+    content: "\e[1;32m❯\e[0m "
+  - delay: 1303
+    content: '#'
+  - delay: 182
+    content: ' '
+  - delay: 145
+    content: 'n'
+  - delay: 145
+    content: o
+  - delay: 145
+    content: w
+  - delay: 145
+    content: ' '
+  - delay: 145
+    content: l
+  - delay: 68
+    content: e
+  - delay: 112
+    content: t
+  - delay: 154
+    content: s
+  - delay: 148
+    content: ' '
+  - delay: 339
+    content: s
+  - delay: 153
+    content: e
+  - delay: 156
+    content: e
+  - delay: 181
+    content: ' '
+  - delay: 115
+    content: i
+  - delay: 158
+    content: t
+  - delay: 181
+    content: ' '
+  - delay: 115
+    content: i
+  - delay: 158
+    content: n
+  - delay: 174
+    content: ' '
+  - delay: 1103
+    content: t
+  - delay: 150
+    content: r
+  - delay: 530
+    content: e
+  - delay: 163
+    content: e
+  - delay: 240
+    content: ' '
+  - delay: 207
+    content: f
+  - delay: 122
+    content: o
+  - delay: 98
+    content: r
+  - delay: 661
+    content: m
+  - delay: 117
+    content: a
+  - delay: 112
+    content: t
+  - delay: 352
+    content: "\r\n\e[?2004l\r"
+  - delay: 164
+    content: "\e[1;32m❯\e[0m "
+  - delay: 540
+    content: "terraform show -json tfplan | tf-plan-summarize "
+  - delay: 1200
+    content: '-'
+  - delay: 191
+    content: t
+  - delay: 150
+    content: r
+  - delay: 194
+    content: e
+  - delay: 137
+    content: e
+  - delay: 371
+    content: "\r\n\e[?2004l\r"
+  - delay: 352
+    content: "|---github_repository\r\n|\t|---\e[32mterraform_plan_summary(+)\e[0m\r\n|---module\r\n|\t|---github[\"demo-repository\"]\r\n|\t|\t|---github_branch\r\n|\t|\t|\t|---\e[32mdevelopment(+)\e[0m\r\n|\t|\t|\t|---\e[32mmain(+)\e[0m\r\n|\t|\t|---github_repository\r\n|\t|\t|\t|---\e[32mrepository(+)\e[0m\r\n|\t|---github[\"terraform-plan-summary\"]\r\n|\t|\t|---github_branch\r\n|\t|\t|\t|---\e[32mdevelopment(+)\e[0m\r\n|\t|\t|\t|---\e[31mtrail(-)\e[0m\r\n|\t|\t|---github_repository\r\n|\t|\t|\t|---\e[33mrepository(~)\e[0m\r\n"
+  - delay: 182
+    content: "\e[1;32m❯\e[0m "
+  - delay: 4728
+    content: '#'
+  - delay: 377
+    content: ' '
+  - delay: 982
+    content: i
+  - delay: 193
+    content: t
+  - delay: 139
+    content: ' '
+  - delay: 108
+    content: s
+  - delay: 89
+    content: h
+  - delay: 75
+    content: o
+  - delay: 114
+    content: w
+  - delay: 213
+    content: s
+  - delay: 135
+    content: ' '
+  - delay: 432
+    content: c
+  - delay: 107
+    content: l
+  - delay: 101
+    content: e
+  - delay: 91
+    content: a
+  - delay: 133
+    content: r
+  - delay: 371
+    content: l
+  - delay: 196
+    content: 'y'
+  - delay: 141
+    content: ' '
+  - delay: 124
+    content: t
+  - delay: 104
+    content: h
+  - delay: 119
+    content: e
+  - delay: 291
+    content: ' '
+  - delay: 132
+    content: l
+  - delay: 168
+    content: i
+  - delay: 83
+    content: s
+  - delay: 94
+    content: t
+  - delay: 118
+    content: ' '
+  - delay: 148
+    content: o
+  - delay: 99
+    content: f
+  - delay: 100
+    content: ' '
+  - delay: 177
+    content: c
+  - delay: 212
+    content: r
+  - delay: 38
+    content: e
+  - delay: 90
+    content: a
+  - delay: 139
+    content: t
+  - delay: 81
+    content: e
+  - delay: 262
+    content: /
+  - delay: 283
+    content: u
+  - delay: 149
+    content: p
+  - delay: 141
+    content: d
+  - delay: 34
+    content: a
+  - delay: 141
+    content: t
+  - delay: 6
+    content: e
+  - delay: 340
+    content: /
+  - delay: 442
+    content: d
+  - delay: 132
+    content: e
+  - delay: 92
+    content: l
+  - delay: 88
+    content: e
+  - delay: 96
+    content: t
+  - delay: 114
+    content: e
+  - delay: 114
+    content: ' '
+  - delay: 132
+    content: c
+  - delay: 163
+    content: h
+  - delay: 73
+    content: a
+  - delay: 156
+    content: 'n'
+  - delay: 65
+    content: g
+  - delay: 90
+    content: e
+  - delay: 73
+    content: s
+  - delay: 351
+    content: ' '
+  - delay: 249
+    content: f
+  - delay: 92
+    content: o
+  - delay: 56
+    content: r
+  - delay: 70
+    content: ' '
+  - delay: 166
+    content: q
+  - delay: 151
+    content: u
+  - delay: 52
+    content: i
+  - delay: 223
+    content: c
+  - delay: 116
+    content: k
+  - delay: 113
+    content: ' '
+  - delay: 81
+    content: v
+  - delay: 156
+    content: i
+  - delay: 43
+    content: e
+  - delay: 52
+    content: w
+  - delay: 861
+    content: "\r\n\e[?2004l\r"
+  - delay: 156
+    content: "\e[1;32m❯\e[0m "
+  - delay: 3752
+    content: '#'
+  - delay: 115
+    content: ' '
+  - delay: 119
+    content: 'n'
+  - delay: 81
+    content: o
+  - delay: 20
+    content: w
+  - delay: 133
+    content: ' '
+  - delay: 136
+    content: l
+  - delay: 409
+    content: e
+  - delay: 130
+    content: t
+  - delay: 142
+    content: s
+  - delay: 401
+    content: ' '
+  - delay: 1889
+    content: d
+  - delay: 8
+    content: r
+  - delay: 217
+    content: a
+  - delay: 370
+    content: w
+  - delay: 105
+    content: ' '
+  - delay: 175
+    content: i
+  - delay: 89
+    content: t
+  - delay: 239
+    content: "\r\n\e[?2004l\r"
+  - delay: 156
+    content: "\e[1;32m❯\e[0m "
+  - delay: 153
+    content: "terraform show -json tfplan | tf-plan-summarize -tree"
+  - delay: 1348
+    content: ' '
+  - delay: 491
+    content: '-'
+  - delay: 321
+    content: d
+  - delay: 715
+    content: r
+  - delay: 136
+    content: a
+  - delay: 251
+    content: w
+  - delay: 371
+    content: "\r\n\e[?2004l\r"
+  - delay: 357
+    content: "                                                             ╭─╮                                                             \r\n                                                             │.│                                                             \r\n                                                             ╰┬╯                                                             \r\n             ╭────────────────────────────────────────────────┴─────────────╮                                                \r\n    ╭────────┴────────╮                                                 ╭───┴──╮                                             \r\n    │github_repository│                                                 │module│                                             \r\n    ╰────────┬────────╯                                                 ╰───┬──╯                                             \r\n             │                                     ╭────────────────────────┴───────────────────────╮                        \r\n╭────────────┴────────────╮           ╭────────────┴────────────╮                  ╭────────────────┴───────────────╮        \r\n│terraform_plan_summary(+)│           │github[\"demo-repository\"]│                  │github[\"terraform-plan-summary\"]│        \r\n╰─────────────────────────╯           ╰────────────┬────────────╯                  ╰────────────────┬───────────────╯        \r\n                                         ╭─────────┴─────────────╮                        ╭─────────┴──────────────╮         \r\n                                  ╭──────┴──────╮       ╭────────┴────────╮        ╭──────┴──────╮        ╭────────┴────────╮\r\n                                  │github_branch│       │github_repository│        │github_branch│        │github_repository│\r\n                                  ╰──────┬──────╯       ╰────────┬────────╯        ╰──────┬──────╯        ╰────────┬────────╯\r\n                                    ╭────┴────────╮              │                  ╭─────┴────────╮               │         \r\n                            ╭───────┴──────╮  ╭───┴───╮   ╭──────┴──────╮   ╭───────┴──────╮  ╭────┴───╮    ╭──────┴──────╮  \r\n                            │development(+)│  │main(+)│   │repository(+)│   │development(+)│  │trail(-)│    │repository(~)│  \r\n                            ╰──────────────╯  ╰───────╯   ╰─────────────╯   ╰──────────────╯  ╰────────╯    ╰─────────────╯  \r\n"
+  - delay: 129
+    content: "\e[1;32m❯\e[0m "
+  - delay: 1337
+    content: '#'
+  - delay: 330
+    content: ' '
+  - delay: 330
+    content: t
+  - delay: 405
+    content: h
+  - delay: 136
+    content: a
+  - delay: 112
+    content: 'n'
+  - delay: 114
+    content: k
+  - delay: 74
+    content: s
+  - delay: 3000
+    content: "\r\n\e[?2004l\r"
+  - delay: 100
+    content: "\e[1;32m❯\e[0m "
+  - delay: 1511
+    content: "\e[?2004l\r\r\nlogout\r\n"

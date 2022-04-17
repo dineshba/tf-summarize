@@ -4,6 +4,8 @@
 
 `tf-plan-summarize` is a command-line utility to print the summary of the terraform plan
 
+![demo](example/demo.gif)
+
 ### Why do we need it ?
 
 ##### For below use-cases:
