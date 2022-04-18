@@ -4,14 +4,13 @@
 
 `tf-plan-summarize` is a command-line utility to print the summary of the terraform plan
 
-![demo](example/demo.gif)
-
 ### Why do we need it ?
 
 ##### For below use-cases:
 - Most of the time, we make changes to the terraform files or tf-var files and run the plan command. And we precisly know which resources will get affected. In those time, we would like to just see the resource name and it's change.
 - When our plan have more than say 10 changes, we will first what are the deleted changes.
 
+![demo](example/demo.gif)
 
 ### Install
 
