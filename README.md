@@ -64,3 +64,10 @@ cat output.json | tf-plan-summarize -separate-tree            # summary in separ
 cat output.json | tf-plan-summarize -separate-tree -draw      # summary in separate 2D tree format
 cat output.json | tf-plan-summarize -out=summary.md           # summary in output file instead of stdout
 ```
+
+### TODO
+
+- [ ] Read terraform state file directly. (Currently need to convert to json and pass it)
+- [ ] Directly run the terraform plan and show the summary
+- [ ] Able to show summary of the current terraform state
+- [ ] Include version subcommand in binary
