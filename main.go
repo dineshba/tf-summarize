@@ -17,7 +17,7 @@ func main() {
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
-		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s [args] [tf-plan.json]\n\n", os.Args[0])
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "\nUsage of %s [args] [tf-plan.json]\n\n", os.Args[0])
 		flag.PrintDefaults()
 	}
 
@@ -25,16 +25,16 @@ func main() {
 
 	args := flag.Args()
 	err := validateFlags(*tree, *separateTree, *drawable, args)
-	logIfErrorAndExit("invalid input flags: %s", err)
+	logIfErrorAndExit("invalid input flags: %s", err, flag.Usage)
 
 	newReader, err := reader.CreateReader(os.Stdin, args)
-	logIfErrorAndExit("error creating input reader: %s", err)
+	logIfErrorAndExit("error creating input reader: %s", err, flag.Usage)
 
 	input, err := newReader.Read()
-	logIfErrorAndExit("error reading from input: %s", err)
+	logIfErrorAndExit("error reading from input: %s", err, func() {})
 
 	terraformState, err := terraform_state.Parse(input)
-	logIfErrorAndExit("%s", err)
+	logIfErrorAndExit("%s", err, func() {})
 
 	terraformState.FilterNoOpResources()
 
@@ -44,26 +44,27 @@ func main() {
 
 	if *outputFileName != "" {
 		file, err := os.OpenFile(*outputFileName, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0600)
-		logIfErrorAndExit("error opening file: %v", err)
+		logIfErrorAndExit("error opening file: %v", err, func() {})
 		defer func() {
 			if err := file.Close(); err != nil {
-				logIfErrorAndExit("Error closing file: %s\n", err)
+				logIfErrorAndExit("Error closing file: %s\n", err, func() {})
 			}
 		}()
 		outputFile = file
 	}
 
 	err = newWriter.Write(outputFile)
-	logIfErrorAndExit("error writing: %s", err)
+	logIfErrorAndExit("error writing: %s", err, func() {})
 
 	if err == nil && *outputFileName != "" {
 		_, _ = fmt.Fprintf(os.Stderr, "Written plan summary to %s\n", *outputFileName)
 	}
 }
 
-func logIfErrorAndExit(format string, err error) {
+func logIfErrorAndExit(format string, err error, callback func()) {
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", format), err.Error())
+		callback()
 		os.Exit(1)
 	}
 }
