@@ -32,7 +32,7 @@ func CreateReader(stdin *os.File, args []string) (Reader, error) {
 		return NewStdinReader(), nil
 	}
 	if len(args) < 1 {
-		return nil, fmt.Errorf("should either have stdin through pipe or first argument should be file")
+		return nil, fmt.Errorf("should have either stdin input through pipe or first argument should be file")
 	}
 	fileName := args[0]
 	return NewFileReader(fileName), nil
