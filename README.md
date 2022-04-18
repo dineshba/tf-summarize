@@ -14,6 +14,13 @@
 
 ### Install
 
+#### Download zip in release page
+1. Go to release page [https://github.com/dineshba/terraform-plan-summary/releases](https://github.com/dineshba/terraform-plan-summary/releases)
+2. Download the zip for your OS and unzip it
+3. Copy it to local bin using `cp tf-plan-summarize /usr/local/bin/tf-plan-summarize` or to location which is part of `$PATH`
+4. (For Mac Only) Give access to run if prompted. [Refer here](https://stackoverflow.com/a/19551359/5305962)
+
+#### Clone and Build Binary
 1. Clone this repo
 2. Build binary using `make build` or `go build -o tf-plan-summarize .`
 3. Install it to local bin using `make install` or `cp tf-plan-summarize /usr/local/bin/tf-plan-summarize`
