@@ -30,7 +30,7 @@
 ```sh
 $ tf-plan-summarize -h
 
-Usage of tf-plan-summarize [args] [tf-plan.json]
+Usage of tf-plan-summarize [args] [tf-plan.json|tfplan]
 
   -draw
         [Optional, used only with -tree or -separate-tree] draw trees instead of plain tree
@@ -47,27 +47,27 @@ Usage of tf-plan-summarize [args] [tf-plan.json]
 #### Simple Example
 ```sh
 # run terraform plan command
-terraform plan -out=output
+terraform plan -out=tfplan
 # provide json output from plan
-terraform show -json output | tf-plan-summarize # will print the summary in stdout in table format
+terraform show -json tfplan | tf-plan-summarize # will print the summary in stdout in table format
 # provide plan output directly
-tf-plan-summarize output
+tf-plan-summarize tfplan
 ```
 
 #### More Examples
 ```sh
 # terraform plan as input based examples
-terraform plan -out=output
-tf-plan-summarize output                           # summary in table format
-tf-plan-summarize -tree output                     # summary in tree format
-tf-plan-summarize -tree -draw output               # summary in 2D tree format
-tf-plan-summarize -separate-tree output            # summary in separate tree format
-tf-plan-summarize -separate-tree -draw output      # summary in separate 2D tree format
-tf-plan-summarize -out=summary.md output           # summary in output file instead of stdout
+terraform plan -out=tfplan
+tf-plan-summarize tfplan                           # summary in table format
+tf-plan-summarize -tree tfplan                     # summary in tree format
+tf-plan-summarize -tree -draw tfplan               # summary in 2D tree format
+tf-plan-summarize -separate-tree tfplan            # summary in separate tree format
+tf-plan-summarize -separate-tree -draw tfplan      # summary in separate 2D tree format
+tf-plan-summarize -out=summary.md tfplan           # summary in output file instead of stdout
 
 # json as input based examples
-terraform plan -out=output
-terraform show -json output > output.json
+terraform plan -out=tfplan
+terraform show -json tfplan > output.json
 tf-plan-summarize output.json                                 # summary in table format
 cat output.json | tf-plan-summarize                           # summary in table format
 cat output.json | tf-plan-summarize -tree                     # summary in tree format

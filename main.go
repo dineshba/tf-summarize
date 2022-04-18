@@ -17,7 +17,7 @@ func main() {
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
-		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "\nUsage of %s [args] [tf-plan.json]\n\n", os.Args[0])
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "\nUsage of %s [args] [tf-plan.json|tfplan]\n\n", os.Args[0])
 		flag.PrintDefaults()
 	}
 
