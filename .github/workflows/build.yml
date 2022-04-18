@@ -16,7 +16,7 @@ jobs:
     - name: Run Gosec Security Scanner
       uses: securego/gosec@master
       with:
-        args: -exclude=G104 ./...
+        args: -exclude=G204 ./...
 
     - name: Set up Go
       uses: actions/setup-go@v2
