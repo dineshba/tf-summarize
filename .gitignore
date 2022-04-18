@@ -1,2 +1,6 @@
 tf-plan-summarize
 .idea/
+
+**/.DS_Store
+**/.envrc
+**/.terraform
