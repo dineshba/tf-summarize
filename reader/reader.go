@@ -9,6 +9,7 @@ import (
 
 type Reader interface {
 	Read() ([]byte, error)
+	Name() string
 }
 
 func readFile(f io.Reader) ([]byte, error) {

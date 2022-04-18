@@ -50,10 +50,22 @@ Usage of tf-plan-summarize [args] [tf-plan.json]
 terraform plan -out=output
 # provide json output from plan
 terraform show -json output | tf-plan-summarize # will print the summary in stdout in table format
+# provide plan output directly
+tf-plan-summarize output
 ```
 
 #### More Examples
 ```sh
+# terraform plan as input based examples
+terraform plan -out=output
+tf-plan-summarize output                           # summary in table format
+tf-plan-summarize -tree output                     # summary in tree format
+tf-plan-summarize -tree -draw output               # summary in 2D tree format
+tf-plan-summarize -separate-tree output            # summary in separate tree format
+tf-plan-summarize -separate-tree -draw output      # summary in separate 2D tree format
+tf-plan-summarize -out=summary.md output           # summary in output file instead of stdout
+
+# json as input based examples
 terraform plan -out=output
 terraform show -json output > output.json
 tf-plan-summarize output.json                                 # summary in table format
@@ -63,11 +75,12 @@ cat output.json | tf-plan-summarize -tree -draw               # summary in 2D tr
 cat output.json | tf-plan-summarize -separate-tree            # summary in separate tree format
 cat output.json | tf-plan-summarize -separate-tree -draw      # summary in separate 2D tree format
 cat output.json | tf-plan-summarize -out=summary.md           # summary in output file instead of stdout
+
 ```
 
 ### TODO
 
-- [ ] Read terraform state file directly. (Currently need to convert to json and pass it)
+- [x] Read terraform state file directly. (Currently need to convert to json and pass it)
 - [ ] Directly run the terraform plan and show the summary
 - [ ] Able to show summary of the current terraform state
 - [ ] Include version subcommand in binary

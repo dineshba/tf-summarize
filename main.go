@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"terraform-plan-summary/parser"
 	"terraform-plan-summary/reader"
-	"terraform-plan-summary/terraform_state"
 	"terraform-plan-summary/writer"
 )
 
@@ -33,7 +33,10 @@ func main() {
 	input, err := newReader.Read()
 	logIfErrorAndExit("error reading from input: %s", err, func() {})
 
-	terraformState, err := terraform_state.Parse(input)
+	newParser, err := parser.CreateParser(input, newReader.Name())
+	logIfErrorAndExit("error creating parser: %s", err, func() {})
+
+	terraformState, err := newParser.Parse()
 	logIfErrorAndExit("%s", err, func() {})
 
 	terraformState.FilterNoOpResources()
