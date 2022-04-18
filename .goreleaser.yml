@@ -28,7 +28,7 @@ builds:
     ignore:
       - goos: darwin
         goarch: '386'
-    binary: '{{ .ProjectName }}'
+    binary: 'tf-plan-summarize'
 archives:
   - format: zip
     name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
