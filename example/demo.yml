@@ -346,7 +346,7 @@ records:
   - delay: 618
     content: '-'
   - delay: 222
-    content: 'plan-summarize '
+    content: 'summarize '
   - delay: 1430
     content: "\r\n\e[?2004l\r"
   - delay: 363
@@ -428,7 +428,7 @@ records:
   - delay: 164
     content: "\e[1;32m❯\e[0m "
   - delay: 540
-    content: "terraform show -json tfplan | tf-plan-summarize "
+    content: "terraform show -json tfplan | tf-summarize "
   - delay: 1200
     content: '-'
   - delay: 191
@@ -638,7 +638,7 @@ records:
   - delay: 156
     content: "\e[1;32m❯\e[0m "
   - delay: 153
-    content: "terraform show -json tfplan | tf-plan-summarize -tree"
+    content: "terraform show -json tfplan | tf-summarize -tree"
   - delay: 1348
     content: ' '
   - delay: 491

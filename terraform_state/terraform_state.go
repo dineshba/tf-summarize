@@ -99,10 +99,10 @@ func (ts *TerraformState) AllChanges() map[string]ResourceChanges {
 	recreatedResources := recreatedResources(ts.ResourceChanges)
 
 	return map[string]ResourceChanges{
-		"added":     addedResources,
-		"deleted":   deletedResources,
-		"updated":   updatedResources,
-		"recreated": recreatedResources,
+		"add":      addedResources,
+		"delete":   deletedResources,
+		"update":   updatedResources,
+		"recreate": recreatedResources,
 	}
 }
 
