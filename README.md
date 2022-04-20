@@ -13,6 +13,12 @@
 
 ### Install
 
+#### Using Brew
+```sh
+brew tap thecasualcoder/stable
+brew install terraform-plan-summary
+```
+
 #### Download zip in release page
 1. Go to release page [https://github.com/dineshba/terraform-plan-summary/releases](https://github.com/dineshba/terraform-plan-summary/releases)
 2. Download the zip for your OS and unzip it
