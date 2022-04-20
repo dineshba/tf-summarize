@@ -10,7 +10,10 @@ import (
 	"terraform-plan-summary/writer"
 )
 
+var version = "development"
+
 func main() {
+	printVersion := flag.Bool("v", false, "print version")
 	tree := flag.Bool("tree", false, "[Optional] print changes in tree format")
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
@@ -22,6 +25,11 @@ func main() {
 	}
 
 	flag.Parse()
+
+	if *printVersion {
+		_, _ = fmt.Fprintf(os.Stdout, fmt.Sprintf("Version: %s\n", version))
+		os.Exit(0)
+	}
 
 	args := flag.Args()
 	err := validateFlags(*tree, *separateTree, *drawable, args)
