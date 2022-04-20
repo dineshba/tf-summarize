@@ -6,9 +6,8 @@
 
 ### Why do we need it ?
 
-##### For below use-cases:
-- Most of the time, we make changes to the terraform files or tf-var files and run the plan command. And we precisly know which resources will get affected. In those time, we would like to just see the resource name and it's change.
-- When our plan have more than say 10 changes, we will first see what are the deleted changes or we will just see the list of resources that get affected.
+- Most of the time, we make changes to the terraform files or tf-var files and run the plan command. And we precisely know which resources will get affected. In those time, we would like to just see the resource name and it's change.
+- When our plan have more than say 10 changes, we will first see what are the deleted changes, or we will just see the list of resources that get affected.
 
 ![demo](example/demo.gif)
 
@@ -40,24 +39,16 @@ Usage of tf-plan-summarize [args] [tf-plan.json|tfplan]
         [Optional] print changes in tree format for each add/delete/change/recreate changes
   -tree
         [Optional] print changes in tree format
+  -v    print version
 ```
 
-### Example
+### Examples
 
-#### Simple Example
 ```sh
 # run terraform plan command
 terraform plan -out=tfplan
-# provide json output from plan
-terraform show -json tfplan | tf-plan-summarize # will print the summary in stdout in table format
-# provide plan output directly
-tf-plan-summarize tfplan
-```
 
-#### More Examples
-```sh
-# terraform plan as input based examples
-terraform plan -out=tfplan
+# provide plan itself directly
 tf-plan-summarize tfplan                           # summary in table format
 tf-plan-summarize -tree tfplan                     # summary in tree format
 tf-plan-summarize -tree -draw tfplan               # summary in 2D tree format
@@ -65,17 +56,10 @@ tf-plan-summarize -separate-tree tfplan            # summary in separate tree fo
 tf-plan-summarize -separate-tree -draw tfplan      # summary in separate 2D tree format
 tf-plan-summarize -out=summary.md tfplan           # summary in output file instead of stdout
 
-# json as input based examples
-terraform plan -out=tfplan
+# provide json output from plan
+terraform show -json tfplan | tf-plan-summarize    # summary in table format
 terraform show -json tfplan > output.json
-tf-plan-summarize output.json                                 # summary in table format
-cat output.json | tf-plan-summarize                           # summary in table format
-cat output.json | tf-plan-summarize -tree                     # summary in tree format
-cat output.json | tf-plan-summarize -tree -draw               # summary in 2D tree format
-cat output.json | tf-plan-summarize -separate-tree            # summary in separate tree format
-cat output.json | tf-plan-summarize -separate-tree -draw      # summary in separate 2D tree format
-cat output.json | tf-plan-summarize -out=summary.md           # summary in output file instead of stdout
-
+tf-plan-summarize output.json                      # summary in table format
 ```
 
 ### TODO
@@ -83,4 +67,4 @@ cat output.json | tf-plan-summarize -out=summary.md           # summary in outpu
 - [x] Read terraform state file directly. (Currently need to convert to json and pass it)
 - [ ] Directly run the terraform plan and show the summary
 - [ ] Able to show summary of the current terraform state
-- [ ] Include version subcommand in binary
+- [x] Include version subcommand in binary
