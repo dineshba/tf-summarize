@@ -20,7 +20,7 @@ func main() {
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
-		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "\nUsage of %s [args] [tf-plan.json|tfplan]\n\n", os.Args[0])
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s [args] [tf-plan.json|tfplan]\n\n", os.Args[0])
 		flag.PrintDefaults()
 	}
 
@@ -33,10 +33,10 @@ func main() {
 
 	args := flag.Args()
 	err := validateFlags(*tree, *separateTree, *drawable, args)
-	logIfErrorAndExit("invalid input flags: %s", err, flag.Usage)
+	logIfErrorAndExit("invalid input flags: %s\n", err, flag.Usage)
 
 	newReader, err := reader.CreateReader(os.Stdin, args)
-	logIfErrorAndExit("error creating input reader: %s", err, flag.Usage)
+	logIfErrorAndExit("error creating input reader: %s\n", err, flag.Usage)
 
 	input, err := newReader.Read()
 	logIfErrorAndExit("error reading from input: %s", err, func() {})
