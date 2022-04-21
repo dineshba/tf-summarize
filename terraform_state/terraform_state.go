@@ -8,6 +8,7 @@ import (
 const ColorReset = "\033[0m"
 const ColorRed = "\033[31m"
 const ColorGreen = "\033[32m"
+const ColorMagenta = "\033[35m"
 const ColorYellow = "\033[33m"
 
 type ResourceChange struct {
@@ -38,7 +39,7 @@ func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 			suffix = "(~)"
 		}
 	} else {
-		colorPrefix = ColorRed
+		colorPrefix = ColorMagenta
 		suffix = "(+/-)"
 	}
 	return colorPrefix, suffix
