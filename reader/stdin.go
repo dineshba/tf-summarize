@@ -5,6 +5,7 @@ import (
 )
 
 const StdinFileName = "stdin"
+
 type StdinReader struct {
 }
 
