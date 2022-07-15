@@ -9,12 +9,12 @@ type Writer interface {
 	Write(writer io.Writer) error
 }
 
-func CreateWriter(tree, separateTree, drawable bool, terraformState terraform_state.TerraformState) Writer {
+func CreateWriter(tree, separateTree, drawable bool, mdEnabled bool, terraformState terraform_state.TerraformState) Writer {
 	if tree {
 		return NewTreeWriter(terraformState.ResourceChanges, drawable)
 	}
 	if separateTree {
 		return NewSeparateTree(terraformState.AllChanges(), drawable)
 	}
-	return NewTableWriter(terraformState.AllChanges())
+	return NewTableWriter(terraformState.AllChanges(), mdEnabled)
 }

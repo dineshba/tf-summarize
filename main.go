@@ -17,6 +17,7 @@ func main() {
 	tree := flag.Bool("tree", false, "[Optional] print changes in tree format")
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
+	md := flag.Bool("md", false, "[Optional, used only with table view] output table as markdown")
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
@@ -32,7 +33,7 @@ func main() {
 	}
 
 	args := flag.Args()
-	err := validateFlags(*tree, *separateTree, *drawable, args)
+	err := validateFlags(*tree, *separateTree, *drawable, *md, args)
 	logIfErrorAndExit("invalid input flags: %s\n", err, flag.Usage)
 
 	newReader, err := reader.CreateReader(os.Stdin, args)
@@ -49,7 +50,7 @@ func main() {
 
 	terraformState.FilterNoOpResources()
 
-	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, terraformState)
+	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, terraformState)
 
 	var outputFile io.Writer = os.Stdout
 
@@ -80,7 +81,13 @@ func logIfErrorAndExit(format string, err error, callback func()) {
 	}
 }
 
-func validateFlags(tree, separateTree, drawable bool, args []string) error {
+func validateFlags(tree, separateTree, drawable bool, md bool, args []string) error {
+	if tree && md {
+		return fmt.Errorf("both -tree and -md should not be provided")
+	}
+	if separateTree && md {
+		return fmt.Errorf("both -seperate-tree and -md should not be provided")
+	}
 	if tree && separateTree {
 		return fmt.Errorf("both -tree and -seperate-tree should not be provided")
 	}
