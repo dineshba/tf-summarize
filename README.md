@@ -15,11 +15,14 @@
   - [Clone and Build Binary](#clone-and-build-binary)
 - [Usage](#usage)
 - [Examples](#examples)
+- [Screenshot](#screenshot)
 - [TODO](#todo)
 
 ### Demo
 
 ![demo](example/demo.gif)
+
+If demo is slower for you, please see [examples](#examples) and [screenshot](#screenshot) for more details
 
 ### Why do we need it ?
 
@@ -82,6 +85,9 @@ terraform show -json tfplan | tf-summarize    # summary in table format
 terraform show -json tfplan > output.json
 tf-summarize output.json                      # summary in table format
 ```
+
+### Screenshot
+![screenshot](example/tf-summarize-screenshot.png)
 
 ### TODO
 
