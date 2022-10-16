@@ -11,6 +11,7 @@
 - [Why do we need it ?](#why-do-we-need-it-)
 - [Install](#install)
   - [Using Brew](#using-brew)
+  - [Using Docker](#using-docker)
   - [Download zip in release page](#download-zip-in-release-page)
   - [Clone and Build Binary](#clone-and-build-binary)
 - [Usage](#usage)
@@ -33,6 +34,23 @@
 brew tap thecasualcoder/stable
 brew install tf-summarize
 ```
+
+#### Using Docker
+```sh
+docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize -v # prints version
+docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize tfplan.json
+docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize -tree tfplan.json
+# see example section for more examples
+
+
+# add alias if needed
+alias tf-summarize="docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize"
+tf-summarize tfplan.json
+# see example section for more examples
+```
+
+> tf-summarize will accept tfplan directly. Docker based tf-summarize is not having terraform-binary to convert tfplan to json. So it only works with json files.
+> If you want to use with tfplan directly, You can build a base image with terraform (use same version as tfplan created) and have our binary in it.
 
 #### Download zip in release page
 1. Go to release page [https://github.com/dineshba/terraform-plan-summary/releases](https://github.com/dineshba/terraform-plan-summary/releases)
