@@ -7,7 +7,7 @@
 
 `tf-summarize` is a command-line utility to print the summary of the terraform plan
 
-- [Demo](#demo)
+- [Screenshot](#screenshot)
 - [Why do we need it ?](#why-do-we-need-it-)
 - [Install](#install)
   - [Using Brew](#using-brew)
@@ -15,11 +15,13 @@
   - [Clone and Build Binary](#clone-and-build-binary)
 - [Usage](#usage)
 - [Examples](#examples)
+- [Demo](#demo)
 - [TODO](#todo)
 
-### Demo
+### Screenshot
+![screenshot](example/tf-summarize-screenshot.png)
 
-![demo](example/demo.gif)
+> See [demo](#demo) and [examples](#examples) for more details
 
 ### Why do we need it ?
 
@@ -82,6 +84,10 @@ terraform show -json tfplan | tf-summarize    # summary in table format
 terraform show -json tfplan > output.json
 tf-summarize output.json                      # summary in table format
 ```
+
+### Demo
+
+![demo](example/demo.gif)
 
 ### TODO
 
