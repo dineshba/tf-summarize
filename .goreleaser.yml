@@ -9,6 +9,7 @@ dockers:
   image_templates:
     - ghcr.io/dineshba/tf-summarize:{{ .Version }}-amd64
     - ghcr.io/dineshba/tf-summarize:latest-amd64
+    - ghcr.io/dineshba/tf-summarize:latest
   build_flag_templates:
     - "--label=org.opencontainers.image.created={{ .Date }}"
     - "--label=org.opencontainers.image.title={{ .ProjectName }}"
