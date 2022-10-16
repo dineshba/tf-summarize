@@ -9,7 +9,7 @@ build: ## build the binary
 	go build -o $(EXECUTABLE_NAME) -ldflags="-X 'main.version=$(TF_SUMMARIZE_VERSION)'" .
 
 install: build ## build and install to /usr/local/bin/
-	cp $(EXECUTABLE_NAME) /usr/local/bin/$(EXECUTABLE_NAME)
+	mv $(EXECUTABLE_NAME) /usr/local/bin/$(EXECUTABLE_NAME)
 
 test:
 	go test ./...
