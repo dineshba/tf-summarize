@@ -16,6 +16,7 @@
   - [Clone and Build Binary](#clone-and-build-binary)
 - [Usage](#usage)
 - [Examples](#examples)
+  - [Github Actions Workflow](#github-actions-workflow)
 - [Screenshot](#screenshot)
 - [TODO](#todo)
 
@@ -103,6 +104,12 @@ terraform show -json tfplan | tf-summarize    # summary in table format
 terraform show -json tfplan > output.json
 tf-summarize output.json                      # summary in table format
 ```
+
+#### Github Actions Workflow
+
+Please refer this sample [github actions file](.github/workflows/demo.yml) and the sample runs [here](https://github.com/dineshba/tf-summarize/actions/workflows/demo.yml)
+
+> Note: If you are using `hashicorp/setup-terraform` github action to setup terraform, ensure terraform_wrapper is set to false.
 
 ### Screenshot
 ![screenshot](example/tf-summarize-screenshot.png)

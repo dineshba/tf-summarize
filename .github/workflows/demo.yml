@@ -14,13 +14,14 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
 
     - name: Install terraform-plan-summary
       run: |
         REPO="dineshba/terraform-plan-summary"
-        VERSION="v0.2.3"
-        curl -LO https://github.com/$REPO/releases/download/$VERSION/tf-summarize_linux_amd64.zip
+        curl -LO https://github.com/$REPO/releases/latest/download/tf-summarize_linux_amd64.zip
         tmpDir=$(mktemp -d -t tmp.XXXXXXXXXX)
         mv tf-summarize_linux_amd64.zip $tmpDir
         cd $tmpDir
@@ -40,22 +41,18 @@ jobs:
       run: terraform plan -out=tfplan -refresh=false
       working-directory: ./example
 
-    - name: Convert terraform plan to json
-      run: |
-        terraform show -json tfplan > output.json
-        cat output.json
-        tf-summarize -h
-        tf-summarize -v
-      working-directory: ./example
-
     - name: summary in table format
-      run: tf-summarize output.json
+      run: terraform show -json tfplan | tf-summarize
       working-directory: ./example
 
     - name: summary in tree format
-      run: tf-summarize -tree output.json
+      run: terraform show -json tfplan | tf-summarize -tree
+      working-directory: ./example
+
+    - name: summary in separate tree format
+      run: terraform show -json tfplan | tf-summarize -separate-tree
       working-directory: ./example
 
     - name: summary in draw table format
-      run: tf-summarize -tree -draw output.json
+      run: terraform show -json tfplan | tf-summarize -tree -draw
       working-directory: ./example
