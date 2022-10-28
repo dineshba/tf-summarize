@@ -29,16 +29,17 @@ jobs:
         chmod +x tf-summarize
         echo $PWD >> $GITHUB_PATH
 
-    - name: Print tf-summarize version
+    - name: Print tf-summarize version and help
       run: |
         tf-summarize -v
+        tf-summarize -h
 
     - name: Terraform Init
       run: terraform init
       working-directory: ./example
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan -refresh=false
+      run: terraform plan -out=tfplan -refresh=false # -refresh=false is only for demo workflow
       working-directory: ./example
 
     - name: summary in table format
