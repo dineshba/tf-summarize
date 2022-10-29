@@ -17,7 +17,7 @@ func (t TreeWriter) Write(writer io.Writer) error {
 
 	if t.drawable {
 		drawableTree := trees.DrawableTree()
-		_, err := fmt.Fprintf(writer, drawableTree.String())
+		_, err := fmt.Fprint(writer, drawableTree.String())
 		return err
 	}
 

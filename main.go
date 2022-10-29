@@ -28,7 +28,7 @@ func main() {
 	flag.Parse()
 
 	if *printVersion {
-		_, _ = fmt.Fprintf(os.Stdout, fmt.Sprintf("Version: %s\n", version))
+		_, _ = fmt.Fprintf(os.Stdout, "Version: %s\n", version)
 		os.Exit(0)
 	}
 
