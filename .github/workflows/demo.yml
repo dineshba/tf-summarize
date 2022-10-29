@@ -57,3 +57,17 @@ jobs:
     - name: summary in draw table format
       run: terraform show -json tfplan | tf-summarize -tree -draw
       working-directory: ./example
+
+    - name: summary in draw table format
+      run: |
+        rm -rf tf-summarize-table-output.md
+        echo "## tf-summarize output:" > tf-summarize-table-output.md
+        echo "" >> tf-summarize-table-output.md
+        terraform show -json tfplan | tf-summarize -md >> tf-summarize-table-output.md
+      working-directory: ./example
+
+    - name: Create comment with terraform plan summary
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        issue-number: 19 # ${{ github.event.pull_request.number }} to get the pull request number which triggered this run
+        body-file: './example/tf-summarize-table-output.md'
