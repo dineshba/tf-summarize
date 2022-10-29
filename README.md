@@ -17,6 +17,7 @@
 - [Usage](#usage)
 - [Examples](#examples)
   - [Github Actions Workflow](#github-actions-workflow)
+  - [Comment terraform plan summary in PRs](#comment-terraform-plan-summary-in-prs)
 - [Screenshot](#screenshot)
 - [TODO](#todo)
 
@@ -110,6 +111,10 @@ tf-summarize output.json                      # summary in table format
 Please refer this sample [github actions file](.github/workflows/demo.yml) and the sample runs [here](https://github.com/dineshba/tf-summarize/actions/workflows/demo.yml)
 
 > Note: If you are using `hashicorp/setup-terraform` github action to setup terraform, ensure terraform_wrapper is set to false.
+
+#### Comment terraform plan summary in PRs
+
+Refer [this example](https://github.com/dineshba/tf-summarize/blob/demo-pr/.github/workflows/demo.yml#L61-L73) to add comments in your PR. Sample [comment](https://github.com/dineshba/tf-summarize/pull/19#issuecomment-1295882938) added by github actions bot.
 
 ### Screenshot
 ![screenshot](example/tf-summarize-screenshot.png)
