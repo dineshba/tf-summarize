@@ -88,7 +88,7 @@ func (f *Formatter) processString(s string) string {
 	buf := &bytes.Buffer{}
 	encoder := json.NewEncoder(buf)
 	encoder.SetEscapeHTML(false)
-	encoder.Encode(s)
+	_ = encoder.Encode(s)
 	s = buf.String()
 	s = strings.TrimSuffix(s, "\n")
 
@@ -116,7 +116,7 @@ func (f *Formatter) processMap(m map[string]interface{}, depth int) string {
 		buf := &bytes.Buffer{}
 		encoder := json.NewEncoder(buf)
 		encoder.SetEscapeHTML(false)
-		encoder.Encode(key)
+		_ = encoder.Encode(key)
 		k := strings.TrimSuffix(buf.String(), "\n")
 		v := f.pretty(val, depth+1)
 
