@@ -19,7 +19,9 @@ type ResourceChange struct {
 	Name          string `json:"name"`
 	ProviderName  string `json:"provider_name"`
 	Change        struct {
-		Actions []string `json:"actions"`
+		Actions []string        `json:"actions"`
+		Before  json.RawMessage `json:"before,omitempty"`
+		After   json.RawMessage `json:"after,omitempty"`
 	} `json:"change"`
 	ActionReason string `json:"action_reason,omitempty"`
 }

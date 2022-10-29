@@ -2,9 +2,10 @@ package tree
 
 import (
 	"fmt"
-	"github.com/m1gwings/treedrawer/tree"
 	"strings"
 	"terraform-plan-summary/terraform_state"
+
+	"github.com/m1gwings/treedrawer/tree"
 )
 
 type Tree struct {
@@ -16,6 +17,22 @@ type Tree struct {
 
 func (t Tree) String() string {
 	return fmt.Sprintf("{name: %s, children: %+v}", t.Name, t.Children)
+}
+
+func (t Tree) IsAddition() bool {
+	return t.Value.Change.Actions[0] == "create"
+}
+
+func (t Tree) IsRemoval() bool {
+	return t.Value.Change.Actions[0] == "delete"
+}
+
+func (t Tree) IsUpdate() bool {
+	return t.Value.Change.Actions[0] == "update"
+}
+
+func (t Tree) IsRecreate() bool {
+	return len(t.Value.Change.Actions) == 2
 }
 
 type Trees []*Tree
