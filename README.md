@@ -18,6 +18,7 @@
 - [Examples](#examples)
   - [Github Actions Workflow](#github-actions-workflow)
   - [Comment terraform plan summary in PRs](#comment-terraform-plan-summary-in-prs)
+  - [Interactive summary review](#interactive-summary-review)
 - [Screenshot](#screenshot)
 - [TODO](#todo)
 
@@ -96,6 +97,7 @@ terraform plan -out=tfplan
 tf-summarize tfplan                           # summary in table format
 tf-summarize -tree tfplan                     # summary in tree format
 tf-summarize -tree -draw tfplan               # summary in 2D tree format
+tf-summarize -json tfplan                     # summary in json format
 tf-summarize -separate-tree tfplan            # summary in separate tree format
 tf-summarize -separate-tree -draw tfplan      # summary in separate 2D tree format
 tf-summarize -out=summary.md tfplan           # summary in output file instead of stdout
@@ -115,6 +117,13 @@ Please refer this sample [github actions file](.github/workflows/demo.yml) and t
 #### Comment terraform plan summary in PRs
 
 Refer [this example](https://github.com/dineshba/tf-summarize/blob/demo-pr/.github/workflows/demo.yml#L61-L73) to add comments in your PR. Sample [comment](https://github.com/dineshba/tf-summarize/pull/19#issuecomment-1295882938) added by github actions bot.
+
+#### Interactive summary review
+
+You can use tool [fx](https://github.com/antonmedv/fx) to review the summary fo the terraform change
+```sh
+tf-summarize -json tfplan | fx
+```
 
 ### Screenshot
 ![screenshot](example/tf-summarize-screenshot.png)
