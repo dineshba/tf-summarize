@@ -118,6 +118,8 @@ func (f *Formatter) processMap(m map[string]interface{}, depth int) string {
 		encoder.SetEscapeHTML(false)
 		_ = encoder.Encode(key)
 		k := strings.TrimSuffix(buf.String(), "\n")
+		k = strings.ReplaceAll(k, "[\\\"", "[")
+		k = strings.ReplaceAll(k, "\\\"]", "]")
 		v := f.pretty(val, depth+1)
 
 		// Add color based on the key value
