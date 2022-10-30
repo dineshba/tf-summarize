@@ -22,10 +22,8 @@ func (t JsonWriter) Write(writer io.Writer) error {
 		resultMap[t.Name] = treeValue(*t)
 	}
 	s, _ := Marshal(resultMap)
-	fmt.Println(string(s))
-	// fmt.Printf("%s", string(d))
-
-	return nil
+	_, err := fmt.Fprint(writer, string(s))
+	return err
 }
 
 func treeValue(t tree.Tree) interface{} {
