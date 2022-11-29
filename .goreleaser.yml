@@ -35,7 +35,7 @@ builds:
       - '-s -w -X main.version={{.Version}}'
     goos:
 #      - freebsd
-#      - windows
+      - windows
       - linux
       - darwin
     goarch:
@@ -45,6 +45,8 @@ builds:
       - arm64
     ignore:
       - goos: darwin
+        goarch: '386'
+      - goos: windows
         goarch: '386'
     binary: 'tf-summarize'
 archives:
