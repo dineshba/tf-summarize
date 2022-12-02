@@ -3,7 +3,7 @@ package tree
 import (
 	"fmt"
 	"strings"
-	"terraform-plan-summary/terraform_state"
+	"github.com/dineshba/tf-summarize/terraform_state"
 
 	"github.com/m1gwings/treedrawer/tree"
 )

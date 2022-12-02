@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
-	"terraform-plan-summary/terraform_state"
+	"github.com/dineshba/tf-summarize/terraform_state"
 )
 
 type BinaryParser struct {

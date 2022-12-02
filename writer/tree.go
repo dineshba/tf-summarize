@@ -3,8 +3,8 @@ package writer
 import (
 	"fmt"
 	"io"
-	"terraform-plan-summary/terraform_state"
-	"terraform-plan-summary/tree"
+	"github.com/dineshba/tf-summarize/terraform_state"
+	"github.com/dineshba/tf-summarize/tree"
 )
 
 type TreeWriter struct {

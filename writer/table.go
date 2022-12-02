@@ -3,7 +3,7 @@ package writer
 import (
 	"fmt"
 	"io"
-	"terraform-plan-summary/terraform_state"
+	"github.com/dineshba/tf-summarize/terraform_state"
 
 	"github.com/olekukonko/tablewriter"
 )
