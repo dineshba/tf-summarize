@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"terraform-plan-summary/parser"
-	"terraform-plan-summary/reader"
-	"terraform-plan-summary/writer"
+	"github.com/dineshba/tf-summarize/parser"
+	"github.com/dineshba/tf-summarize/reader"
+	"github.com/dineshba/tf-summarize/writer"
 )
 
 var version = "development"

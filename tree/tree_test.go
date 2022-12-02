@@ -1,7 +1,7 @@
 package tree
 
 import (
-	"terraform-plan-summary/terraform_state"
+	"github.com/dineshba/tf-summarize/terraform_state"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

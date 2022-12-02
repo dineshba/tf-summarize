@@ -1,4 +1,4 @@
-module terraform-plan-summary
+module github.com/dineshba/tf-summarize
 
 go 1.17
 
