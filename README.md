@@ -10,6 +10,7 @@
 - [Demo](#demo)
 - [Why do we need it ?](#why-do-we-need-it-)
 - [Install](#install)
+  - [Using Go](#using-go)
   - [Using Brew](#using-brew)
   - [Using Docker](#using-docker)
   - [Download zip in release page](#download-zip-in-release-page)
@@ -34,6 +35,11 @@ If demo is slower for you, please see [examples](#examples) and [screenshot](#sc
 - When our plan have more than say 10 changes, we will first see what are the deleted changes, or we will just see the list of resources that get affected.
 
 ### Install
+
+#### Using Go
+```sh
+go install github.com/dineshba/tf-summarize@latest
+```
 
 #### Using Brew
 ```sh
