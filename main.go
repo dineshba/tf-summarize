@@ -19,6 +19,7 @@ func main() {
 	tree := flag.Bool("tree", false, "[Optional] print changes in tree format")
 	json := flag.Bool("json", false, "[Optional] print changes in json format")
 	html := flag.Bool("html", false, "[Optional] print changes in html format")
+	jsonSum := flag.Bool("json-sum", false, "[Optional] print summary in json format")
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
 	md := flag.Bool("md", false, "[Optional, used only with table view] output table as markdown")
@@ -53,7 +54,7 @@ func main() {
 
 	terraformstate.FilterNoOpResources(&terraformState)
 
-	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, *html, terraformState)
+	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, *html, *jsonSum, terraformState)
 
 	var outputFile io.Writer = os.Stdout
 
