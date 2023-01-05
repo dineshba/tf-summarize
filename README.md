@@ -7,21 +7,23 @@
 
 `tf-summarize` is a command-line utility to print the summary of the terraform plan
 
-- [Demo](#demo)
-- [Why do we need it ?](#why-do-we-need-it-)
-- [Install](#install)
-  - [Using Go](#using-go)
-  - [Using Brew](#using-brew)
-  - [Using Docker](#using-docker)
-  - [Download zip in release page](#download-zip-in-release-page)
-  - [Clone and Build Binary](#clone-and-build-binary)
-- [Usage](#usage)
-- [Examples](#examples)
-  - [Github Actions Workflow](#github-actions-workflow)
-  - [Comment terraform plan summary in PRs](#comment-terraform-plan-summary-in-prs)
-  - [Interactive summary review](#interactive-summary-review)
-- [Screenshot](#screenshot)
-- [TODO](#todo)
+- [tf-summarize (Terraform Summarizer)](#tf-summarize-terraform-summarizer)
+  - [Demo](#demo)
+  - [Why do we need it ?](#why-do-we-need-it-)
+  - [Install](#install)
+    - [Using Go](#using-go)
+    - [Using Brew](#using-brew)
+    - [Using asdf](#using-asdf)
+    - [Using Docker](#using-docker)
+    - [Download zip in release page](#download-zip-in-release-page)
+    - [Clone and Build Binary](#clone-and-build-binary)
+  - [Usage](#usage)
+  - [Examples](#examples)
+    - [Github Actions Workflow](#github-actions-workflow)
+    - [Comment terraform plan summary in PRs](#comment-terraform-plan-summary-in-prs)
+    - [Interactive summary review](#interactive-summary-review)
+  - [Screenshot](#screenshot)
+  - [TODO](#todo)
 
 ### Demo
 
@@ -46,6 +48,14 @@ go install github.com/dineshba/tf-summarize@latest
 brew tap thecasualcoder/stable
 brew install tf-summarize
 ```
+
+#### Using asdf
+```sh
+asdf plugin install tf-summarize
+asdf install tf-summarize latest
+```
+
+> See the asdf [plugin source](https://github.com/adamcrews/asdf-tf-summarize#install) for more information.
 
 #### Using Docker
 ```sh
