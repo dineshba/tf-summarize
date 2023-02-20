@@ -17,21 +17,21 @@ steps:
     stage: "clone"
 
   TerraformInit:
-    image: hashicorp/terraform:1.3.8
+    image: hashicorp/terraform:light
     title: Terraform Init
     stage: init
     working_directory: "${{clone}}"
     cmd: init
 
   TerraformValidate:
-    image: hashicorp/terraform:1.3.8
+    image: hashicorp/terraform:light
     title: Terraform Validate
     stage: init
     working_directory: "${{clone}}"
     cmd: validate
 
   TerraformPlan:
-    image: hashicorp/terraform:1.3.8
+    image: hashicorp/terraform:light
     title: Terraform Plan
     stage: plan
     working_directory: "${{clone}}"
@@ -48,7 +48,7 @@ steps:
       - tf-summarize output.json
 
   TerraformApply:
-    image: hashicorp/terraform:1.3.8
+    image: hashicorp/terraform:light
     title: Terraform Apply from Plan
     stage: deploy
     working_directory: "${{clone}}"
