@@ -136,6 +136,8 @@ The below assumes that you have a stage called `show` in your `codefresh.yaml` e
 
 We need to output the plan to json as there were some strange issues on codefresh when we used the `tfplan` file
 
+A full example is available at [`example/codefresh/codefresh.yaml`](/example/codefresh/codefresh.yaml)
+
 ```yaml
   TerraformPlan:
     title: Terraform Plan
