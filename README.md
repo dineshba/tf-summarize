@@ -130,6 +130,33 @@ Please refer this sample [GitHub actions file](.github/workflows/demo.yml) and t
 
 > Note: If you are using `hashicorp/setup-terraform` GitHub action to set up terraform, ensure terraform_wrapper is set to false.
 
+#### Codefresh example
+
+The below assumes that you have a stage called `show` in your `codefresh.yaml` example
+
+We need to output the plan to json as there were some strange issues on codefresh when we used the `tfplan` file
+
+```yaml
+  TerraformPlan:
+    title: Terraform Plan
+    image: hashicorp/terraform:light
+    stage: plan
+    working_directory: "${{clone}}"
+    commands:
+      - terraform plan -out=tfplan
+      - terraform show -json tfplan > output.json
+  
+  tfSummarize:
+    title: Show Changes
+    image: ghcr.io/dineshba/tf-summarize
+    stage: show
+    working_directory: "${{clone}}"
+    commands:
+      - tf-summarize output.json
+```
+
+> :warning: **Not maintained by [dineshba](https://github.com/dineshba) **: The above example is maintained by [userbradley](https://github.com/userbradley) - Any questions related please tag `@userbradley` on an issue 
+
 #### Comment terraform plan summary in PRs
 
 Refer [this example](https://github.com/dineshba/tf-summarize/blob/demo-pr/.github/workflows/demo.yml#L61-L73) to add comments in your PR. Sample [comment](https://github.com/dineshba/tf-summarize/pull/19#issuecomment-1295882938) added by github actions bot.
