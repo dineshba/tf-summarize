@@ -1,0 +1,56 @@
+# Created by Bradley of breadNET (bradley@breadnet.co.uk)
+version: "1.0"
+
+stages:
+  - "clone"
+  - "init"
+  - "plan"
+  - "show"
+  - "deploy"
+
+steps:
+  clone:
+    title: "Cloning repository"
+    type: "git-clone"
+    repo: "petsathome/terraform"
+    revision: "${{CF_BRANCH}}"
+    stage: "clone"
+
+  TerraformInit:
+    image: hashicorp/terraform:1.3.8
+    title: Terraform Init
+    stage: init
+    working_directory: "${{clone}}"
+    cmd: init
+
+  TerraformValidate:
+    image: hashicorp/terraform:1.3.8
+    title: Terraform Validate
+    stage: init
+    working_directory: "${{clone}}"
+    cmd: validate
+
+  TerraformPlan:
+    image: hashicorp/terraform:1.3.8
+    title: Terraform Plan
+    stage: plan
+    working_directory: "${{clone}}"
+    commands:
+      - terraform plan -out=tfplan
+      - terraform show -json tfplan > output.json
+  
+  tfSummarize:
+    title: Show Changes
+    image: ghcr.io/dineshba/tf-summarize
+    stage: show
+    working_directory: "${{clone}}"
+    commands:
+      - tf-summarize output.json
+
+  TerraformApply:
+    image: hashicorp/terraform:1.3.8
+    title: Terraform Apply from Plan
+    stage: deploy
+    working_directory: "${{clone}}"
+    commands:
+      - terraform apply tfplan
