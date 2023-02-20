@@ -124,11 +124,11 @@ terraform show -json tfplan > output.json
 tf-summarize output.json                      # summary in table format
 ```
 
-#### Github Actions Workflow
+#### GitHub Actions Workflow
 
-Please refer this sample [github actions file](.github/workflows/demo.yml) and the sample runs [here](https://github.com/dineshba/tf-summarize/actions/workflows/demo.yml)
+Please refer this sample [GitHub actions file](.github/workflows/demo.yml) and the sample runs [here](https://github.com/dineshba/tf-summarize/actions/workflows/demo.yml)
 
-> Note: If you are using `hashicorp/setup-terraform` github action to setup terraform, ensure terraform_wrapper is set to false.
+> Note: If you are using `hashicorp/setup-terraform` GitHub action to set up terraform, ensure terraform_wrapper is set to false.
 
 #### Comment terraform plan summary in PRs
 
