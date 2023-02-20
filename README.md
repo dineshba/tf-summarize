@@ -155,7 +155,7 @@ We need to output the plan to json as there were some strange issues on codefres
       - tf-summarize output.json
 ```
 
-> :warning: **Not maintained by [dineshba](https://github.com/dineshba) **: The above example is maintained by [userbradley](https://github.com/userbradley) - Any questions related please tag `@userbradley` on an issue 
+> :warning: ** Not maintained by [dineshba](https://github.com/dineshba) **: The above example is maintained by [userbradley](https://github.com/userbradley) - Any questions related please tag `@userbradley` on an issue 
 
 #### Comment terraform plan summary in PRs
 
