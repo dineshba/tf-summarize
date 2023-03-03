@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+
 	"github.com/dineshba/tf-summarize/parser"
 	"github.com/dineshba/tf-summarize/reader"
 	"github.com/dineshba/tf-summarize/writer"
@@ -16,6 +17,7 @@ func main() {
 	printVersion := flag.Bool("v", false, "print version")
 	tree := flag.Bool("tree", false, "[Optional] print changes in tree format")
 	json := flag.Bool("json", false, "[Optional] print changes in json format")
+	jsonSum := flag.Bool("json-sum", false, "[Optional] print summary in json format")
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
 	md := flag.Bool("md", false, "[Optional, used only with table view] output table as markdown")
@@ -51,7 +53,7 @@ func main() {
 
 	terraformState.FilterNoOpResources()
 
-	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, terraformState)
+	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, *jsonSum, terraformState)
 
 	var outputFile io.Writer = os.Stdout
 
