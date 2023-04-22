@@ -117,16 +117,16 @@ func (ts *TerraformState) AllResourceChanges() map[string]ResourceChanges {
 }
 
 func (ts *TerraformState) AllOutputChanges() map[string][]string {
-    // create, update, and delete are the only available actions for output_changes
-    // https://developer.hashicorp.com/terraform/internals/json-format
+	// create, update, and delete are the only available actions for output_changes
+	// https://developer.hashicorp.com/terraform/internals/json-format
 	addedResources := filterOutputs(ts.OutputChanges, "create")
 	deletedResources := filterOutputs(ts.OutputChanges, "delete")
 	updatedResources := filterOutputs(ts.OutputChanges, "update")
 
 	return map[string][]string{
-		"add":      addedResources,
-		"delete":   deletedResources,
-		"update":   updatedResources,
+		"add":    addedResources,
+		"delete": deletedResources,
+		"update": updatedResources,
 	}
 }
 
