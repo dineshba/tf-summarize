@@ -127,7 +127,6 @@ func (ts *TerraformState) AllOutputChanges() map[string][]string {
 		"add":      addedResources,
 		"delete":   deletedResources,
 		"update":   updatedResources,
-		"recreate": recreatedResources,
 	}
 }
 
