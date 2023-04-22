@@ -42,7 +42,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 	table.Render()
 
 	// Disable the Output Summary if there are no outputs to display
-	if len(t.output_changes) > 0 {
+	if t.outputs == true {
 		tableString = make([][]string, 0, 4)
 		for change, changedOutputs := range t.output_changes {
 			for _, changedOutput := range changedOutputs {
@@ -73,15 +73,11 @@ func (t TableWriter) Write(writer io.Writer) error {
 }
 
 func NewTableWriter(changes map[string]terraform_state.ResourceChanges, output_changes map[string][]string, outputs, mdEnabled bool) Writer {
-	// Disable the Output by setting output_changes to an empty map
-	var output = make(map[string][]string)
-	if outputs == true {
-		output = output_changes
-	}
+
 	return TableWriter{
 		changes:        changes,
 		mdEnabled:      mdEnabled,
-		output_changes: output,
+		output_changes: output_changes,
 		outputs:        outputs,
 	}
 }
