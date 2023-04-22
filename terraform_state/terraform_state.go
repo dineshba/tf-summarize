@@ -26,6 +26,12 @@ type ResourceChange struct {
 	ActionReason string `json:"action_reason,omitempty"`
 }
 
+type OutputValues struct {
+	Actions []string        `json:"actions"`
+	Before  json.RawMessage `json:before`
+	After   json.RawMessage `json:after`
+}
+
 func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 	var colorPrefix, suffix string
 	actions := rc.Change.Actions
@@ -50,7 +56,8 @@ func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 type ResourceChanges []ResourceChange
 
 type TerraformState struct {
-	ResourceChanges ResourceChanges `json:"resource_changes"`
+	ResourceChanges ResourceChanges         `json:"resource_changes"`
+	OutputChanges   map[string]OutputValues `json:"output_changes"`
 }
 
 func Parse(input []byte) (TerraformState, error) {
@@ -95,7 +102,7 @@ func (ts *TerraformState) FilterNoOpResources() {
 	ts.ResourceChanges = acc
 }
 
-func (ts *TerraformState) AllChanges() map[string]ResourceChanges {
+func (ts *TerraformState) AllResourceChanges() map[string]ResourceChanges {
 	addedResources := addedResources(ts.ResourceChanges)
 	deletedResources := deletedResources(ts.ResourceChanges)
 	updatedResources := updatedResources(ts.ResourceChanges)
@@ -109,11 +116,35 @@ func (ts *TerraformState) AllChanges() map[string]ResourceChanges {
 	}
 }
 
+func (ts *TerraformState) AllOutputChanges() map[string][]string {
+	addedResources := filterOutputs(ts.OutputChanges, "create")
+	deletedResources := filterOutputs(ts.OutputChanges, "delete")
+	updatedResources := filterOutputs(ts.OutputChanges, "update")
+	recreatedResources :=filterOutputs(ts.OutputChanges, "recreate")
+
+	return map[string][]string{
+		"add":      addedResources,
+		"delete":   deletedResources,
+		"update":   updatedResources,
+		"recreate": recreatedResources,
+	}
+}
+
 func filterResources(resources ResourceChanges, action string) ResourceChanges {
 	acc := make(ResourceChanges, 0)
 	for _, r := range resources {
 		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == action {
 			acc = append(acc, r)
+		}
+	}
+	return acc
+}
+
+func filterOutputs(output_changes map[string]OutputValues, action string) []string {
+	acc := make([]string, 0)
+	for k, v := range output_changes {
+		if len(v.Actions) == 1 && v.Actions[0] == action {
+			acc = append(acc, k)
 		}
 	}
 	return acc

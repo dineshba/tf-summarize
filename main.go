@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
-	"os"
 	"github.com/dineshba/tf-summarize/parser"
 	"github.com/dineshba/tf-summarize/reader"
 	"github.com/dineshba/tf-summarize/writer"
+	"io"
+	"os"
 )
 
 var version = "development"
@@ -19,13 +19,13 @@ func main() {
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
 	md := flag.Bool("md", false, "[Optional, used only with table view] output table as markdown")
+	outputs := flag.Bool("outputs", false, "[Optional], Show outputs, currently only works in Table Form")
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
 		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s [args] [tf-plan.json|tfplan]\n\n", os.Args[0])
 		flag.PrintDefaults()
 	}
-
 	flag.Parse()
 
 	if *printVersion {
@@ -51,7 +51,7 @@ func main() {
 
 	terraformState.FilterNoOpResources()
 
-	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, terraformState)
+	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, *outputs, terraformState)
 
 	var outputFile io.Writer = os.Stdout
 
