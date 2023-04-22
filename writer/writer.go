@@ -1,8 +1,8 @@
 package writer
 
 import (
-	"io"
 	"github.com/dineshba/tf-summarize/terraform_state"
+	"io"
 )
 
 type Writer interface {
@@ -21,5 +21,5 @@ func CreateWriter(tree, separateTree, drawable, mdEnabled, json, outputs bool, t
 		return NewJsonWriter(terraformState.ResourceChanges)
 	}
 
-	return NewTableWriter(terraformState.AllResourceChanges(),terraformState.AllOutputChanges(), outputs, mdEnabled)
+	return NewTableWriter(terraformState.AllResourceChanges(), terraformState.AllOutputChanges(), outputs, mdEnabled)
 }
