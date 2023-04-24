@@ -4,3 +4,4 @@ tf-summarize
 **/.DS_Store
 **/.envrc
 **/.terraform
+*.swp

@@ -19,7 +19,6 @@ func main() {
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
 	md := flag.Bool("md", false, "[Optional, used only with table view] output table as markdown")
-	outputs := flag.Bool("outputs", false, "[Optional], Show outputs, currently only works in Table Form")
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
@@ -51,7 +50,7 @@ func main() {
 
 	terraformState.FilterNoOpResources()
 
-	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, *outputs, terraformState)
+	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, terraformState)
 
 	var outputFile io.Writer = os.Stdout
 
