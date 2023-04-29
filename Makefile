@@ -11,7 +11,10 @@ build: ## build the binary
 install: build ## build and install to /usr/local/bin/
 	cp $(EXECUTABLE_NAME) /usr/local/bin/$(EXECUTABLE_NAME)
 
-test:
+test: lint
 	go test ./...
 
 i: install ## build and install to /usr/local/bin/
+
+lint:
+	golangci-lint run --timeout 10m -v

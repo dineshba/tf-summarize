@@ -1,4 +1,4 @@
-package terraform_state
+package terraformstate
 
 import (
 	"encoding/json"
@@ -28,8 +28,8 @@ type ResourceChange struct {
 
 type OutputValues struct {
 	Actions []string        `json:"actions"`
-	Before  json.RawMessage `json:before`
-	After   json.RawMessage `json:after`
+	Before  json.RawMessage `json:"before"`
+	After   json.RawMessage `json:"after"`
 }
 
 func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
@@ -57,7 +57,7 @@ type ResourceChanges []ResourceChange
 
 type TerraformState struct {
 	ResourceChanges ResourceChanges         `json:"resource_changes"`
-	OutputChanges   map[string]OutputValues `json:"output_changes"`
+	OutputChanges   map[string]OutputValues `json:"outputChanges"`
 }
 
 func Parse(input []byte) (TerraformState, error) {
@@ -117,7 +117,7 @@ func (ts *TerraformState) AllResourceChanges() map[string]ResourceChanges {
 }
 
 func (ts *TerraformState) AllOutputChanges() map[string][]string {
-	// create, update, and delete are the only available actions for output_changes
+	// create, update, and delete are the only available actions for outputChanges
 	// https://developer.hashicorp.com/terraform/internals/json-format
 	addedResources := filterOutputs(ts.OutputChanges, "create")
 	deletedResources := filterOutputs(ts.OutputChanges, "delete")
@@ -140,9 +140,9 @@ func filterResources(resources ResourceChanges, action string) ResourceChanges {
 	return acc
 }
 
-func filterOutputs(output_changes map[string]OutputValues, action string) []string {
+func filterOutputs(outputChanges map[string]OutputValues, action string) []string {
 	acc := make([]string, 0)
-	for k, v := range output_changes {
+	for k, v := range outputChanges {
 		if len(v.Actions) == 1 && v.Actions[0] == action {
 			acc = append(acc, k)
 		}

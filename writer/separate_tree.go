@@ -2,15 +2,16 @@ package writer
 
 import (
 	"fmt"
-	"github.com/dineshba/tf-summarize/terraform_state"
 	"io"
 	"strings"
+
+	"github.com/dineshba/tf-summarize/terraformstate"
 )
 
 const SEPARATOR = "###################"
 
 type SeparateTree struct {
-	changes  map[string]terraform_state.ResourceChanges
+	changes  map[string]terraformstate.ResourceChanges
 	drawable bool
 }
 
@@ -36,6 +37,6 @@ func (s SeparateTree) Write(writer io.Writer) error {
 	return nil
 }
 
-func NewSeparateTree(changes map[string]terraform_state.ResourceChanges, drawable bool) Writer {
+func NewSeparateTree(changes map[string]terraformstate.ResourceChanges, drawable bool) Writer {
 	return SeparateTree{changes: changes, drawable: drawable}
 }
