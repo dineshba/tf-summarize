@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
-	"os"
 	"github.com/dineshba/tf-summarize/parser"
 	"github.com/dineshba/tf-summarize/reader"
 	"github.com/dineshba/tf-summarize/writer"
+	"io"
+	"os"
 )
 
 var version = "development"
@@ -25,7 +25,6 @@ func main() {
 		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s [args] [tf-plan.json|tfplan]\n\n", os.Args[0])
 		flag.PrintDefaults()
 	}
-
 	flag.Parse()
 
 	if *printVersion {

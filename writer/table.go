@@ -2,15 +2,17 @@ package writer
 
 import (
 	"fmt"
-	"io"
 	"github.com/dineshba/tf-summarize/terraform_state"
+	"io"
 
 	"github.com/olekukonko/tablewriter"
 )
 
 type TableWriter struct {
-	mdEnabled bool
-	changes   map[string]terraform_state.ResourceChanges
+	mdEnabled      bool
+	changes        map[string]terraform_state.ResourceChanges
+	output_changes map[string][]string
+	outputs        bool
 }
 
 func (t TableWriter) Write(writer io.Writer) error {
@@ -26,7 +28,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 	}
 
 	table := tablewriter.NewWriter(writer)
-	table.SetHeader([]string{"Change", "Name"})
+	table.SetHeader([]string{"Change", "Resource"})
 	table.SetAutoMergeCells(true)
 	table.AppendBulk(tableString)
 
@@ -39,12 +41,43 @@ func (t TableWriter) Write(writer io.Writer) error {
 
 	table.Render()
 
+	// Disable the Output Summary if there are no outputs to display
+	if len(t.output_changes) > 0 {
+		tableString = make([][]string, 0, 4)
+		for change, changedOutputs := range t.output_changes {
+			for _, changedOutput := range changedOutputs {
+				if t.mdEnabled {
+					tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedOutput)})
+				} else {
+					tableString = append(tableString, []string{change, changedOutput})
+				}
+			}
+		}
+		table = tablewriter.NewWriter(writer)
+		table.SetHeader([]string{"Change", "Output"})
+		table.SetAutoMergeCells(true)
+		table.AppendBulk(tableString)
+
+		if t.mdEnabled {
+			// Adding a println to break up the tables in md mode
+			fmt.Println()
+			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+			table.SetCenterSeparator("|")
+		} else {
+			table.SetRowLine(true)
+		}
+
+		table.Render()
+	}
+
 	return nil
 }
 
-func NewTableWriter(changes map[string]terraform_state.ResourceChanges, mdEnabled bool) Writer {
+func NewTableWriter(changes map[string]terraform_state.ResourceChanges, output_changes map[string][]string, mdEnabled bool) Writer {
+
 	return TableWriter{
-		changes:   changes,
-		mdEnabled: mdEnabled,
+		changes:        changes,
+		mdEnabled:      mdEnabled,
+		output_changes: output_changes,
 	}
 }

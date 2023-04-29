@@ -2,9 +2,9 @@ package writer
 
 import (
 	"fmt"
-	"io"
 	"github.com/dineshba/tf-summarize/terraform_state"
 	"github.com/dineshba/tf-summarize/tree"
+	"io"
 )
 
 type TreeWriter struct {

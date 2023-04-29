@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"strings"
 	"github.com/dineshba/tf-summarize/reader"
 	"github.com/dineshba/tf-summarize/terraform_state"
+	"strings"
 )
 
 type Parser interface {

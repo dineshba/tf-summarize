@@ -2,8 +2,8 @@ package tree
 
 import (
 	"fmt"
-	"strings"
 	"github.com/dineshba/tf-summarize/terraform_state"
+	"strings"
 
 	"github.com/m1gwings/treedrawer/tree"
 )
