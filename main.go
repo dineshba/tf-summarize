@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"os"
+
 	"github.com/dineshba/tf-summarize/parser"
 	"github.com/dineshba/tf-summarize/reader"
 	"github.com/dineshba/tf-summarize/writer"
-	"io"
-	"os"
 )
 
 var version = "development"

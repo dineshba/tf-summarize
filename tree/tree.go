@@ -2,16 +2,16 @@ package tree
 
 import (
 	"fmt"
-	"github.com/dineshba/tf-summarize/terraform_state"
 	"strings"
 
+	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/m1gwings/treedrawer/tree"
 )
 
 type Tree struct {
 	Name     string
 	level    int
-	Value    *terraform_state.ResourceChange
+	Value    *terraformstate.ResourceChange
 	Children Trees
 }
 
@@ -75,7 +75,7 @@ func (t Trees) String() string {
 	return strings.TrimPrefix(result, ",")
 }
 
-func CreateTree(resources terraform_state.ResourceChanges) Trees {
+func CreateTree(resources terraformstate.ResourceChanges) Trees {
 	result := &Tree{Name: ".", Children: Trees{}, level: 0}
 	for _, r := range resources {
 		levels := splitResources(r.Address)
@@ -108,12 +108,12 @@ func splitResources(address string) []string {
 	return acc
 }
 
-func createTreeMultiLevel(r terraform_state.ResourceChange, levels []string, currentTree *Tree) {
+func createTreeMultiLevel(r terraformstate.ResourceChange, levels []string, currentTree *Tree) {
 	parentTree := currentTree
 	for i, name := range levels {
 		matchedTree := getTree(name, parentTree.Children)
 		if matchedTree == nil {
-			var resourceChange *terraform_state.ResourceChange
+			var resourceChange *terraformstate.ResourceChange
 			if i+1 == len(levels) {
 				resourceChange = &r
 			}

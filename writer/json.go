@@ -3,18 +3,19 @@ package writer
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dineshba/tf-summarize/terraform_state"
-	"github.com/dineshba/tf-summarize/tree"
 	"io"
+
+	"github.com/dineshba/tf-summarize/terraformstate"
+	"github.com/dineshba/tf-summarize/tree"
 
 	"github.com/nsf/jsondiff"
 )
 
-type JsonWriter struct {
-	changes terraform_state.ResourceChanges
+type JSONWriter struct {
+	changes terraformstate.ResourceChanges
 }
 
-func (t JsonWriter) Write(writer io.Writer) error {
+func (t JSONWriter) Write(writer io.Writer) error {
 	trees := tree.CreateTree(t.changes)
 
 	resultMap := make(map[string]interface{})
@@ -56,6 +57,6 @@ func treeValue(t tree.Tree) interface{} {
 	return resultMap
 }
 
-func NewJsonWriter(changes terraform_state.ResourceChanges) Writer {
-	return JsonWriter{changes: changes}
+func NewJSONWriter(changes terraformstate.ResourceChanges) Writer {
+	return JSONWriter{changes: changes}
 }

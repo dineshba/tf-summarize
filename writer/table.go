@@ -2,17 +2,16 @@ package writer
 
 import (
 	"fmt"
-	"github.com/dineshba/tf-summarize/terraform_state"
 	"io"
 
+	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/olekukonko/tablewriter"
 )
 
 type TableWriter struct {
-	mdEnabled      bool
-	changes        map[string]terraform_state.ResourceChanges
-	output_changes map[string][]string
-	outputs        bool
+	mdEnabled     bool
+	changes       map[string]terraformstate.ResourceChanges
+	outputChanges map[string][]string
 }
 
 func (t TableWriter) Write(writer io.Writer) error {
@@ -42,9 +41,9 @@ func (t TableWriter) Write(writer io.Writer) error {
 	table.Render()
 
 	// Disable the Output Summary if there are no outputs to display
-	if len(t.output_changes) > 0 {
+	if len(t.outputChanges) > 0 {
 		tableString = make([][]string, 0, 4)
-		for change, changedOutputs := range t.output_changes {
+		for change, changedOutputs := range t.outputChanges {
 			for _, changedOutput := range changedOutputs {
 				if t.mdEnabled {
 					tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedOutput)})
@@ -73,11 +72,11 @@ func (t TableWriter) Write(writer io.Writer) error {
 	return nil
 }
 
-func NewTableWriter(changes map[string]terraform_state.ResourceChanges, output_changes map[string][]string, mdEnabled bool) Writer {
+func NewTableWriter(changes map[string]terraformstate.ResourceChanges, outputChanges map[string][]string, mdEnabled bool) Writer {
 
 	return TableWriter{
-		changes:        changes,
-		mdEnabled:      mdEnabled,
-		output_changes: output_changes,
+		changes:       changes,
+		mdEnabled:     mdEnabled,
+		outputChanges: outputChanges,
 	}
 }

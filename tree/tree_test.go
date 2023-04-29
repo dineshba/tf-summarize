@@ -1,32 +1,32 @@
 package tree
 
 import (
-	"github.com/dineshba/tf-summarize/terraform_state"
 	"testing"
 
+	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateTreeForEmptyResourceChanges(t *testing.T) {
-	assert.Equal(t, Trees{}, CreateTree(terraform_state.ResourceChanges{}))
+	assert.Equal(t, Trees{}, CreateTree(terraformstate.ResourceChanges{}))
 }
 
 func TestCreateTreeForOneResourceChanges(t *testing.T) {
-	resourceChanges := terraform_state.ResourceChanges{
-		terraform_state.ResourceChange{Address: "a"},
+	resourceChanges := terraformstate.ResourceChanges{
+		terraformstate.ResourceChange{Address: "a"},
 	}
 	expected := Trees{
 		{
 			Name:  "a",
-			Value: &terraform_state.ResourceChange{Address: "a"},
+			Value: &terraformstate.ResourceChange{Address: "a"},
 		},
 	}
 	assert.Equal(t, expected, CreateTree(resourceChanges))
 }
 
 func TestCreateTreeWithQuotesInResources(t *testing.T) {
-	resourceChanges := terraform_state.ResourceChanges{
-		terraform_state.ResourceChange{Address: "a.b[\"c.d\"]"},
+	resourceChanges := terraformstate.ResourceChanges{
+		terraformstate.ResourceChange{Address: "a.b[\"c.d\"]"},
 	}
 	expected := Trees{
 		{
@@ -35,7 +35,7 @@ func TestCreateTreeWithQuotesInResources(t *testing.T) {
 			Children: Trees{
 				{
 					Name:  "b[\"c.d\"]",
-					Value: &terraform_state.ResourceChange{Address: "a.b[\"c.d\"]"},
+					Value: &terraformstate.ResourceChange{Address: "a.b[\"c.d\"]"},
 				},
 			},
 		},
@@ -45,8 +45,8 @@ func TestCreateTreeWithQuotesInResources(t *testing.T) {
 }
 
 func TestCreateTreeForOneResourceChangesMultiLevel(t *testing.T) {
-	resourceChanges := terraform_state.ResourceChanges{
-		terraform_state.ResourceChange{Address: "a.b.c"},
+	resourceChanges := terraformstate.ResourceChanges{
+		terraformstate.ResourceChange{Address: "a.b.c"},
 	}
 	expected := Trees{
 		{
@@ -59,7 +59,7 @@ func TestCreateTreeForOneResourceChangesMultiLevel(t *testing.T) {
 					Children: Trees{
 						{
 							Name:  "c",
-							Value: &terraform_state.ResourceChange{Address: "a.b.c"},
+							Value: &terraformstate.ResourceChange{Address: "a.b.c"},
 						},
 					},
 				},
@@ -71,18 +71,18 @@ func TestCreateTreeForOneResourceChangesMultiLevel(t *testing.T) {
 }
 
 func TestCreateTreeForTwoResourceChangesNoOverlap(t *testing.T) {
-	resourceChanges := terraform_state.ResourceChanges{
-		terraform_state.ResourceChange{Address: "a"},
-		terraform_state.ResourceChange{Address: "b"},
+	resourceChanges := terraformstate.ResourceChanges{
+		terraformstate.ResourceChange{Address: "a"},
+		terraformstate.ResourceChange{Address: "b"},
 	}
 	expected := Trees{
 		{
 			Name:  "a",
-			Value: &terraform_state.ResourceChange{Address: "a"},
+			Value: &terraformstate.ResourceChange{Address: "a"},
 		},
 		{
 			Name:  "b",
-			Value: &terraform_state.ResourceChange{Address: "b"},
+			Value: &terraformstate.ResourceChange{Address: "b"},
 		},
 	}
 
@@ -90,11 +90,11 @@ func TestCreateTreeForTwoResourceChangesNoOverlap(t *testing.T) {
 }
 
 func TestCreateTreeForTwoResourceChangesOverlap(t *testing.T) {
-	resourceChanges := terraform_state.ResourceChanges{
-		terraform_state.ResourceChange{Address: "a.b"},
-		terraform_state.ResourceChange{Address: "a.c.x"},
-		terraform_state.ResourceChange{Address: "a.c.y"},
-		terraform_state.ResourceChange{Address: "d"},
+	resourceChanges := terraformstate.ResourceChanges{
+		terraformstate.ResourceChange{Address: "a.b"},
+		terraformstate.ResourceChange{Address: "a.c.x"},
+		terraformstate.ResourceChange{Address: "a.c.y"},
+		terraformstate.ResourceChange{Address: "d"},
 	}
 	expected := Trees{
 		{
@@ -102,7 +102,7 @@ func TestCreateTreeForTwoResourceChangesOverlap(t *testing.T) {
 			Children: Trees{
 				{
 					Name:     "b",
-					Value:    &terraform_state.ResourceChange{Address: "a.b"},
+					Value:    &terraformstate.ResourceChange{Address: "a.b"},
 					Children: nil,
 				},
 				{
@@ -110,12 +110,12 @@ func TestCreateTreeForTwoResourceChangesOverlap(t *testing.T) {
 					Children: Trees{
 						{
 							Name:     "x",
-							Value:    &terraform_state.ResourceChange{Address: "a.c.x"},
+							Value:    &terraformstate.ResourceChange{Address: "a.c.x"},
 							Children: nil,
 						},
 						{
 							Name:     "y",
-							Value:    &terraform_state.ResourceChange{Address: "a.c.y"},
+							Value:    &terraformstate.ResourceChange{Address: "a.c.y"},
 							Children: nil,
 						},
 					},
@@ -124,7 +124,7 @@ func TestCreateTreeForTwoResourceChangesOverlap(t *testing.T) {
 		},
 		{
 			Name:  "d",
-			Value: &terraform_state.ResourceChange{Address: "d"},
+			Value: &terraformstate.ResourceChange{Address: "d"},
 		},
 	}
 
