@@ -3,9 +3,9 @@ package writer
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"github.com/dineshba/tf-summarize/terraform_state"
 	"github.com/dineshba/tf-summarize/tree"
+	"io"
 
 	"github.com/nsf/jsondiff"
 )
