@@ -57,7 +57,7 @@ type ResourceChanges []ResourceChange
 
 type TerraformState struct {
 	ResourceChanges ResourceChanges         `json:"resource_changes"`
-	OutputChanges   map[string]OutputValues `json:"outputChanges"`
+	OutputChanges   map[string]OutputValues `json:"output_changes"`
 }
 
 func Parse(input []byte) (TerraformState, error) {
