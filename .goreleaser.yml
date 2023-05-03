@@ -52,6 +52,17 @@ builds:
 archives:
   - format: zip
     name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
+nfpms:
+  - id: tf-summarize
+    package_name: tf-summarize
+    homepage: https://github.com/dineshba/tf-summarize
+    description: A command-line utility to print the summary of the terraform plan
+    maintainer: Dinesh Balasubramanian <dineshudt17@gmail.com>
+    license: MIT
+    formats:
+      - apk
+      - deb
+      - rpm
 checksum:
   name_template: '{{ .ProjectName }}_SHA256SUMS'
   algorithm: sha256
