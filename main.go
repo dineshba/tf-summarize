@@ -8,6 +8,7 @@ import (
 
 	"github.com/dineshba/tf-summarize/parser"
 	"github.com/dineshba/tf-summarize/reader"
+	"github.com/dineshba/tf-summarize/state"
 	"github.com/dineshba/tf-summarize/writer"
 )
 
@@ -20,7 +21,7 @@ func main() {
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
 	md := flag.Bool("md", false, "[Optional, used only with table view] output table as markdown")
-	state := flag.Bool("state", false, "[Optional] represent input is of type terraform state. If not provided, input is considered as terraform plan")
+	isState := flag.Bool("state", false, "[Optional] represent input is of type terraform state. If not provided, input is considered as terraform plan")
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
@@ -34,11 +35,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	if *state {
-		summarizeState(*tree, *separateTree, *drawable, *md, *json, *outputFileName)
-		return
-	}
-
 	args := flag.Args()
 	err := validateFlags(*tree, *separateTree, *drawable, *md, args)
 	logIfErrorAndExit("invalid input flags: %s\n", err, flag.Usage)
@@ -48,6 +44,15 @@ func main() {
 
 	input, err := newReader.Read()
 	logIfErrorAndExit("error reading from input: %s", err, func() {})
+
+	if *isState {
+		parser, err := state.CreateParser(input, newReader.Name())
+		logIfErrorAndExit("error creating parser: %s", err, func() {})
+		terraformState, err := parser.Parse()
+		logIfErrorAndExit("%s", err, func() {})
+		state.Summarize(*tree, *drawable, *md, *outputFileName, terraformState)
+		return
+	}
 
 	newParser, err := parser.CreateParser(input, newReader.Name())
 	logIfErrorAndExit("error creating parser: %s", err, func() {})
