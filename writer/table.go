@@ -58,8 +58,8 @@ func (t TableWriter) Write(writer io.Writer) error {
 		table.AppendBulk(tableString)
 
 		if t.mdEnabled {
-			// Adding a println to break up the tables in md mode
-			fmt.Println()
+			// Adding a new line to break up the tables in md mode
+			writer.Write([]byte("\n"))
 			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 			table.SetCenterSeparator("|")
 		} else {
