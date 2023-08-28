@@ -8,7 +8,7 @@
 `tf-summarize` is a command-line utility to print the summary of the terraform plan
 
 <!-- TOC -->
-  * [tf-summarize (Terraform Summarizer)](#tf-summarize--terraform-summarizer-)
+  * [tf-summarize (Terraform Summarizer)](#tf-summarize-terraform-summarizer)
     * [Demo](#demo)
     * [Why do we need it ?](#why-do-we-need-it-)
     * [Install](#install)
@@ -16,11 +16,14 @@
       * [Using Brew](#using-brew)
       * [Using asdf](#using-asdf)
       * [Using Docker](#using-docker)
+      * [Using Github action](#using-github-action)
       * [Download zip in release page](#download-zip-in-release-page)
       * [Clone and Build Binary](#clone-and-build-binary)
     * [Usage](#usage)
     * [Examples](#examples)
       * [GitHub Actions Workflow](#github-actions-workflow)
+        * [Using setup-tf-summarize action](#using-setup-tf-summarize-action)
+        * [Other approach](#other-approach)
       * [Codefresh example](#codefresh-example)
       * [Comment terraform plan summary in PRs](#comment-terraform-plan-summary-in-prs)
       * [Interactive summary review](#interactive-summary-review)
@@ -76,6 +79,17 @@ tf-summarize tfplan.json
 > tf-summarize will accept tfplan directly. Docker based tf-summarize is not having terraform-binary to convert tfplan to json. So it only works with json files.
 > If you want to use with tfplan directly, You can build a base image with terraform (use same version as tfplan created) and have our binary in it.
 
+#### Using Github action
+
+The below example uses [kishaningithub/setup-tf-summarize](https://github.com/kishaningithub/setup-tf-summarize)
+
+```yaml
+steps:
+- uses: kishaningithub/setup-tf-summarize@v1
+```
+
+For more customization options, kindly refer to the [documentation here](https://github.com/kishaningithub/setup-tf-summarize#usage)
+
 #### Download zip in release page
 1. Go to release page [https://github.com/dineshba/terraform-plan-summary/releases](https://github.com/dineshba/terraform-plan-summary/releases)
 2. Download the zip for your OS and unzip it
@@ -127,6 +141,34 @@ tf-summarize output.json                      # summary in table format
 ```
 
 #### GitHub Actions Workflow
+
+##### Using setup-tf-summarize action
+
+The below example uses [kishaningithub/setup-tf-summarize](https://github.com/kishaningithub/setup-tf-summarize)
+
+```yaml
+name: Run tf-summarize
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: kishaningithub/setup-tf-summarize@v1
+
+      - name: Print tf-summarize version and help
+        run: |
+          tf-summarize -v
+          tf-summarize -h
+```
+
+For more customization options, kindly refer to the [documentation here](https://github.com/kishaningithub/setup-tf-summarize#usage)
+
+##### Other approach
 
 Please refer this sample [GitHub actions file](.github/workflows/demo.yml) and the sample runs [here](https://github.com/dineshba/tf-summarize/actions/workflows/demo.yml)
 
