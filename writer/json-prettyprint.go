@@ -18,6 +18,7 @@ type Formatter struct {
 	RemoveColor     *color.Color
 	UpdateColor     *color.Color
 	RecreateColor   *color.Color
+	ImportColor     *color.Color
 	StringMaxLength int
 	Indent          int
 	Newline         string
@@ -30,6 +31,7 @@ func NewFormatter() *Formatter {
 		RemoveColor:     color.New(color.FgRed, color.Bold),
 		UpdateColor:     color.New(color.FgYellow, color.Bold),
 		RecreateColor:   color.New(color.FgMagenta, color.Bold),
+		ImportColor:     color.New(color.FgCyan, color.Bold),
 		StringMaxLength: 0,
 		Indent:          2,
 		Newline:         "\n",

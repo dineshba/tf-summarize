@@ -40,7 +40,7 @@ func treeValue(t tree.Tree) interface{} {
 			diff = make(map[string]interface{})
 			_ = json.Unmarshal([]byte(str), &diff)
 		} else {
-			if t.IsAddition() {
+			if t.IsAddition() || t.IsImport() {
 				diff = t.Value.Change.After
 			}
 			if t.IsRemoval() {

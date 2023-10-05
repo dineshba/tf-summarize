@@ -35,6 +35,10 @@ func (t Tree) IsRecreate() bool {
 	return len(t.Value.Change.Actions) == 2
 }
 
+func (t Tree) IsImport() bool {
+	return t.Value.Change.Importing.Id != ""
+}
+
 type Trees []*Tree
 
 func (t Trees) DrawableTree() *tree.Tree {
