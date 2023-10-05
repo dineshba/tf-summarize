@@ -14,9 +14,12 @@ type TableWriter struct {
 	outputChanges map[string][]string
 }
 
+var tableOrder = []string{"import", "add", "delete", "update", "recreate"}
+
 func (t TableWriter) Write(writer io.Writer) error {
 	tableString := make([][]string, 0, 4)
-	for change, changedResources := range t.changes {
+	for _, change := range tableOrder {
+		changedResources := t.changes[change]
 		for _, changedResource := range changedResources {
 			if t.mdEnabled {
 				tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedResource.Address)})
@@ -43,7 +46,8 @@ func (t TableWriter) Write(writer io.Writer) error {
 	// Disable the Output Summary if there are no outputs to display
 	if len(t.outputChanges["add"]) > 0 || len(t.outputChanges["delete"]) > 0 || len(t.outputChanges["update"]) > 0 {
 		tableString = make([][]string, 0, 4)
-		for change, changedOutputs := range t.outputChanges {
+		for _, change := range tableOrder {
+			changedOutputs := t.outputChanges[change]
 			for _, changedOutput := range changedOutputs {
 				if t.mdEnabled {
 					tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedOutput)})
