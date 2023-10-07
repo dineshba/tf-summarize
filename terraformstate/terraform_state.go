@@ -50,7 +50,7 @@ func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 			colorPrefix = ColorYellow
 			suffix = "(~)"
 		}
-	} else if rc.Change.Importing.Id != "" {
+	} else if rc.Change.Importing.ID != "" {
 		colorPrefix = ColorCyan
 		suffix = "(i)"
 	} else {
@@ -101,7 +101,7 @@ func deletedResources(resources ResourceChanges) ResourceChanges {
 func importedResources(resources ResourceChanges) ResourceChanges {
 	acc := make(ResourceChanges, 0)
 	for _, r := range resources {
-		id := r.Change.Importing.Id
+		id := r.Change.Importing.ID
 		if id != "" {
 			acc = append(acc, r)
 		}
@@ -112,7 +112,7 @@ func importedResources(resources ResourceChanges) ResourceChanges {
 func (ts *TerraformState) FilterNoOpResources() {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
-		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing.Id == "" {
+		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing.ID == "" {
 			continue
 		}
 		acc = append(acc, r)

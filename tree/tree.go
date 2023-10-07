@@ -36,7 +36,7 @@ func (t Tree) IsRecreate() bool {
 }
 
 func (t Tree) IsImport() bool {
-	return t.Value.Change.Importing.Id != ""
+	return t.Value.Change.Importing.ID != ""
 }
 
 type Trees []*Tree
