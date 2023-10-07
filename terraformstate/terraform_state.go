@@ -24,7 +24,7 @@ type ResourceChange struct {
 		Before    json.RawMessage `json:"before,omitempty"`
 		After     json.RawMessage `json:"after,omitempty"`
 		Importing struct {
-			Id string `json:"id"`
+			ID string `json:"id"`
 		} `json:"importing"`
 	} `json:"change"`
 	ActionReason string `json:"action_reason,omitempty"`
