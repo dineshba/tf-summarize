@@ -10,6 +10,7 @@ const ColorRed = "\033[31m"
 const ColorGreen = "\033[32m"
 const ColorMagenta = "\033[35m"
 const ColorYellow = "\033[33m"
+const ColorCyan = "\033[36m"
 
 type ResourceChange struct {
 	Address       string `json:"address"`
@@ -19,9 +20,12 @@ type ResourceChange struct {
 	Name          string `json:"name"`
 	ProviderName  string `json:"provider_name"`
 	Change        struct {
-		Actions []string        `json:"actions"`
-		Before  json.RawMessage `json:"before,omitempty"`
-		After   json.RawMessage `json:"after,omitempty"`
+		Actions   []string        `json:"actions"`
+		Before    json.RawMessage `json:"before,omitempty"`
+		After     json.RawMessage `json:"after,omitempty"`
+		Importing struct {
+			ID string `json:"id"`
+		} `json:"importing"`
 	} `json:"change"`
 	ActionReason string `json:"action_reason,omitempty"`
 }
@@ -35,7 +39,7 @@ type OutputValues struct {
 func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 	var colorPrefix, suffix string
 	actions := rc.Change.Actions
-	if len(actions) == 1 {
+	if len(actions) == 1 && actions[0] != "no-op" {
 		if actions[0] == "create" {
 			colorPrefix = ColorGreen
 			suffix = "(+)"
@@ -46,6 +50,9 @@ func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 			colorPrefix = ColorYellow
 			suffix = "(~)"
 		}
+	} else if rc.Change.Importing.ID != "" {
+		colorPrefix = ColorCyan
+		suffix = "(i)"
 	} else {
 		colorPrefix = ColorMagenta
 		suffix = "(+/-)"
@@ -91,10 +98,21 @@ func deletedResources(resources ResourceChanges) ResourceChanges {
 	return filterResources(resources, "delete")
 }
 
+func importedResources(resources ResourceChanges) ResourceChanges {
+	acc := make(ResourceChanges, 0)
+	for _, r := range resources {
+		id := r.Change.Importing.ID
+		if id != "" {
+			acc = append(acc, r)
+		}
+	}
+	return acc
+}
+
 func (ts *TerraformState) FilterNoOpResources() {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
-		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" {
+		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing.ID == "" {
 			continue
 		}
 		acc = append(acc, r)
@@ -107,8 +125,10 @@ func (ts *TerraformState) AllResourceChanges() map[string]ResourceChanges {
 	deletedResources := deletedResources(ts.ResourceChanges)
 	updatedResources := updatedResources(ts.ResourceChanges)
 	recreatedResources := recreatedResources(ts.ResourceChanges)
+	importedResources := importedResources(ts.ResourceChanges)
 
 	return map[string]ResourceChanges{
+		"import":   importedResources,
 		"add":      addedResources,
 		"delete":   deletedResources,
 		"update":   updatedResources,
