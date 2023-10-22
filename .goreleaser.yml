@@ -50,8 +50,7 @@ builds:
         goarch: '386'
     binary: 'tf-summarize'
 archives:
-  - format: zip
-    name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
     format_overrides:
       - goos: windows
         format: zip
