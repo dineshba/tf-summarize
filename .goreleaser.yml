@@ -52,6 +52,9 @@ builds:
 archives:
   - format: zip
     name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
+    format_overrides:
+      - goos: windows
+        format: zip
 nfpms:
   - id: tf-summarize
     package_name: tf-summarize
