@@ -51,9 +51,8 @@ builds:
     binary: 'tf-summarize'
 archives:
   - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
-    format_overrides:
-      - goos: windows
-        format: zip
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
+    format: zip
 nfpms:
   - id: tf-summarize
     package_name: tf-summarize
@@ -82,7 +81,7 @@ signs:
       - "${artifact}"
 release:
 # If you want to manually examine the release before its live, uncomment this line:
- draft: false
+ draft: true
 changelog:
   skip: false
   use: github
