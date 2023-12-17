@@ -3,6 +3,7 @@ package terraformstate
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 )
 
 const ColorReset = "\033[0m"
@@ -19,15 +20,19 @@ type ResourceChange struct {
 	Type          string `json:"type"`
 	Name          string `json:"name"`
 	ProviderName  string `json:"provider_name"`
-	Change        struct {
-		Actions   []string        `json:"actions"`
-		Before    json.RawMessage `json:"before,omitempty"`
-		After     json.RawMessage `json:"after,omitempty"`
-		Importing struct {
-			ID string `json:"id"`
-		} `json:"importing"`
-	} `json:"change"`
-	ActionReason string `json:"action_reason,omitempty"`
+	Change        Change `json:"change"`
+	ActionReason  string `json:"action_reason,omitempty"`
+}
+
+type Change struct {
+	Actions   []string        `json:"actions"`
+	Before    json.RawMessage `json:"before,omitempty"`
+	After     json.RawMessage `json:"after,omitempty"`
+	Importing Importing       `json:"importing"`
+}
+
+type Importing struct {
+	ID string `json:"id"`
 }
 
 type OutputValues struct {
@@ -53,7 +58,10 @@ func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 	} else if rc.Change.Importing.ID != "" {
 		colorPrefix = ColorCyan
 		suffix = "(i)"
-	} else {
+	} else if slices.Equal(actions, []string{"delete", "create"}) {
+		colorPrefix = ColorMagenta
+		suffix = "(-/+)"
+	} else if slices.Equal(actions, []string{"create", "delete"}) {
 		colorPrefix = ColorMagenta
 		suffix = "(+/-)"
 	}
