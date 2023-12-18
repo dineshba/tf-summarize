@@ -13,7 +13,7 @@ func TestResourceChangeColor(t *testing.T) {
 		"update": ColorYellow,
 	}
 
-	for action, expected_color := range ExpectedColors {
+	for action, expectedColor := range ExpectedColors {
 		create := ResourceChange{Change: Change{Actions: []string{action}}}
 		color, _ := create.ColorPrefixAndSuffixText()
 
@@ -35,7 +35,7 @@ func TestResourceChangeSuffix(t *testing.T) {
 		"update": "(~)",
 	}
 
-	for action, expected_suffix := range ExpectedSuffix {
+	for action, expectedSuffix := range ExpectedSuffix {
 		create := ResourceChange{Change: Change{Actions: []string{action}}}
 		_, suffix := create.ColorPrefixAndSuffixText()
 
