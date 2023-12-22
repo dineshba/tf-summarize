@@ -80,7 +80,7 @@ func (t Trees) String() string {
 	return strings.TrimPrefix(result, ",")
 }
 
-func CreateTree(resources []*tfjson.ResourceChange) Trees {
+func CreateTree(resources terraformstate.ResourceChanges) Trees {
 	result := &Tree{Name: ".", Children: Trees{}, level: 0}
 	for _, r := range resources {
 		change := *r

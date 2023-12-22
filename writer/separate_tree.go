@@ -5,13 +5,13 @@ import (
 	"io"
 	"strings"
 
-	tfjson "github.com/hashicorp/terraform-json"
+	"github.com/dineshba/tf-summarize/terraformstate"
 )
 
 const SEPARATOR = "###################"
 
 type SeparateTree struct {
-	changes  map[string]([]*tfjson.ResourceChange)
+	changes  map[string](terraformstate.ResourceChanges)
 	drawable bool
 }
 
@@ -37,6 +37,6 @@ func (s SeparateTree) Write(writer io.Writer) error {
 	return nil
 }
 
-func NewSeparateTree(changes map[string][]*tfjson.ResourceChange, drawable bool) Writer {
+func NewSeparateTree(changes map[string]terraformstate.ResourceChanges, drawable bool) Writer {
 	return SeparateTree{changes: changes, drawable: drawable}
 }

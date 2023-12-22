@@ -14,29 +14,7 @@ const ColorMagenta = "\033[35m"
 const ColorYellow = "\033[33m"
 const ColorCyan = "\033[36m"
 
-type ResourceChange struct {
-	Address       string `json:"address"`
-	ModuleAddress string `json:"module_address"`
-	Mode          string `json:"mode"`
-	Type          string `json:"type"`
-	Name          string `json:"name"`
-	ProviderName  string `json:"provider_name"`
-	Change        struct {
-		Actions   []string        `json:"actions"`
-		Before    json.RawMessage `json:"before,omitempty"`
-		After     json.RawMessage `json:"after,omitempty"`
-		Importing struct {
-			ID string `json:"id"`
-		} `json:"importing"`
-	} `json:"change"`
-	ActionReason string `json:"action_reason,omitempty"`
-}
-
-type OutputValues struct {
-	Actions []string        `json:"actions"`
-	Before  json.RawMessage `json:"before"`
-	After   json.RawMessage `json:"after"`
-}
+type ResourceChanges = []*tfjson.ResourceChange //Type alias for brevity
 
 func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	var colorPrefix, suffix string
@@ -62,18 +40,11 @@ func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	return colorPrefix, suffix
 }
 
-type ResourceChanges = []*tfjson.ResourceChange
-
-type TerraformState struct {
-	ResourceChanges ResourceChanges         `json:"resource_changes"`
-	OutputChanges   map[string]OutputValues `json:"output_changes"`
-}
-
-func Parse(input []byte) (TerraformState, error) {
-	ts := TerraformState{}
+func Parse(input []byte) (tfjson.Plan, error) {
+	ts := tfjson.Plan{}
 	err := json.Unmarshal(input, &ts)
 	if err != nil {
-		return TerraformState{}, fmt.Errorf("error when parsing input: %s", err.Error())
+		return tfjson.Plan{}, fmt.Errorf("error when parsing input: %s", err.Error())
 	}
 	return ts, nil
 }

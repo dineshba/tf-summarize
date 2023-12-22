@@ -6,11 +6,10 @@ import (
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/dineshba/tf-summarize/tree"
-	tfjson "github.com/hashicorp/terraform-json"
 )
 
 type TreeWriter struct {
-	changes  []*tfjson.ResourceChange
+	changes  terraformstate.ResourceChanges
 	drawable bool
 }
 
@@ -32,7 +31,7 @@ func (t TreeWriter) Write(writer io.Writer) error {
 	return nil
 }
 
-func NewTreeWriter(changes []*tfjson.ResourceChange, drawable bool) Writer {
+func NewTreeWriter(changes terraformstate.ResourceChanges, drawable bool) Writer {
 	return TreeWriter{changes: changes, drawable: drawable}
 }
 

@@ -7,12 +7,11 @@ import (
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/dineshba/tf-summarize/tree"
-	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/nsf/jsondiff"
 )
 
 type JSONWriter struct {
-	changes []*tfjson.ResourceChange
+	changes terraformstate.ResourceChanges
 }
 
 func (t JSONWriter) Write(writer io.Writer) error {
@@ -60,6 +59,6 @@ func treeValue(t tree.Tree) interface{} {
 	return resultMap
 }
 
-func NewJSONWriter(changes []*tfjson.ResourceChange) Writer {
+func NewJSONWriter(changes terraformstate.ResourceChanges) Writer {
 	return JSONWriter{changes: changes}
 }
