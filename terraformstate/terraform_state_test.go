@@ -13,11 +13,11 @@ func TestResourceChangeColor(t *testing.T) {
 		"update": ColorYellow,
 	}
 
-	for action, expected_color := range ExpectedColors {
+	for action, expectedColor := range ExpectedColors {
 		create := ResourceChange{Change: Change{Actions: []string{action}}}
 		color, _ := create.ColorPrefixAndSuffixText()
 
-		assert.Equal(t, color, expected_color)
+		assert.Equal(t, color, expectedColor)
 	}
 	create := ResourceChange{Change: Change{Actions: []string{"create", "delete"}}}
 	color, _ := create.ColorPrefixAndSuffixText()
@@ -35,11 +35,11 @@ func TestResourceChangeSuffix(t *testing.T) {
 		"update": "(~)",
 	}
 
-	for action, expected_suffix := range ExpectedSuffix {
+	for action, expectedSuffix := range ExpectedSuffix {
 		create := ResourceChange{Change: Change{Actions: []string{action}}}
 		_, suffix := create.ColorPrefixAndSuffixText()
 
-		assert.Equal(t, suffix, expected_suffix)
+		assert.Equal(t, suffix, expectedSuffix)
 	}
 	create := ResourceChange{Change: Change{Actions: []string{"create", "delete"}}}
 	_, suffix := create.ColorPrefixAndSuffixText()
