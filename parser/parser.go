@@ -4,11 +4,11 @@ import (
 	"strings"
 
 	"github.com/dineshba/tf-summarize/reader"
-	"github.com/dineshba/tf-summarize/terraformstate"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 type Parser interface {
-	Parse() (terraformstate.TerraformState, error)
+	Parse() (tfjson.Plan, error)
 }
 
 func CreateParser(data []byte, fileName string) (Parser, error) {

@@ -7,12 +7,12 @@ import (
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/dineshba/tf-summarize/tree"
-
+	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/nsf/jsondiff"
 )
 
 type JSONWriter struct {
-	changes terraformstate.ResourceChanges
+	changes []*tfjson.ResourceChange
 }
 
 func (t JSONWriter) Write(writer io.Writer) error {
@@ -31,12 +31,15 @@ func treeValue(t tree.Tree) interface{} {
 	resultMap := make(map[string]interface{})
 
 	if t.Value != nil {
-		_, suffix := t.Value.ColorPrefixAndSuffixText()
+		_, suffix := terraformstate.GetColorPrefixAndSuffixText(t.Value)
 		var diff interface{}
 		if t.IsUpdate() || t.IsRecreate() {
 			opts := jsondiff.DefaultJSONOptions()
 			opts.SkipMatches = true
-			_, str := jsondiff.Compare(t.Value.Change.Before, t.Value.Change.After, &opts)
+
+			before := t.Value.Change.Before.([]byte)
+			after := t.Value.Change.After.([]byte)
+			_, str := jsondiff.Compare(before, after, &opts)
 			diff = make(map[string]interface{})
 			_ = json.Unmarshal([]byte(str), &diff)
 		} else {
@@ -57,6 +60,6 @@ func treeValue(t tree.Tree) interface{} {
 	return resultMap
 }
 
-func NewJSONWriter(changes terraformstate.ResourceChanges) Writer {
+func NewJSONWriter(changes []*tfjson.ResourceChange) Writer {
 	return JSONWriter{changes: changes}
 }

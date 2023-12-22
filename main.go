@@ -8,6 +8,7 @@ import (
 
 	"github.com/dineshba/tf-summarize/parser"
 	"github.com/dineshba/tf-summarize/reader"
+	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/dineshba/tf-summarize/writer"
 )
 
@@ -49,7 +50,7 @@ func main() {
 	terraformState, err := newParser.Parse()
 	logIfErrorAndExit("%s", err, func() {})
 
-	terraformState.FilterNoOpResources()
+	terraformstate.FilterNoOpResources(&terraformState)
 
 	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, terraformState)
 

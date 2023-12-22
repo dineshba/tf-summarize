@@ -3,6 +3,8 @@ package terraformstate
 import (
 	"encoding/json"
 	"fmt"
+
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 const ColorReset = "\033[0m"
@@ -36,9 +38,35 @@ type OutputValues struct {
 	After   json.RawMessage `json:"after"`
 }
 
-func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
+// TODO REMOVE
+// func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
+// 	var colorPrefix, suffix string
+// 	actions := rc.Change.Actions
+// 	if len(actions) == 1 && actions[0] != "no-op" {
+// 		if actions[0] == "create" {
+// 			colorPrefix = ColorGreen
+// 			suffix = "(+)"
+// 		} else if actions[0] == "delete" {
+// 			colorPrefix = ColorRed
+// 			suffix = "(-)"
+// 		} else {
+// 			colorPrefix = ColorYellow
+// 			suffix = "(~)"
+// 		}
+// 	} else if rc.Change.Importing.ID != "" {
+// 		colorPrefix = ColorCyan
+// 		suffix = "(i)"
+// 	} else {
+// 		colorPrefix = ColorMagenta
+// 		suffix = "(+/-)"
+// 	}
+// 	return colorPrefix, suffix
+// }
+
+func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	var colorPrefix, suffix string
-	actions := rc.Change.Actions
+	actions := (*rc).Change.Actions
+	//fmt.Println("%s", rc)
 	if len(actions) == 1 && actions[0] != "no-op" {
 		if actions[0] == "create" {
 			colorPrefix = ColorGreen
@@ -50,7 +78,7 @@ func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 			colorPrefix = ColorYellow
 			suffix = "(~)"
 		}
-	} else if rc.Change.Importing.ID != "" {
+	} else if rc.Change.Importing != nil && rc.Change.Importing.ID != "" {
 		colorPrefix = ColorCyan
 		suffix = "(i)"
 	} else {
@@ -60,7 +88,7 @@ func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
 	return colorPrefix, suffix
 }
 
-type ResourceChanges []ResourceChange
+type ResourceChanges = []*tfjson.ResourceChange
 
 type TerraformState struct {
 	ResourceChanges ResourceChanges         `json:"resource_changes"`
@@ -109,10 +137,22 @@ func importedResources(resources ResourceChanges) ResourceChanges {
 	return acc
 }
 
-func (ts *TerraformState) FilterNoOpResources() {
+// TODO REMOVE
+//
+//	func (ts *TerraformState) FilterNoOpResources() {
+//		acc := make(ResourceChanges, 0)
+//		for _, r := range ts.ResourceChanges {
+//			if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing.ID == "" {
+//				continue
+//			}
+//			acc = append(acc, r)
+//		}
+//		ts.ResourceChanges = acc
+//	}
+func FilterNoOpResources(ts *tfjson.Plan) {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
-		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing.ID == "" {
+		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing != nil && r.Change.Importing.ID == "" {
 			continue
 		}
 		acc = append(acc, r)
@@ -120,6 +160,7 @@ func (ts *TerraformState) FilterNoOpResources() {
 	ts.ResourceChanges = acc
 }
 
+// TODO REMOVE
 func (ts *TerraformState) AllResourceChanges() map[string]ResourceChanges {
 	addedResources := addedResources(ts.ResourceChanges)
 	deletedResources := deletedResources(ts.ResourceChanges)
@@ -136,12 +177,43 @@ func (ts *TerraformState) AllResourceChanges() map[string]ResourceChanges {
 	}
 }
 
-func (ts *TerraformState) AllOutputChanges() map[string][]string {
+func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
+	addedResources := addedResources(plan.ResourceChanges)
+	deletedResources := deletedResources(plan.ResourceChanges)
+	updatedResources := updatedResources(plan.ResourceChanges)
+	recreatedResources := recreatedResources(plan.ResourceChanges)
+	importedResources := importedResources(plan.ResourceChanges)
+
+	return map[string]ResourceChanges{
+		"import":   importedResources,
+		"add":      addedResources,
+		"delete":   deletedResources,
+		"update":   updatedResources,
+		"recreate": recreatedResources,
+	}
+}
+
+// TODO REMOVE
+// func (ts *TerraformState) AllOutputChanges() map[string][]string {
+// 	// create, update, and delete are the only available actions for outputChanges
+// 	// https://developer.hashicorp.com/terraform/internals/json-format
+// 	addedResources := filterOutputs(ts.OutputChanges, "create")
+// 	deletedResources := filterOutputs(ts.OutputChanges, "delete")
+// 	updatedResources := filterOutputs(ts.OutputChanges, "update")
+
+// 	return map[string][]string{
+// 		"add":    addedResources,
+// 		"delete": deletedResources,
+// 		"update": updatedResources,
+// 	}
+// }
+
+func GetAllOutputChanges(plan tfjson.Plan) map[string][]string {
 	// create, update, and delete are the only available actions for outputChanges
 	// https://developer.hashicorp.com/terraform/internals/json-format
-	addedResources := filterOutputs(ts.OutputChanges, "create")
-	deletedResources := filterOutputs(ts.OutputChanges, "delete")
-	updatedResources := filterOutputs(ts.OutputChanges, "update")
+	addedResources := filterOutputs(plan.OutputChanges, "create")
+	deletedResources := filterOutputs(plan.OutputChanges, "delete")
+	updatedResources := filterOutputs(plan.OutputChanges, "update")
 
 	return map[string][]string{
 		"add":    addedResources,
@@ -150,7 +222,7 @@ func (ts *TerraformState) AllOutputChanges() map[string][]string {
 	}
 }
 
-func filterResources(resources ResourceChanges, action string) ResourceChanges {
+func filterResources(resources ResourceChanges, action tfjson.Action) ResourceChanges {
 	acc := make(ResourceChanges, 0)
 	for _, r := range resources {
 		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == action {
@@ -160,7 +232,7 @@ func filterResources(resources ResourceChanges, action string) ResourceChanges {
 	return acc
 }
 
-func filterOutputs(outputChanges map[string]OutputValues, action string) []string {
+func filterOutputs(outputChanges map[string]*tfjson.Change, action tfjson.Action) []string {
 	acc := make([]string, 0)
 	for k, v := range outputChanges {
 		if len(v.Actions) == 1 && v.Actions[0] == action {

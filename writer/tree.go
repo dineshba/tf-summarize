@@ -6,10 +6,11 @@ import (
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/dineshba/tf-summarize/tree"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 type TreeWriter struct {
-	changes  terraformstate.ResourceChanges
+	changes  []*tfjson.ResourceChange
 	drawable bool
 }
 
@@ -31,7 +32,7 @@ func (t TreeWriter) Write(writer io.Writer) error {
 	return nil
 }
 
-func NewTreeWriter(changes terraformstate.ResourceChanges, drawable bool) Writer {
+func NewTreeWriter(changes []*tfjson.ResourceChange, drawable bool) Writer {
 	return TreeWriter{changes: changes, drawable: drawable}
 }
 
@@ -39,7 +40,7 @@ func printTree(writer io.Writer, tree *tree.Tree, prefixSpace string) error {
 	var err error
 	prefixSymbol := fmt.Sprintf("%s|---", prefixSpace)
 	if tree.Value != nil {
-		colorPrefix, suffix := tree.Value.ColorPrefixAndSuffixText()
+		colorPrefix, suffix := terraformstate.GetColorPrefixAndSuffixText(tree.Value)
 		_, err = fmt.Fprintf(writer, "%s%s%s%s%s\n", prefixSymbol, colorPrefix, tree.Name, suffix, terraformstate.ColorReset)
 	} else {
 		_, err = fmt.Fprintf(writer, "%s%s\n", prefixSymbol, tree.Name)

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/dineshba/tf-summarize/terraformstate"
+	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/olekukonko/tablewriter"
 )
 
 type TableWriter struct {
 	mdEnabled     bool
-	changes       map[string]terraformstate.ResourceChanges
+	changes       map[string][]*tfjson.ResourceChange
 	outputChanges map[string][]string
 }
 
@@ -76,7 +76,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 	return nil
 }
 
-func NewTableWriter(changes map[string]terraformstate.ResourceChanges, outputChanges map[string][]string, mdEnabled bool) Writer {
+func NewTableWriter(changes map[string][]*tfjson.ResourceChange, outputChanges map[string][]string, mdEnabled bool) Writer {
 
 	return TableWriter{
 		changes:       changes,
