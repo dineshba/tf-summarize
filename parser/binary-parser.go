@@ -20,12 +20,12 @@ func (j BinaryParser) Parse() (tfjson.Plan, error) {
 			"error when running 'terraform show -json %s': \n%s\n\n%s",
 			j.fileName, output, "Make sure you are running in terraform directory and terraform init is done")
 	}
-	ts := tfjson.Plan{}
-	err = json.Unmarshal(output, &ts)
+	plan := tfjson.Plan{}
+	err = json.Unmarshal(output, &plan)
 	if err != nil {
 		return tfjson.Plan{}, fmt.Errorf("error when parsing input: %s", err.Error())
 	}
-	return ts, nil
+	return plan, nil
 }
 
 func NewBinaryParser(fileName string) Parser {

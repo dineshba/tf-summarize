@@ -12,12 +12,12 @@ type JSONParser struct {
 }
 
 func (j JSONParser) Parse() (tfjson.Plan, error) {
-	ts := tfjson.Plan{}
-	err := json.Unmarshal(j.data, &ts)
+	plan := tfjson.Plan{}
+	err := json.Unmarshal(j.data, &plan)
 	if err != nil {
 		return tfjson.Plan{}, fmt.Errorf("error when parsing input: %s", err.Error())
 	}
-	return ts, nil
+	return plan, nil
 }
 
 func NewJSONParser(data []byte) Parser {

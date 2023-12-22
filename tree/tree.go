@@ -80,9 +80,9 @@ func (t Trees) String() string {
 	return strings.TrimPrefix(result, ",")
 }
 
-func CreateTree(resources terraformstate.ResourceChanges) Trees {
+func CreateTree(changes terraformstate.ResourceChanges) Trees {
 	result := &Tree{Name: ".", Children: Trees{}, level: 0}
-	for _, r := range resources {
+	for _, r := range changes {
 		change := *r
 		levels := splitResources(change.Address)
 		createTreeMultiLevel(change, levels, result)
@@ -114,14 +114,14 @@ func splitResources(address string) []string {
 	return acc
 }
 
-func createTreeMultiLevel(r tfjson.ResourceChange, levels []string, currentTree *Tree) {
+func createTreeMultiLevel(change tfjson.ResourceChange, levels []string, currentTree *Tree) {
 	parentTree := currentTree
 	for i, name := range levels {
 		matchedTree := getTree(name, parentTree.Children)
 		if matchedTree == nil {
 			var resourceChange *tfjson.ResourceChange
 			if i+1 == len(levels) {
-				resourceChange = &r
+				resourceChange = &change
 			}
 			newTree := &Tree{
 				Name:  name,

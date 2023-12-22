@@ -41,12 +41,12 @@ func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 }
 
 func Parse(input []byte) (tfjson.Plan, error) {
-	ts := tfjson.Plan{}
-	err := json.Unmarshal(input, &ts)
+	plan := tfjson.Plan{}
+	err := json.Unmarshal(input, &plan)
 	if err != nil {
 		return tfjson.Plan{}, fmt.Errorf("error when parsing input: %s", err.Error())
 	}
-	return ts, nil
+	return plan, nil
 }
 
 func addedResources(resources ResourceChanges) ResourceChanges {
