@@ -38,31 +38,6 @@ type OutputValues struct {
 	After   json.RawMessage `json:"after"`
 }
 
-// TODO REMOVE
-// func (rc ResourceChange) ColorPrefixAndSuffixText() (string, string) {
-// 	var colorPrefix, suffix string
-// 	actions := rc.Change.Actions
-// 	if len(actions) == 1 && actions[0] != "no-op" {
-// 		if actions[0] == "create" {
-// 			colorPrefix = ColorGreen
-// 			suffix = "(+)"
-// 		} else if actions[0] == "delete" {
-// 			colorPrefix = ColorRed
-// 			suffix = "(-)"
-// 		} else {
-// 			colorPrefix = ColorYellow
-// 			suffix = "(~)"
-// 		}
-// 	} else if rc.Change.Importing.ID != "" {
-// 		colorPrefix = ColorCyan
-// 		suffix = "(i)"
-// 	} else {
-// 		colorPrefix = ColorMagenta
-// 		suffix = "(+/-)"
-// 	}
-// 	return colorPrefix, suffix
-// }
-
 func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	var colorPrefix, suffix string
 	actions := (*rc).Change.Actions
@@ -129,6 +104,10 @@ func deletedResources(resources ResourceChanges) ResourceChanges {
 func importedResources(resources ResourceChanges) ResourceChanges {
 	acc := make(ResourceChanges, 0)
 	for _, r := range resources {
+		if r.Change.Importing == nil {
+			continue
+		}
+
 		id := r.Change.Importing.ID
 		if id != "" {
 			acc = append(acc, r)
@@ -137,18 +116,6 @@ func importedResources(resources ResourceChanges) ResourceChanges {
 	return acc
 }
 
-// TODO REMOVE
-//
-//	func (ts *TerraformState) FilterNoOpResources() {
-//		acc := make(ResourceChanges, 0)
-//		for _, r := range ts.ResourceChanges {
-//			if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing.ID == "" {
-//				continue
-//			}
-//			acc = append(acc, r)
-//		}
-//		ts.ResourceChanges = acc
-//	}
 func FilterNoOpResources(ts *tfjson.Plan) {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
