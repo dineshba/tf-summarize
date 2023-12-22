@@ -41,7 +41,6 @@ type OutputValues struct {
 func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	var colorPrefix, suffix string
 	actions := (*rc).Change.Actions
-	//fmt.Println("%s", rc)
 	if len(actions) == 1 && actions[0] != "no-op" {
 		if actions[0] == "create" {
 			colorPrefix = ColorGreen
@@ -127,23 +126,6 @@ func FilterNoOpResources(ts *tfjson.Plan) {
 	ts.ResourceChanges = acc
 }
 
-// TODO REMOVE
-func (ts *TerraformState) AllResourceChanges() map[string]ResourceChanges {
-	addedResources := addedResources(ts.ResourceChanges)
-	deletedResources := deletedResources(ts.ResourceChanges)
-	updatedResources := updatedResources(ts.ResourceChanges)
-	recreatedResources := recreatedResources(ts.ResourceChanges)
-	importedResources := importedResources(ts.ResourceChanges)
-
-	return map[string]ResourceChanges{
-		"import":   importedResources,
-		"add":      addedResources,
-		"delete":   deletedResources,
-		"update":   updatedResources,
-		"recreate": recreatedResources,
-	}
-}
-
 func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 	addedResources := addedResources(plan.ResourceChanges)
 	deletedResources := deletedResources(plan.ResourceChanges)
@@ -159,21 +141,6 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 		"recreate": recreatedResources,
 	}
 }
-
-// TODO REMOVE
-// func (ts *TerraformState) AllOutputChanges() map[string][]string {
-// 	// create, update, and delete are the only available actions for outputChanges
-// 	// https://developer.hashicorp.com/terraform/internals/json-format
-// 	addedResources := filterOutputs(ts.OutputChanges, "create")
-// 	deletedResources := filterOutputs(ts.OutputChanges, "delete")
-// 	updatedResources := filterOutputs(ts.OutputChanges, "update")
-
-// 	return map[string][]string{
-// 		"add":    addedResources,
-// 		"delete": deletedResources,
-// 		"update": updatedResources,
-// 	}
-// }
 
 func GetAllOutputChanges(plan tfjson.Plan) map[string][]string {
 	// create, update, and delete are the only available actions for outputChanges
