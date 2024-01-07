@@ -21,12 +21,12 @@ func TestResourceChangeColor(t *testing.T) {
 
 		assert.Equal(t, color, expectedColor)
 	}
-	create_delete := &ResourceChange{Change: &Change{Actions: []Action{ActionCreate, ActionDelete}}}
-	color, _ := GetColorPrefixAndSuffixText(create_delete)
+	CreateDelete := &ResourceChange{Change: &Change{Actions: []Action{ActionCreate, ActionDelete}}}
+	color, _ := GetColorPrefixAndSuffixText(CreateDelete)
 	assert.Equal(t, color, ColorMagenta)
 
-	delete_create := &ResourceChange{Change: &Change{Actions: []Action{ActionDelete, ActionCreate}}}
-	color, _ = GetColorPrefixAndSuffixText(delete_create)
+	DeleteCreate := &ResourceChange{Change: &Change{Actions: []Action{ActionDelete, ActionCreate}}}
+	color, _ = GetColorPrefixAndSuffixText(DeleteCreate)
 	assert.Equal(t, color, ColorMagenta)
 }
 
@@ -43,12 +43,12 @@ func TestResourceChangeSuffix(t *testing.T) {
 
 		assert.Equal(t, suffix, expectedSuffix)
 	}
-	create_delete := &ResourceChange{Change: &Change{Actions: []Action{ActionCreate, ActionDelete}}}
-	_, suffix := GetColorPrefixAndSuffixText(create_delete)
+	CreateDelete := &ResourceChange{Change: &Change{Actions: []Action{ActionCreate, ActionDelete}}}
+	_, suffix := GetColorPrefixAndSuffixText(CreateDelete)
 	assert.Equal(t, suffix, "(+/-)")
 
-	delete_create := &ResourceChange{Change: &Change{Actions: []Action{ActionDelete, ActionCreate}}}
-	_, suffix = GetColorPrefixAndSuffixText(delete_create)
+	DeleteCreate := &ResourceChange{Change: &Change{Actions: []Action{ActionDelete, ActionCreate}}}
+	_, suffix = GetColorPrefixAndSuffixText(DeleteCreate)
 	assert.Equal(t, suffix, "(-/+)")
 }
 
