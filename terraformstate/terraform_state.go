@@ -19,11 +19,11 @@ type ResourceChanges = []*tfjson.ResourceChange //Type alias for brevity
 func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	var colorPrefix, suffix string
 	actions := (*rc).Change.Actions
-	if len(actions) == 1 && actions[0] != "no-op" {
-		if actions[0] == "create" {
+	if len(actions) == 1 && !actions.NoOp() {
+		if actions.Create() {
 			colorPrefix = ColorGreen
 			suffix = "(+)"
-		} else if actions[0] == "delete" {
+		} else if actions.Delete() {
 			colorPrefix = ColorRed
 			suffix = "(-)"
 		} else {
@@ -33,7 +33,10 @@ func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	} else if rc.Change.Importing != nil && rc.Change.Importing.ID != "" {
 		colorPrefix = ColorCyan
 		suffix = "(i)"
-	} else {
+	} else if actions.DestroyBeforeCreate() {
+		colorPrefix = ColorMagenta
+		suffix = "(-/+)"
+	} else if actions.CreateBeforeDestroy() {
 		colorPrefix = ColorMagenta
 		suffix = "(+/-)"
 	}
