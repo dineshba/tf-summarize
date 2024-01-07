@@ -62,8 +62,10 @@ func (t TableWriter) Write(writer io.Writer) error {
 		table.AppendBulk(tableString)
 
 		if t.mdEnabled {
-			// Adding a println to break up the tables in md mode
-			fmt.Println()
+			// Without a line break separating each table, a single malformed markdown table is printed.
+			// Printing an empty newline ensures distinct, separate tables are rendered.
+			fmt.Fprint(writer, tablewriter.NEWLINE)
+
 			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 			table.SetCenterSeparator("|")
 		} else {
@@ -77,7 +79,6 @@ func (t TableWriter) Write(writer io.Writer) error {
 }
 
 func NewTableWriter(changes map[string]terraformstate.ResourceChanges, outputChanges map[string][]string, mdEnabled bool) Writer {
-
 	return TableWriter{
 		changes:       changes,
 		mdEnabled:     mdEnabled,
