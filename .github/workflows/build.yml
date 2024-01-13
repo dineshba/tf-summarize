@@ -2,34 +2,89 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Run Gosec Security Scanner
-      uses: securego/gosec@master
-      with:
-        args: -exclude=G204 ./...
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: -exclude=G204 ./...
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
 
-    - name: golangci-lint
-      uses: golangci/golangci-lint-action@v3
-      with:
-        version: latest
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
 
-    - name: Test
-      run: go test -v ./...
+      - name: Test
+        run: go test -v ./...
 
-    - name: Build
-      run: go build
+      - name: Build
+        run: go build
+
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build
+        run: |
+          go build -o example/tf-summarize
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Print tf-summarize version and help
+        run: |
+          ./tf-summarize -v
+          ./tf-summarize -h
+        working-directory: ./example
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./example
+
+      - name: Terraform Plan
+        run: |
+          terraform plan -out=tfplan -refresh=false # -refresh=false is only for demo workflow
+          terraform show -json tfplan > tfplan.json
+        working-directory: ./example
+
+      - name: summary in table format
+        run: terraform show -json tfplan | ./tf-summarize
+        working-directory: ./example
+
+      - name: summary in table format with plan JSON file passed
+        run: |
+          ./tf-summarize tfplan.json
+        working-directory: ./example
+
+      - name: summary in tree format
+        run: terraform show -json tfplan | ./tf-summarize -tree
+        working-directory: ./example
+
+      - name: summary in separate tree format
+        run: terraform show -json tfplan | ./tf-summarize -separate-tree
+        working-directory: ./example
+
+      - name: summary in draw visual tree format
+        run: terraform show -json tfplan | ./tf-summarize -tree -draw
+        working-directory: ./example
