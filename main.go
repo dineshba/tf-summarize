@@ -37,7 +37,7 @@ func main() {
 	err := validateFlags(*tree, *separateTree, *drawable, *md, args)
 	logIfErrorAndExit("invalid input flags: %s\n", err, flag.Usage)
 
-	newReader, err := reader.CreateReader(os.Stdin, args)
+	newReader, err := reader.CreateReader(args)
 	logIfErrorAndExit("error creating input reader: %s\n", err, flag.Usage)
 
 	input, err := newReader.Read()

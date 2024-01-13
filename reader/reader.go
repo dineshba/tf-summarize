@@ -2,9 +2,10 @@ package reader
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
-	"os"
+	"strings"
 )
 
 type Reader interface {
@@ -22,19 +23,22 @@ func readFile(f io.Reader) ([]byte, error) {
 		input = append(input, line...)
 	}
 	if err != io.EOF {
-		return nil, fmt.Errorf("error reading file: %s", err.Error())
+		return nil, fmt.Errorf("error reading input: %s", err.Error())
+	}
+	if len(input) == 0 {
+		return nil, errors.New("no input data; expected input via a non-empty file or via STDIN")
 	}
 	return input, nil
 }
 
-func CreateReader(stdin *os.File, args []string) (Reader, error) {
-	stat, _ := stdin.Stat()
-	if (stat.Mode() & os.ModeCharDevice) == 0 {
-		return NewStdinReader(), nil
+func CreateReader(args []string) (Reader, error) {
+	if len(args) > 1 {
+		return nil, fmt.Errorf("expected input via a single filename argument or via STDIN; received multiple arguments: %s", strings.Join(args, ", "))
 	}
-	if len(args) < 1 {
-		return nil, fmt.Errorf("should have either stdin input through pipe or first argument should be file")
+
+	if len(args) == 1 {
+		return NewFileReader(args[0]), nil
 	}
-	fileName := args[0]
-	return NewFileReader(fileName), nil
+
+	return NewStdinReader(), nil
 }
