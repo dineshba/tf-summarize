@@ -5,13 +5,14 @@ import (
 	"strings"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
+	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/m1gwings/treedrawer/tree"
 )
 
 type Tree struct {
 	Name     string
 	level    int
-	Value    *terraformstate.ResourceChange
+	Value    *tfjson.ResourceChange
 	Children Trees
 }
 
@@ -54,7 +55,7 @@ func (t *Tree) AddChild(parent *tree.Tree) {
 
 	var childNode tree.NodeString
 	if isLeafNode {
-		_, suffix := t.Value.ColorPrefixAndSuffixText()
+		_, suffix := terraformstate.GetColorPrefixAndSuffixText(t.Value)
 		childNode = tree.NodeString(fmt.Sprintf("%s%s", t.Name, suffix))
 	} else {
 		childNode = tree.NodeString(t.Name)
@@ -79,11 +80,12 @@ func (t Trees) String() string {
 	return strings.TrimPrefix(result, ",")
 }
 
-func CreateTree(resources terraformstate.ResourceChanges) Trees {
+func CreateTree(changes terraformstate.ResourceChanges) Trees {
 	result := &Tree{Name: ".", Children: Trees{}, level: 0}
-	for _, r := range resources {
-		levels := splitResources(r.Address)
-		createTreeMultiLevel(r, levels, result)
+	for _, r := range changes {
+		change := *r
+		levels := splitResources(change.Address)
+		createTreeMultiLevel(change, levels, result)
 	}
 	return result.Children
 }
@@ -112,14 +114,14 @@ func splitResources(address string) []string {
 	return acc
 }
 
-func createTreeMultiLevel(r terraformstate.ResourceChange, levels []string, currentTree *Tree) {
+func createTreeMultiLevel(change tfjson.ResourceChange, levels []string, currentTree *Tree) {
 	parentTree := currentTree
 	for i, name := range levels {
 		matchedTree := getTree(name, parentTree.Children)
 		if matchedTree == nil {
-			var resourceChange *terraformstate.ResourceChange
+			var resourceChange *tfjson.ResourceChange
 			if i+1 == len(levels) {
-				resourceChange = &r
+				resourceChange = &change
 			}
 			newTree := &Tree{
 				Name:  name,

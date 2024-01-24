@@ -5,27 +5,27 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/dineshba/tf-summarize/terraformstate"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 type BinaryParser struct {
 	fileName string
 }
 
-func (j BinaryParser) Parse() (terraformstate.TerraformState, error) {
+func (j BinaryParser) Parse() (tfjson.Plan, error) {
 	cmd := exec.Command("terraform", "show", "-json", j.fileName)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return terraformstate.TerraformState{}, fmt.Errorf(
+		return tfjson.Plan{}, fmt.Errorf(
 			"error when running 'terraform show -json %s': \n%s\n\n%s",
 			j.fileName, output, "Make sure you are running in terraform directory and terraform init is done")
 	}
-	ts := terraformstate.TerraformState{}
-	err = json.Unmarshal(output, &ts)
+	plan := tfjson.Plan{}
+	err = json.Unmarshal(output, &plan)
 	if err != nil {
-		return terraformstate.TerraformState{}, fmt.Errorf("error when parsing input: %s", err.Error())
+		return tfjson.Plan{}, fmt.Errorf("error when parsing input: %s", err.Error())
 	}
-	return ts, nil
+	return plan, nil
 }
 
 func NewBinaryParser(fileName string) Parser {

@@ -11,7 +11,7 @@ import (
 const SEPARATOR = "###################"
 
 type SeparateTree struct {
-	changes  map[string]terraformstate.ResourceChanges
+	changes  map[string](terraformstate.ResourceChanges)
 	drawable bool
 }
 

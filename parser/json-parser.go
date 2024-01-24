@@ -4,20 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/dineshba/tf-summarize/terraformstate"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 type JSONParser struct {
 	data []byte
 }
 
-func (j JSONParser) Parse() (terraformstate.TerraformState, error) {
-	ts := terraformstate.TerraformState{}
-	err := json.Unmarshal(j.data, &ts)
+func (j JSONParser) Parse() (tfjson.Plan, error) {
+	plan := tfjson.Plan{}
+	err := json.Unmarshal(j.data, &plan)
 	if err != nil {
-		return terraformstate.TerraformState{}, fmt.Errorf("error when parsing input: %s", err.Error())
+		return tfjson.Plan{}, fmt.Errorf("error when parsing input: %s", err.Error())
 	}
-	return ts, nil
+	return plan, nil
 }
 
 func NewJSONParser(data []byte) Parser {

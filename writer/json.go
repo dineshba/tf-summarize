@@ -7,7 +7,6 @@ import (
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/dineshba/tf-summarize/tree"
-
 	"github.com/nsf/jsondiff"
 )
 
@@ -31,12 +30,15 @@ func treeValue(t tree.Tree) interface{} {
 	resultMap := make(map[string]interface{})
 
 	if t.Value != nil {
-		_, suffix := t.Value.ColorPrefixAndSuffixText()
+		_, suffix := terraformstate.GetColorPrefixAndSuffixText(t.Value)
 		var diff interface{}
 		if t.IsUpdate() || t.IsRecreate() {
 			opts := jsondiff.DefaultJSONOptions()
 			opts.SkipMatches = true
-			_, str := jsondiff.Compare(t.Value.Change.Before, t.Value.Change.After, &opts)
+
+			before := t.Value.Change.Before.([]byte)
+			after := t.Value.Change.After.([]byte)
+			_, str := jsondiff.Compare(before, after, &opts)
 			diff = make(map[string]interface{})
 			_ = json.Unmarshal([]byte(str), &diff)
 		} else {
