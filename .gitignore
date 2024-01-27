@@ -5,3 +5,5 @@ tf-summarize
 **/.envrc
 **/.terraform
 *.swp
+
+example/tfplan
