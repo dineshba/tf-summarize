@@ -3,6 +3,7 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 
 	tfjson "github.com/hashicorp/terraform-json"
@@ -13,7 +14,11 @@ type BinaryParser struct {
 }
 
 func (j BinaryParser) Parse() (tfjson.Plan, error) {
-	cmd := exec.Command("terraform", "show", "-json", j.fileName)
+	tfbinary := "terraform"
+	if tfoverride, ok := os.LookupEnv("TF_BINARY"); ok {
+		tfbinary = tfoverride
+	}
+	cmd := exec.Command(tfbinary, "show", "-json", j.fileName)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return tfjson.Plan{}, fmt.Errorf(
