@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <th>CHANGE</th>
+    <th>RESOURCE</th>
+  </tr>{{ range $change, $resources := .ResourceChanges }}{{ $length := len $resources }}{{ if gt $length 0 }}
+  <tr>
+    <td>{{ $change }}</td>
+    <td>
+      <ul>{{ range $i, $r := $resources }}
+        <li>{{ $r.Address }}</li>{{ end }}
+      </ul>
+    </td>
+  </tr>{{ end }}{{ end }}
+</table>

@@ -44,7 +44,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 	table.Render()
 
 	// Disable the Output Summary if there are no outputs to display
-	if len(t.outputChanges["add"]) > 0 || len(t.outputChanges["delete"]) > 0 || len(t.outputChanges["update"]) > 0 {
+	if hasOutputChanges(t.outputChanges) {
 		tableString = make([][]string, 0, 4)
 		for _, change := range tableOrder {
 			changedOutputs := t.outputChanges[change]

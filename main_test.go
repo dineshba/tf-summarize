@@ -61,13 +61,20 @@ func TestTFSummarize(t *testing.T) {
 	}, {
 		command:        fmt.Sprintf("cat example/tfplan.json | ./%s -md", testExecutable),
 		expectedOutput: "basic.txt",
+	}, {
+		command:        fmt.Sprintf("cat example/tfplan.json | ./%s -html", testExecutable),
+		expectedOutput: "basic.html",
+	}, {
+		command:        fmt.Sprintf("cat example/tfplan.json | ./%s -md -html", testExecutable),
+		expectedError:  fmt.Errorf("exit status 1"),
+		expectedOutput: "multiple_format_flags_error.txt",
 	}}
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("when tf-summarize is passed '%q'", test.command), func(t *testing.T) {
-			output, err := exec.Command("/bin/sh", "-c", test.command).CombinedOutput()
-			if err != nil && test.expectedError == nil {
-				t.Errorf("expected '%s' not to error; got '%v'", test.command, err)
+			output, cmdErr := exec.Command("/bin/sh", "-c", test.command).CombinedOutput()
+			if cmdErr != nil && test.expectedError == nil {
+				t.Errorf("expected '%s' not to error; got '%v'", test.command, cmdErr)
 			}
 
 			b, err := os.ReadFile(fmt.Sprintf("testdata/%s", test.expectedOutput))
@@ -77,12 +84,12 @@ func TestTFSummarize(t *testing.T) {
 
 			expected := string(b)
 
-			if test.expectedError != nil && err == nil {
-				t.Errorf("expected error '%s'; got '%v'", test.expectedError.Error(), err)
+			if test.expectedError != nil && cmdErr == nil {
+				t.Errorf("expected error '%s'; got '%v'", test.expectedError.Error(), cmdErr)
 			}
 
-			if test.expectedError != nil && err != nil && test.expectedError.Error() != err.Error() {
-				t.Errorf("expected error '%s'; got '%v'", test.expectedError.Error(), err.Error())
+			if test.expectedError != nil && cmdErr != nil && test.expectedError.Error() != cmdErr.Error() {
+				t.Errorf("expected error '%s'; got '%v'", test.expectedError.Error(), cmdErr.Error())
 			}
 
 			if string(output) != expected {

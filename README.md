@@ -110,10 +110,16 @@ Usage of tf-summarize [args] [tf-plan.json|tfplan]
 
   -draw
         [Optional, used only with -tree or -separate-tree] draw trees instead of plain tree
+  -html
+        [Optional] print changes in html format
+  -json
+        [Optional] print changes in json format
+  -md
+        [Optional, used only with table view] output table as markdown
   -out string
         [Optional] write output to file
   -separate-tree
-        [Optional] print changes in tree format for each add/delete/change/recreate changes
+        [Optional] print changes in tree format for add/delete/change/recreate changes
   -tree
         [Optional] print changes in tree format
   -v    print version
