@@ -21,3 +21,7 @@ resource "github_branch" "development" {
   repository = github_repository.repository.name
   branch     = "development"
 }
+
+output "repository_name" {
+  value = github_repository.repository.name
+}

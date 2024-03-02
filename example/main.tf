@@ -58,3 +58,7 @@ resource "github_repository" "terraform_plan_summary" {
   has_wiki             = true
   vulnerability_alerts = false
 }
+
+output "terraform_plan_summary_repository_name" {
+  value = github_repository.terraform_plan_summary.name
+}
