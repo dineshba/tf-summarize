@@ -7,7 +7,7 @@
     <td>{{ $change }}</td>
     <td>
       <ul>{{ range $i, $r := $resources }}
-        <li>{{ $r.Address }}</li>{{ end }}
+        <li><code>{{ $r.Address }}</code></li>{{ end }}
       </ul>
     </td>
   </tr>{{ end }}{{ end }}
