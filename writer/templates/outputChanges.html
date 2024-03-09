@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <th>CHANGE</th>
+    <th>OUTPUT</th>
+  </tr>{{ range $change, $outputs := .OutputChanges }}{{ $length := len $outputs }}{{ if gt $length 0 }}
+  <tr>
+    <td>{{ $change }}</td>
+    <td>
+      <ul>{{ range $i, $o := $outputs }}
+        <li><code>{{ $o }}</code></li>{{ end }}
+      </ul>
+    </td>
+  </tr>{{ end }}{{ end }}
+</table>

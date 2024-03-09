@@ -7,3 +7,7 @@
 |        | `module.github["terraform-plan-summary"].github_branch.development`    |
 |        | `module.github["terraform-plan-summary"].github_branch.main`           |
 |        | `module.github["terraform-plan-summary"].github_repository.repository` |
+
+| CHANGE |                  OUTPUT                  |
+|--------|------------------------------------------|
+| add    | `terraform_plan_summary_repository_name` |
