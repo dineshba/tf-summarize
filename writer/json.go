@@ -36,8 +36,8 @@ func treeValue(t tree.Tree) interface{} {
 			opts := jsondiff.DefaultJSONOptions()
 			opts.SkipMatches = true
 
-			before := t.Value.Change.Before.([]byte)
-			after := t.Value.Change.After.([]byte)
+			before, _ := json.Marshal(t.Value.Change.Before)
+			after, _ := json.Marshal(t.Value.Change.After)
 			_, str := jsondiff.Compare(before, after, &opts)
 			diff = make(map[string]interface{})
 			_ = json.Unmarshal([]byte(str), &diff)
