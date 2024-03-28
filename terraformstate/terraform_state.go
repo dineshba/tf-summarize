@@ -92,7 +92,7 @@ func importedResources(resources ResourceChanges) ResourceChanges {
 func FilterNoOpResources(ts *tfjson.Plan) {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
-		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && r.Change.Importing != nil && r.Change.Importing.ID == "" {
+		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && (r.Change.Importing == nil || r.Change.Importing.ID == "") {
 			continue
 		}
 		acc = append(acc, r)

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	. "github.com/hashicorp/terraform-json"
+	tfjson "github.com/hashicorp/terraform-json"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -58,4 +59,21 @@ func TestResourceChangeColorAndSuffixImport(t *testing.T) {
 
 	assert.Equal(t, color, ColorCyan)
 	assert.Equal(t, suffix, "(i)")
+}
+
+func TestFilterNoOpResources(t *testing.T) {
+	resourceChanges := ResourceChanges{
+		&ResourceChange{Address: "no-op1", Change: &Change{Actions: Actions{ActionNoop}}},
+		&ResourceChange{Address: "no-op3", Change: &Change{Actions: Actions{ActionNoop}, Importing: nil}},
+		&ResourceChange{Address: "no-op2", Change: &Change{Actions: Actions{ActionNoop}, Importing: &Importing{ID: ""}}},
+		&ResourceChange{Address: "create", Change: &Change{Actions: Actions{ActionCreate}}},
+	}
+	plan := tfjson.Plan{ResourceChanges: resourceChanges}
+
+	FilterNoOpResources(&plan)
+
+	expectedResourceChangesAfterFiltering := ResourceChanges{
+		&ResourceChange{Address: "create", Change: &Change{Actions: Actions{ActionCreate}}},
+	}
+	assert.Equal(t, expectedResourceChangesAfterFiltering, plan.ResourceChanges)
 }
