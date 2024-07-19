@@ -22,6 +22,7 @@ func TestResourceChangeColor(t *testing.T) {
 
 		assert.Equal(t, color, expectedColor)
 	}
+
 	CreateDelete := &ResourceChange{Change: &Change{Actions: []Action{ActionCreate, ActionDelete}}}
 	color, _ := GetColorPrefixAndSuffixText(CreateDelete)
 	assert.Equal(t, color, ColorMagenta)
