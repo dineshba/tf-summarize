@@ -3,7 +3,7 @@ package terraformstate
 import (
 	"encoding/json"
 	"fmt"
-        "sort"
+	"sort"
 
 	tfjson "github.com/hashicorp/terraform-json"
 )
@@ -113,13 +113,13 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 			return resources[i].Address < resources[j].Address
 		})
 	}
-	
+
 	sortResources(addedResources)
 	sortResources(deletedResources)
 	sortResources(updatedResources)
 	sortResources(recreatedResources)
 	sortResources(importedResources)
-	
+
 	return map[string]ResourceChanges{
 		"import":   importedResources,
 		"add":      addedResources,
@@ -135,11 +135,11 @@ func GetAllOutputChanges(plan tfjson.Plan) map[string][]string {
 	addedResources := filterOutputs(plan.OutputChanges, "create")
 	deletedResources := filterOutputs(plan.OutputChanges, "delete")
 	updatedResources := filterOutputs(plan.OutputChanges, "update")
-    
+
 	sort.Strings(addedResources)
-    	sort.Strings(deletedResources)
-    	sort.Strings(updatedResources)
-	
+	sort.Strings(deletedResources)
+	sort.Strings(updatedResources)
+
 	return map[string][]string{
 		"add":    addedResources,
 		"delete": deletedResources,
