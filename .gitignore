@@ -7,3 +7,6 @@ tf-summarize
 *.swp
 
 example/tfplan
+
+cover.out
+cover.html
