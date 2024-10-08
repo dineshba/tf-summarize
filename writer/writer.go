@@ -1,7 +1,6 @@
 package writer
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
@@ -14,16 +13,9 @@ type Writer interface {
 
 func CreateWriter(tree, separateTree, drawable, mdEnabled, json, html bool, plan tfjson.Plan) Writer {
 	if tree {
-		fmt.Printf("plan.ResourceChanges = %v", plan.ResourceChanges)
-
-		// Alternatively, use %+v to print the entire struct details in the slice
-		for i, change := range plan.ResourceChanges {
-			fmt.Printf("ResourceChange %d: %+v\n", i+1, *change)
-		}
 		return NewTreeWriter(plan.ResourceChanges, drawable)
 	}
 	if separateTree {
-		fmt.Println("terraformstate.GetAllResourceChanges(plan) = ", terraformstate.GetAllResourceChanges(plan))
 		return NewSeparateTree(terraformstate.GetAllResourceChanges(plan), drawable)
 	}
 	if json {
