@@ -10,3 +10,4 @@ example/tfplan
 
 cover.out
 cover.html
+*.cov
