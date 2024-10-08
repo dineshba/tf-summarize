@@ -15,6 +15,8 @@ type SeparateTree struct {
 	drawable bool
 }
 
+var NewTreeWriterFunc = NewTreeWriter
+
 func (s SeparateTree) Write(writer io.Writer) error {
 	var err error
 	for k, v := range s.changes {
@@ -23,7 +25,7 @@ func (s SeparateTree) Write(writer io.Writer) error {
 			if err != nil {
 				return fmt.Errorf("error writing to %s: %s", writer, err)
 			}
-			treeWriter := NewTreeWriter(v, s.drawable)
+			treeWriter := NewTreeWriterFunc(v, s.drawable)
 			err = treeWriter.Write(writer)
 			if err != nil {
 				return fmt.Errorf("error writing to %s: %s", writer, err)
