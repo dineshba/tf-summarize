@@ -9,18 +9,7 @@ import (
 )
 
 func TestTableWriter_Write_NoMarkdown(t *testing.T) {
-	changes := map[string]terraformstate.ResourceChanges{
-		"add": {
-			{
-				Address: "aws_instance.example1",
-			},
-		},
-		"delete": {
-			{
-				Address: "aws_instance.example2",
-			},
-		},
-	}
+	changes := createMockChanges()
 
 	outputChanges := map[string][]string{
 		"update": {
@@ -51,18 +40,7 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 }
 
 func TestTableWriter_Write_WithMarkdown(t *testing.T) {
-	changes := map[string]terraformstate.ResourceChanges{
-		"add": {
-			{
-				Address: "aws_instance.example1",
-			},
-		},
-		"delete": {
-			{
-				Address: "aws_instance.example2",
-			},
-		},
-	}
+	changes := createMockChanges()
 
 	outputChanges := map[string][]string{
 		"update": {

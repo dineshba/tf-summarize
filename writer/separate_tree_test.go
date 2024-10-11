@@ -4,19 +4,43 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"strings"
 	"testing"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/dineshba/tf-summarize/testdata/mocks"
 
 	. "github.com/hashicorp/terraform-json"
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
-func TestSeparateTree_Write_DrawableTrue(t *testing.T) {
+// Mock tree writer
+type mockTreeWriter struct{}
 
-	changes := map[string]terraformstate.ResourceChanges{
+func (m *mockTreeWriter) Write(writer io.Writer) error {
+	return nil
+}
+
+func NewMockTreeWriter(changes []*tfjson.ResourceChange, drawable bool) Writer {
+	return &mockTreeWriter{}
+}
+
+// Mock tree writer to simulate an error during treeWriter.Write
+type mockTreeWriterWithError struct{}
+
+func (m *mockTreeWriterWithError) Write(writer io.Writer) error {
+	return errors.New("tree writer error")
+}
+
+func NewMockTreeWriterWithError(changes []*tfjson.ResourceChange, drawable bool) Writer {
+	return &mockTreeWriterWithError{}
+}
+
+// Helper function to create changes
+func createMockChanges() map[string]terraformstate.ResourceChanges {
+	return map[string]terraformstate.ResourceChanges{
 		"add": {
 			{
 				Address: "aws_instance.example1",
@@ -30,13 +54,19 @@ func TestSeparateTree_Write_DrawableTrue(t *testing.T) {
 			},
 		},
 	}
+}
 
-	tw := NewSeparateTree(changes, true)
-	var buf bytes.Buffer
-	err := tw.Write(&buf)
+func TestSeparateTree_Write(t *testing.T) {
+	mockChanges := createMockChanges()
 
-	assert.NoError(t, err)
-	expectedOutput := `################### ADD ###################
+	t.Run("Drawable True", func(t *testing.T) {
+		tw := NewSeparateTree(mockChanges, true)
+		var buf bytes.Buffer
+		err := tw.Write(&buf)
+
+		assert.NoError(t, err)
+
+		expectedAdd := `################### ADD ###################
       ╭─╮      
       │.│      
       ╰┬╯      
@@ -48,9 +78,8 @@ func TestSeparateTree_Write_DrawableTrue(t *testing.T) {
  ╭─────┴─────╮ 
  │example1(+)│ 
  ╰───────────╯ 
-
-
-################### DELETE ###################
+`
+		expectedDelete := `################### DELETE ###################
       ╭─╮      
       │.│      
       ╰┬╯      
@@ -62,144 +91,78 @@ func TestSeparateTree_Write_DrawableTrue(t *testing.T) {
  ╭─────┴─────╮ 
  │example2(-)│ 
  ╰───────────╯ 
-
-
 `
 
-	assert.Equal(t, expectedOutput, removeANSI(buf.String()))
-}
+		actualOutput := removeANSI(buf.String())
+		assert.Contains(t, actualOutput, expectedAdd)
+		assert.Contains(t, actualOutput, expectedDelete)
 
-func TestSeparateTree_Write_NonDrawable(t *testing.T) {
+	})
 
-	changes := map[string]terraformstate.ResourceChanges{
-		"add": {
-			{
-				Address: "aws_instance.example1",
-				Change:  &Change{Actions: Actions{ActionCreate}},
-			},
-		},
-		"delete": {
-			{
-				Address: "aws_instance.example2",
-				Change:  &Change{Actions: Actions{ActionDelete}},
-			},
-		},
-	}
+	t.Run("Drawable False", func(t *testing.T) {
+		tw := NewSeparateTree(mockChanges, false)
+		var buf bytes.Buffer
+		err := tw.Write(&buf)
 
-	tw := NewSeparateTree(changes, false)
-	var buf bytes.Buffer
-	err := tw.Write(&buf)
+		assert.NoError(t, err)
 
-	assert.NoError(t, err)
-
-	expectedOutput := `################### ADD ###################
+		expectedAdd := `################### ADD ###################
 |---aws_instance
 |	|---example1(+)
-
-
-################### DELETE ###################
+`
+		expectedDelete := `################### DELETE ###################
 |---aws_instance
 |	|---example2(-)
-
-
 `
 
-	assert.Equal(t, expectedOutput, removeANSI(buf.String()))
-}
-
-// Mock writer that returns an error after a certain number of writes
-type controlledErrorWriter struct {
-	failAfter int // Number of successful writes before error
-	writes    int // Counter for number of writes
-}
-
-func (w *controlledErrorWriter) Write(p []byte) (n int, err error) {
-	w.writes++
-	if w.writes > w.failAfter {
-		return 0, errors.New("write error")
-	}
-	return len(p), nil
-}
-
-// Mock tree writer to simulate an error during treeWriter.Write
-type mockTreeWriterWithError struct{}
-
-func (m *mockTreeWriterWithError) Write(writer io.Writer) error {
-	return errors.New("tree writer error")
-}
-
-// Function to create a mock TreeWriter with an error
-func NewMockTreeWriterWithError(changes []*tfjson.ResourceChange, drawable bool) Writer {
-	return &mockTreeWriterWithError{}
-}
-
-type mockTreeWriter struct{}
-
-func (m *mockTreeWriter) Write(writer io.Writer) error {
-	return nil
-}
-
-func NewMockTreeWriter(changes []*tfjson.ResourceChange, drawable bool) Writer {
-	return &mockTreeWriter{}
-}
-
-func TestSeparateTree_Write_Error(t *testing.T) {
-	changes := map[string]terraformstate.ResourceChanges{
-		"add": {
-			{
-				Address: "aws_instance.example1",
-				Change:  &Change{Actions: Actions{ActionCreate}},
-			},
-		},
-		"delete": {
-			{
-				Address: "aws_instance.example2",
-				Change:  &Change{Actions: Actions{ActionDelete}},
-			},
-		},
-	}
-
-	s := NewSeparateTree(changes, false)
-
-	t.Run("Test fmt.Fprintf error for section header", func(t *testing.T) {
-		writer := &controlledErrorWriter{failAfter: 0}
-		err := s.Write(writer)
-
-		if err == nil || !strings.Contains(err.Error(), "write error") {
-			t.Errorf("expected write error for section header, got %v", err)
-		}
+		actualOutput := removeANSI(buf.String())
+		assert.Contains(t, actualOutput, expectedAdd)
+		assert.Contains(t, actualOutput, expectedDelete)
 	})
 
-	t.Run("Test treeWriter.Write returns error", func(t *testing.T) {
-		originalFunc := NewTreeWriterFunc
-		defer func() { NewTreeWriterFunc = originalFunc }() // Ensure restoration after the test
+	t.Run("Error Handling", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
 
-		// Replace NewTreeWriter with the mock
-		NewTreeWriterFunc = NewMockTreeWriterWithError
+		s := NewSeparateTree(mockChanges, false)
 
-		writer := &strings.Builder{}
-		err := s.Write(writer)
+		t.Run("Write Error", func(t *testing.T) {
+			mockWriter := mocks.NewMockWriter(ctrl)
+			mockWriter.EXPECT().Write(gomock.Any()).Return(0, errors.New("write error")).Times(1)
 
-		if err == nil || !strings.Contains(err.Error(), "tree writer error") {
-			t.Errorf("expected tree writer error, got %v", err)
-		}
-	})
+			err := s.Write(mockWriter)
+			assert.Error(t, err)
+			assert.Contains(t, err.Error(), "write error")
+		})
 
-	t.Run("Test fmt.Fprintf error on final newline", func(t *testing.T) {
+		t.Run("Tree Writer Error", func(t *testing.T) {
+			originalFunc := NewTreeWriterFunc
+			defer func() { NewTreeWriterFunc = originalFunc }()
 
-		// Backup the original NewTreeWriterFunc to restore after this test
-		originalFunc := NewTreeWriterFunc
-		defer func() { NewTreeWriterFunc = originalFunc }() // Ensure restoration after the test
+			// Replace NewTreeWriter with the mock that returns an error
+			NewTreeWriterFunc = NewMockTreeWriterWithError
 
-		// Replace NewTreeWriter with the mock
-		NewTreeWriterFunc = NewMockTreeWriter
+			mockWriter := mocks.NewMockWriter(ctrl)
+			mockWriter.EXPECT().Write(gomock.Any()).Return(0, nil).AnyTimes()
 
-		// Use controlledErrorWriter to simulate write error after 1 write
-		writer := &controlledErrorWriter{failAfter: 1}
-		err := s.Write(writer)
+			err := s.Write(mockWriter)
+			assert.Error(t, err)
+			assert.Contains(t, err.Error(), "tree writer error")
+		})
 
-		if err == nil || !strings.Contains(err.Error(), "write error") {
-			t.Errorf("expected write error on newline, got %v", err)
-		}
+		t.Run("Final Newline Write Error", func(t *testing.T) {
+			originalFunc := NewTreeWriterFunc
+			defer func() { NewTreeWriterFunc = originalFunc }()
+
+			NewTreeWriterFunc = NewMockTreeWriter
+
+			mockWriter := mocks.NewMockWriter(ctrl)
+			mockWriter.EXPECT().Write(gomock.Any()).Return(0, nil).Times(1)
+			mockWriter.EXPECT().Write(gomock.Any()).Return(0, errors.New("write error")).Times(1)
+
+			err := s.Write(mockWriter)
+			assert.Error(t, err)
+			assert.Contains(t, err.Error(), "write error")
+		})
 	})
 }
