@@ -1,4 +1,4 @@
-invalid input flags: only one of -md, -json, or -html should be provided
+invalid input flags: only one of -md, -json, -json-sum, or -html should be provided
 
 Usage of ./tf-summarize-test [args] [tf-plan.json|tfplan]
 
@@ -8,6 +8,8 @@ Usage of ./tf-summarize-test [args] [tf-plan.json|tfplan]
     	[Optional] print changes in html format
   -json
     	[Optional] print changes in json format
+  -json-sum
+    	[Optional] print summary in json format
   -md
     	[Optional, used only with table view] output table as markdown
   -out string
