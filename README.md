@@ -114,6 +114,8 @@ Usage of tf-summarize [args] [tf-plan.json|tfplan]
         [Optional] print changes in html format
   -json
         [Optional] print changes in json format
+  -json-sum
+        [Optional] print summary in json format
   -md
         [Optional, used only with table view] output table as markdown
   -out string
@@ -136,6 +138,7 @@ tf-summarize tfplan                           # summary in table format
 tf-summarize -tree tfplan                     # summary in tree format
 tf-summarize -tree -draw tfplan               # summary in 2D tree format
 tf-summarize -json tfplan                     # summary in json format
+tf-summarize -json-sum tfplan                 # summary of changes in json format
 tf-summarize -separate-tree tfplan            # summary in separate tree format
 tf-summarize -separate-tree -draw tfplan      # summary in separate 2D tree format
 tf-summarize -out=summary.md tfplan           # summary in output file instead of stdout
