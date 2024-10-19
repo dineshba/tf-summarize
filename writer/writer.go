@@ -11,7 +11,7 @@ type Writer interface {
 	Write(writer io.Writer) error
 }
 
-func CreateWriter(tree, separateTree, drawable, mdEnabled, json, html bool, plan tfjson.Plan) Writer {
+func CreateWriter(tree, separateTree, drawable, mdEnabled, json, html bool, jsonSum bool, plan tfjson.Plan) Writer {
 	if tree {
 		return NewTreeWriter(plan.ResourceChanges, drawable)
 	}
@@ -23,6 +23,9 @@ func CreateWriter(tree, separateTree, drawable, mdEnabled, json, html bool, plan
 	}
 	if html {
 		return NewHTMLWriter(terraformstate.GetAllResourceChanges(plan), terraformstate.GetAllOutputChanges(plan))
+	}
+	if jsonSum {
+		return NewJsonSumWriter(terraformstate.GetAllResourceChanges(plan))
 	}
 
 	return NewTableWriter(terraformstate.GetAllResourceChanges(plan), terraformstate.GetAllOutputChanges(plan), mdEnabled)

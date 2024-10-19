@@ -19,6 +19,7 @@ func main() {
 	tree := flag.Bool("tree", false, "[Optional] print changes in tree format")
 	json := flag.Bool("json", false, "[Optional] print changes in json format")
 	html := flag.Bool("html", false, "[Optional] print changes in html format")
+	jsonSum := flag.Bool("json-sum", false, "[Optional] print summary in json format")
 	separateTree := flag.Bool("separate-tree", false, "[Optional] print changes in tree format for add/delete/change/recreate changes")
 	drawable := flag.Bool("draw", false, "[Optional, used only with -tree or -separate-tree] draw trees instead of plain tree")
 	md := flag.Bool("md", false, "[Optional, used only with table view] output table as markdown")
@@ -36,7 +37,7 @@ func main() {
 	}
 
 	args := flag.Args()
-	err := validateFlags(*tree, *separateTree, *drawable, *md, *json, *html, args)
+	err := validateFlags(*tree, *separateTree, *drawable, *md, *json, *jsonSum, *html, args)
 	logIfErrorAndExit("invalid input flags: %s\n", err, flag.Usage)
 
 	newReader, err := reader.CreateReader(args)
@@ -53,7 +54,7 @@ func main() {
 
 	terraformstate.FilterNoOpResources(&terraformState)
 
-	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, *html, terraformState)
+	newWriter := writer.CreateWriter(*tree, *separateTree, *drawable, *md, *json, *html, *jsonSum, terraformState)
 
 	var outputFile io.Writer = os.Stdout
 
@@ -84,7 +85,7 @@ func logIfErrorAndExit(format string, err error, callback func()) {
 	}
 }
 
-func validateFlags(tree, separateTree, drawable bool, md bool, json bool, html bool, args []string) error {
+func validateFlags(tree, separateTree, drawable bool, md bool, json bool, jsonSum bool, html bool, args []string) error {
 	if tree && md {
 		return fmt.Errorf("both -tree and -md should not be provided")
 	}
@@ -97,8 +98,8 @@ func validateFlags(tree, separateTree, drawable bool, md bool, json bool, html b
 	if !tree && !separateTree && drawable {
 		return fmt.Errorf("drawable should be provided with -tree or -seperate-tree")
 	}
-	if multipleTrueVals(md, json, html) {
-		return fmt.Errorf("only one of -md, -json, or -html should be provided")
+	if multipleTrueVals(md, json, html, jsonSum) {
+		return fmt.Errorf("only one of -md, -json, -json-sum, or -html should be provided")
 	}
 	if len(args) > 1 {
 		return fmt.Errorf("only one argument is allowed which is filename, but got %v", args)
