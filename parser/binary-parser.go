@@ -9,8 +9,20 @@ import (
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
+type CommandExecutor interface {
+	CombinedOutput(name string, args ...string) ([]byte, error)
+}
+
+type RealCommandExecutor struct{}
+
+func (e RealCommandExecutor) CombinedOutput(name string, args ...string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	return cmd.CombinedOutput()
+}
+
 type BinaryParser struct {
 	fileName string
+	executor CommandExecutor
 }
 
 func (j BinaryParser) Parse() (tfjson.Plan, error) {
@@ -18,14 +30,13 @@ func (j BinaryParser) Parse() (tfjson.Plan, error) {
 	if tfoverride, ok := os.LookupEnv("TF_BINARY"); ok {
 		tfbinary = tfoverride
 	}
-	cmd := exec.Command(tfbinary, "show", "-json", j.fileName)
-	output, err := cmd.CombinedOutput()
+	output, err := j.executor.CombinedOutput(tfbinary, "show", "-json", j.fileName)
 	if err != nil {
 		return tfjson.Plan{}, fmt.Errorf(
 			"error when running 'terraform show -json %s': \n%s\n\n%s",
 			j.fileName, output, "Make sure you are running in terraform directory and terraform init is done")
 	}
-	plan := tfjson.Plan{}
+	var plan tfjson.Plan
 	err = json.Unmarshal(output, &plan)
 	if err != nil {
 		return tfjson.Plan{}, fmt.Errorf("error when parsing input: %s", err.Error())
@@ -36,5 +47,6 @@ func (j BinaryParser) Parse() (tfjson.Plan, error) {
 func NewBinaryParser(fileName string) Parser {
 	return BinaryParser{
 		fileName: fileName,
+		executor: RealCommandExecutor{},
 	}
 }
