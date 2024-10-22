@@ -9,13 +9,9 @@ import (
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
-type CommandExecutor interface {
-	CombinedOutput(name string, args ...string) ([]byte, error)
-}
+type DefaultCommandExecutor struct{}
 
-type RealCommandExecutor struct{}
-
-func (e RealCommandExecutor) CombinedOutput(name string, args ...string) ([]byte, error) {
+func (e DefaultCommandExecutor) CombinedOutput(name string, args ...string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	return cmd.CombinedOutput()
 }
@@ -47,6 +43,6 @@ func (j BinaryParser) Parse() (tfjson.Plan, error) {
 func NewBinaryParser(fileName string) Parser {
 	return BinaryParser{
 		fileName: fileName,
-		executor: RealCommandExecutor{},
+		executor: DefaultCommandExecutor{},
 	}
 }
