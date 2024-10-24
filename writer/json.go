@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/dineshba/tf-summarize/tree"
@@ -40,7 +41,11 @@ func treeValue(t tree.Tree) interface{} {
 			after, _ := json.Marshal(t.Value.Change.After)
 			_, str := jsondiff.Compare(before, after, &opts)
 			diff = make(map[string]interface{})
-			_ = json.Unmarshal([]byte(str), &diff)
+			err := json.Unmarshal([]byte(str), &diff)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "warning: unmarshalling diff error: %s\n", err)
+				diff = fmt.Sprintf("raw diff: %s", str)
+			}
 		} else {
 			if t.IsAddition() || t.IsImport() {
 				diff = t.Value.Change.After
