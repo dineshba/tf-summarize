@@ -32,6 +32,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 	table := tablewriter.NewWriter(writer)
 	table.SetHeader([]string{"Change", "Resource"})
 	table.SetAutoMergeCells(true)
+	table.SetAutoWrapText(false)
 	table.AppendBulk(tableString)
 
 	if t.mdEnabled {
@@ -59,6 +60,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 		table = tablewriter.NewWriter(writer)
 		table.SetHeader([]string{"Change", "Output"})
 		table.SetAutoMergeCells(true)
+		table.SetAutoWrapText(false)
 		table.AppendBulk(tableString)
 
 		if t.mdEnabled {
