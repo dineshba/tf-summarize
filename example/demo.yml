@@ -6,44 +6,44 @@ config:
   # the default is bash for Linux
   # or powershell.exe for Windows
   command: bash -l
-  
+
   # Specify the current working directory path
   # the default is the current working directory path
   cwd: /private/tmp/terraform-plan-summary
-  
+
   # Export additional ENV variables
   env:
     recording: true
-  
+
   # Explicitly set the number of columns
   # or use `auto` to take the current
   # number of columns of your shell
   cols: 212
-  
+
   # Explicitly set the number of rows
   # or use `auto` to take the current
   # number of rows of your shell
   rows: 57
-  
+
   # Amount of times to repeat GIF
   # If value is -1, play once
   # If value is 0, loop indefinitely
   # If value is a positive number, loop n times
   repeat: 0
-  
+
   # Quality
   # 1 - 100
   quality: 100
-  
+
   # Delay between frames in ms
   # If the value is `auto` use the actual recording delays
   frameDelay: auto
-  
+
   # Maximum delay between frames in ms
   # Ignored if the `frameDelay` isn't set to `auto`
   # Set to `auto` to prevent limiting the max idle time
   maxIdleTime: 2000
-  
+
   # The surrounding frame box
   # The `type` can be null, window, floating, or solid`
   # To hide the title use the value null
@@ -55,7 +55,7 @@ config:
       border: 0px black solid
       # boxShadow: none
       # margin: 0px
-  
+
   # Add a watermark image to the rendered gif
   # You need to specify an absolute path for
   # the image on your machine or a URL, and you can also
@@ -68,25 +68,25 @@ config:
       bottom: 15px
       width: 100px
       opacity: 0.9
-  
+
   # Cursor style can be one of
   # `block`, `underline`, or `bar`
   cursorStyle: block
-  
+
   # Font family
   # You can use any font that is installed on your machine
   # in CSS-like syntax
   fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
-  
+
   # The size of the font
   fontSize: 14
-  
+
   # The height of lines
   lineHeight: 1
-  
+
   # The spacing between letters
   letterSpacing: 0
-  
+
   # Theme
   theme:
     background: "transparent"
@@ -108,7 +108,7 @@ config:
     brightMagenta: "#ae89fe"
     brightCyan: "#b1c6ca"
     brightWhite: "#f9f9f4"
-  
+
 # Records, feel free to edit them
 records:
   - delay: 5739
@@ -356,7 +356,7 @@ records:
   - delay: 1303
     content: '# result is grouped by Change'
   - delay: 2430
-    content: "\r\n\e[?2004l\r"    
+    content: "\r\n\e[?2004l\r"
   - delay: 140
     content: "\e[1;32m❯\e[0m "
   - delay: 1303
