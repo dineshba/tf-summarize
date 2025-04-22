@@ -19,7 +19,7 @@ func TestHTMLWriterWithMockFileSystem(t *testing.T) {
     <th>RESOURCE</th>
   </tr>{{ range $change, $resources := .ResourceChanges }}{{ $length := len $resources }}{{ if gt $length 0 }}
   <tr>
-    <td>{{ $change }}</td>
+    <td>{{ $change }} ({{ len $resources }})</td>
     <td>
       <ul>{{ range $i, $r := $resources }}
         <li><code>{{ $r.Address }}</code></li>{{ end }}
