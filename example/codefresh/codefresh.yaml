@@ -38,7 +38,7 @@ steps:
     commands:
       - terraform plan -out=tfplan
       - terraform show -json tfplan > output.json
-  
+
   tfSummarize:
     title: Show Changes
     image: ghcr.io/dineshba/tf-summarize

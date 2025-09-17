@@ -1,0 +1,36 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_language_version:
+  python: python3.12
+
+default_stages: [pre-commit, pre-push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+        exclude: '.*\.go$'
+      - id: end-of-file-fixer
+        exclude: '.*\.go$'
+      - id: trailing-whitespace
+        exclude: '.*\.go$'
+      - id: check-yaml
+        exclude: '.*\.go$'
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+        exclude: '.*\.go$'
+      - id: detect-private-key
+        exclude: '.*\.go$'
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.43.0
+    hooks:
+    - id: markdownlint
+      args:
+      - --fix
+      verbose: true
+      entry: bash -c 'markdownlint "$@" || true' --
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+    - id: codespell
