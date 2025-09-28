@@ -50,7 +50,6 @@ go install github.com/dineshba/tf-summarize@latest
 
 #### Using Brew
 ```sh
-brew tap thecasualcoder/stable
 brew install tf-summarize
 ```
 
