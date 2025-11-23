@@ -6,8 +6,9 @@
   <tr>
     <td>{{ $change }}</td>
     <td>
-      <ul>{{ range $i, $r := $resources }}
-        <li><code>{{ $r.Address }}</code></li>{{ end }}
+      <ul>{{ range $i, $r := $resources }}{{ if eq $change "moved" }}
+        <li><code>{{ $r.Address }}</code> to <code>{{ $r.Address }}</code></li>{{ else }}
+        <li><code>{{ $r.Address }}</code></li>{{ end }}{{ end }}
       </ul>
     </td>
   </tr>{{ end }}{{ end }}

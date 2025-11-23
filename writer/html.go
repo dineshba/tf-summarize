@@ -14,13 +14,11 @@ type HTMLWriter struct {
 	OutputChanges   map[string][]string
 }
 
-var cfs = getFS()
-
 // Write outputs the HTML summary to the io.Writer it's passed.
 func (t HTMLWriter) Write(writer io.Writer) error {
 	templatesDir := "templates"
 	rcTmpl := "resourceChanges.html"
-	tmpl, err := template.New(rcTmpl).ParseFS(cfs, path.Join(templatesDir, rcTmpl))
+	tmpl, err := template.New(rcTmpl).ParseFS(templates, path.Join(templatesDir, rcTmpl))
 	if err != nil {
 		return err
 	}
@@ -35,7 +33,7 @@ func (t HTMLWriter) Write(writer io.Writer) error {
 	}
 
 	ocTmpl := "outputChanges.html"
-	outputTmpl, err := template.New(ocTmpl).ParseFS(cfs, path.Join(templatesDir, ocTmpl))
+	outputTmpl, err := template.New(ocTmpl).ParseFS(templates, path.Join(templatesDir, ocTmpl))
 	if err != nil {
 		return err
 	}
