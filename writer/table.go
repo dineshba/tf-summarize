@@ -14,7 +14,7 @@ type TableWriter struct {
 	outputChanges map[string][]string
 }
 
-var tableOrder = []string{"import", "move", "add", "update", "recreate", "delete"}
+var tableOrder = []string{"import", "moved", "add", "update", "recreate", "delete"}
 
 func (t TableWriter) Write(writer io.Writer) error {
 	tableString := make([][]string, 0, 4)
@@ -28,7 +28,11 @@ func (t TableWriter) Write(writer io.Writer) error {
 					tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedResource.Address)})
 				}
 			} else {
-				tableString = append(tableString, []string{change, changedResource.Address})
+				if change == "moved" {
+					tableString = append(tableString, []string{change, fmt.Sprintf("%s to %s", changedResource.PreviousAddress, changedResource.Address)})
+				} else {
+					tableString = append(tableString, []string{change, changedResource.Address})
+				}
 			}
 		}
 	}

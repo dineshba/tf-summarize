@@ -39,6 +39,8 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 	expectedOutput := `+--------+--------------------------------------------------+
 | CHANGE |                     RESOURCE                     |
 +--------+--------------------------------------------------+
+| moved  | aws_instance.old to aws_instance.new             |
++--------+--------------------------------------------------+
 | add    | aws_instance.example1                            |
 +--------+--------------------------------------------------+
 | update | aws_instance.example3                            |
@@ -74,10 +76,11 @@ func TestTableWriter_Write_WithMarkdown(t *testing.T) {
 	err := tw.Write(&output)
 	assert.NoError(t, err)
 
-	expectedOutput := `| CHANGE |        RESOURCE         |
-|--------|-------------------------|
-| add    | ` + "`aws_instance.example1`" + ` |
-| delete | ` + "`aws_instance.example2`" + ` |
+	expectedOutput := `| CHANGE |                 RESOURCE                 |
+|--------|------------------------------------------|
+| moved  | ` + "`aws_instance.old` to `aws_instance.new`" + ` |
+| add    | ` + "`aws_instance.example1`" + `                  |
+| delete | ` + "`aws_instance.example2`" + `                  |
 
 | CHANGE |                          OUTPUT                          |
 |--------|----------------------------------------------------------|
