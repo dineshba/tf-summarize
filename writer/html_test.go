@@ -21,6 +21,16 @@ func TestHTMLWriter(t *testing.T) {
 				},
 			},
 		},
+		"moved": {
+			{
+				Address:         "aws_instance.foo",
+				PreviousAddress: "aws_instance.bar",
+				Name:            "foo",
+				Change: &Change{
+					Actions: Actions{},
+				},
+			},
+		},
 	}
 	outputChanges := map[string][]string{
 		"output_key": {"output_value"},
@@ -38,6 +48,14 @@ func TestHTMLWriter(t *testing.T) {
   <tr>
     <th>CHANGE</th>
     <th>RESOURCE</th>
+  </tr>
+  <tr>
+    <td>moved</td>
+    <td>
+      <ul>
+        <li><code>aws_instance.bar</code> to <code>aws_instance.foo</code></li>
+      </ul>
+    </td>
   </tr>
   <tr>
     <td>update</td>
@@ -64,7 +82,7 @@ func TestHTMLWriter(t *testing.T) {
 </table>
 `
 	if buf.String() != expectedOutput {
-		t.Errorf("expected %q, got %q", expectedOutput, buf.String())
+		t.Errorf("expected %s, got %s", expectedOutput, buf.String())
 	}
 
 }
