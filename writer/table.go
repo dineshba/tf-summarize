@@ -22,7 +22,11 @@ func (t TableWriter) Write(writer io.Writer) error {
 		changedResources := t.changes[change]
 		for _, changedResource := range changedResources {
 			if t.mdEnabled {
-				tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedResource.Address)})
+				if change == "moved" {
+					tableString = append(tableString, []string{change, fmt.Sprintf("`%s` to `%s`", changedResource.PreviousAddress, changedResource.Address)})
+				} else {
+					tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedResource.Address)})
+				}
 			} else {
 				tableString = append(tableString, []string{change, changedResource.Address})
 			}
