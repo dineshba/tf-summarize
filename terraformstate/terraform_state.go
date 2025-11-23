@@ -90,6 +90,17 @@ func importedResources(resources ResourceChanges) ResourceChanges {
 	return acc
 }
 
+func movedResources(resources ResourceChanges) ResourceChanges {
+	acc := make(ResourceChanges, 0)
+	for _, r := range resources {
+		if r.PreviousAddress != "" && r.PreviousAddress != r.Address {
+			acc = append(acc, r)
+
+		}
+	}
+	return acc
+}
+
 func FilterNoOpResources(ts *tfjson.Plan) {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
@@ -107,6 +118,7 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 	updatedResources := updatedResources(plan.ResourceChanges)
 	recreatedResources := recreatedResources(plan.ResourceChanges)
 	importedResources := importedResources(plan.ResourceChanges)
+	movedResources := movedResources(plan.ResourceChanges)
 
 	sortResources := func(resources ResourceChanges) {
 		sort.Slice(resources, func(i, j int) bool {
@@ -119,9 +131,11 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 	sortResources(updatedResources)
 	sortResources(recreatedResources)
 	sortResources(importedResources)
+	sortResources(movedResources)
 
 	return map[string]ResourceChanges{
 		"import":   importedResources,
+		"moved":    movedResources,
 		"add":      addedResources,
 		"delete":   deletedResources,
 		"update":   updatedResources,

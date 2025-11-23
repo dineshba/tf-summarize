@@ -14,7 +14,7 @@ type TableWriter struct {
 	outputChanges map[string][]string
 }
 
-var tableOrder = []string{"import", "add", "update", "recreate", "delete"}
+var tableOrder = []string{"import", "move", "add", "update", "recreate", "delete"}
 
 func (t TableWriter) Write(writer io.Writer) error {
 	tableString := make([][]string, 0, 4)

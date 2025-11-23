@@ -42,6 +42,7 @@ func TestGetAllResourceChanges(t *testing.T) {
 		&ResourceChange{Address: "update1", Change: &Change{Actions: Actions{ActionUpdate}}},
 		&ResourceChange{Address: "import2", Change: &Change{Importing: &Importing{ID: "id1"}}},
 		&ResourceChange{Address: "import1", Change: &Change{Importing: &Importing{ID: "id2"}}},
+		&ResourceChange{Address: "move1", PreviousAddress: "move", Change: &Change{Actions: Actions{}}},
 		&ResourceChange{Address: "recreate2", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
 		&ResourceChange{Address: "recreate1", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
 	}
@@ -69,6 +70,9 @@ func TestGetAllResourceChanges(t *testing.T) {
 		"import": {
 			&ResourceChange{Address: "import1", Change: &Change{Importing: &Importing{ID: "id2"}}},
 			&ResourceChange{Address: "import2", Change: &Change{Importing: &Importing{ID: "id1"}}},
+		},
+		"moved": {
+			&ResourceChange{Address: "move1", PreviousAddress: "move", Change: &Change{Actions: Actions{}}},
 		},
 	}
 
