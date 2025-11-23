@@ -10,7 +10,7 @@ import (
 
 func TestHTMLWriter(t *testing.T) {
 	resourceChanges := map[string]terraformstate.ResourceChanges{
-		"module.test": {
+		"update": {
 			{
 				Address: "aws_instance.example",
 				Name:    "example",
@@ -40,7 +40,7 @@ func TestHTMLWriter(t *testing.T) {
     <th>RESOURCE</th>
   </tr>
   <tr>
-    <td>module.test</td>
+    <td>update</td>
     <td>
       <ul>
         <li><code>aws_instance.example</code></li>
