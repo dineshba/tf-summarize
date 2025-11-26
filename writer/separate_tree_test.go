@@ -53,13 +53,6 @@ func createMockChanges() map[string]terraformstate.ResourceChanges {
 				Change:  &Change{Actions: Actions{ActionDelete}},
 			},
 		},
-		"moved": {
-			{
-				Address:         "aws_instance.new",
-				PreviousAddress: "aws_instance.old",
-				Change:          &Change{Actions: Actions{}},
-			},
-		},
 	}
 }
 

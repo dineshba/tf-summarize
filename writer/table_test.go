@@ -24,6 +24,16 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 		},
 	}
 
+	movedResources := map[string]terraformstate.ResourceChanges{
+		"moved": {
+			{
+				Address:         "aws_instance.new",
+				PreviousAddress: "aws_instance.old",
+				Change:          &Change{Actions: Actions{}},
+			},
+		},
+	}
+
 	outputChanges := map[string][]string{
 		"update": {
 			"output.example",
@@ -31,15 +41,13 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 		},
 	}
 
-	tw := NewTableWriter(changes, outputChanges, false)
+	tw := NewTableWriter(changes, movedResources, outputChanges, false)
 	var output bytes.Buffer
 	err := tw.Write(&output)
 	assert.NoError(t, err)
 
 	expectedOutput := `+--------+--------------------------------------------------+
 | CHANGE |                     RESOURCE                     |
-+--------+--------------------------------------------------+
-| moved  | aws_instance.old to aws_instance.new             |
 +--------+--------------------------------------------------+
 | add    | aws_instance.example1                            |
 +--------+--------------------------------------------------+
@@ -48,6 +56,8 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 |        | aws_instance.example4.tag["Custom Instance Tag"] |
 +--------+--------------------------------------------------+
 | delete | aws_instance.example2                            |
++--------+--------------------------------------------------+
+| moved  | aws_instance.old to aws_instance.new             |
 +--------+--------------------------------------------------+
 +--------+--------------------------------------------------------+
 | CHANGE |                         OUTPUT                         |
@@ -64,6 +74,16 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 func TestTableWriter_Write_WithMarkdown(t *testing.T) {
 	changes := createMockChanges()
 
+	movedResources := map[string]terraformstate.ResourceChanges{
+		"moved": {
+			{
+				Address:         "aws_instance.new",
+				PreviousAddress: "aws_instance.old",
+				Change:          &Change{Actions: Actions{}},
+			},
+		},
+	}
+
 	outputChanges := map[string][]string{
 		"update": {
 			"output.example",
@@ -71,16 +91,16 @@ func TestTableWriter_Write_WithMarkdown(t *testing.T) {
 		},
 	}
 
-	tw := NewTableWriter(changes, outputChanges, true)
+	tw := NewTableWriter(changes, movedResources, outputChanges, true)
 	var output bytes.Buffer
 	err := tw.Write(&output)
 	assert.NoError(t, err)
 
 	expectedOutput := `| CHANGE |                 RESOURCE                 |
 |--------|------------------------------------------|
-| moved  | ` + "`aws_instance.old` to `aws_instance.new`" + ` |
 | add    | ` + "`aws_instance.example1`" + `                  |
 | delete | ` + "`aws_instance.example2`" + `                  |
+| moved  | ` + "`aws_instance.old` to `aws_instance.new`" + ` |
 
 | CHANGE |                          OUTPUT                          |
 |--------|----------------------------------------------------------|
@@ -93,9 +113,10 @@ func TestTableWriter_Write_WithMarkdown(t *testing.T) {
 
 func TestTableWriter_NoChanges(t *testing.T) {
 	changes := map[string]terraformstate.ResourceChanges{}
+	movedResources := map[string]terraformstate.ResourceChanges{}
 	outputChanges := map[string][]string{}
 
-	tw := NewTableWriter(changes, outputChanges, false)
+	tw := NewTableWriter(changes, movedResources, outputChanges, false)
 	var output bytes.Buffer
 	err := tw.Write(&output)
 	assert.NoError(t, err)

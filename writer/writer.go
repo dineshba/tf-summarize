@@ -28,5 +28,5 @@ func CreateWriter(tree, separateTree, drawable, mdEnabled, json, html bool, json
 		return NewJsonSumWriter(terraformstate.GetAllResourceChanges(plan))
 	}
 
-	return NewTableWriter(terraformstate.GetAllResourceChanges(plan), terraformstate.GetAllOutputChanges(plan), mdEnabled)
+	return NewTableWriter(terraformstate.GetAllResourceChanges(plan), terraformstate.GetAllResourceMoves(plan), terraformstate.GetAllOutputChanges(plan), mdEnabled)
 }
