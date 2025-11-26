@@ -21,6 +21,8 @@ func TestHTMLWriter(t *testing.T) {
 				},
 			},
 		},
+	}
+	movedResources := map[string]terraformstate.ResourceChanges{
 		"moved": {
 			{
 				Address:         "aws_instance.foo",
@@ -36,7 +38,7 @@ func TestHTMLWriter(t *testing.T) {
 		"output_key": {"output_value"},
 	}
 
-	htmlWriter := NewHTMLWriter(resourceChanges, outputChanges)
+	htmlWriter := NewHTMLWriter(resourceChanges, movedResources, outputChanges)
 	var buf bytes.Buffer
 
 	err := htmlWriter.Write(&buf)
@@ -50,18 +52,18 @@ func TestHTMLWriter(t *testing.T) {
     <th>RESOURCE</th>
   </tr>
   <tr>
-    <td>moved</td>
-    <td>
-      <ul>
-        <li><code>aws_instance.bar</code> to <code>aws_instance.foo</code></li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
     <td>update</td>
     <td>
       <ul>
         <li><code>aws_instance.example</code></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>moved</td>
+    <td>
+      <ul>
+        <li><code>aws_instance.bar</code> to <code>aws_instance.foo</code></li>
       </ul>
     </td>
   </tr>

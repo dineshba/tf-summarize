@@ -131,7 +131,6 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 	sortResources(updatedResources)
 	sortResources(recreatedResources)
 	sortResources(importedResources)
-	sortResources(movedResources)
 
 	return map[string]ResourceChanges{
 		"import":   importedResources,
@@ -140,6 +139,15 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 		"delete":   deletedResources,
 		"update":   updatedResources,
 		"recreate": recreatedResources,
+	}
+}
+
+// GetAllResourceMoves returns all resources that have moved.
+func GetAllResourceMoves(plan tfjson.Plan) map[string]ResourceChanges {
+	movedResources := movedResources(plan.ResourceChanges)
+
+	return map[string]ResourceChanges{
+		"moved": movedResources,
 	}
 }
 

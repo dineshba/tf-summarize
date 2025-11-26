@@ -11,6 +11,7 @@ import (
 // HTMLWriter is a Writer that writes HTML.
 type HTMLWriter struct {
 	ResourceChanges map[string]terraformstate.ResourceChanges
+	MovedResources  map[string]terraformstate.ResourceChanges
 	OutputChanges   map[string][]string
 }
 
@@ -31,7 +32,6 @@ func (t HTMLWriter) Write(writer io.Writer) error {
 	if !hasOutputChanges(t.OutputChanges) {
 		return nil
 	}
-
 	ocTmpl := "outputChanges.html"
 	outputTmpl, err := template.New(ocTmpl).ParseFS(templates, path.Join(templatesDir, ocTmpl))
 	if err != nil {
@@ -42,9 +42,10 @@ func (t HTMLWriter) Write(writer io.Writer) error {
 }
 
 // NewHTMLWriter returns a new HTMLWriter with the configuration it's passed.
-func NewHTMLWriter(changes map[string]terraformstate.ResourceChanges, outputChanges map[string][]string) Writer {
+func NewHTMLWriter(changes map[string]terraformstate.ResourceChanges, movedResources map[string]terraformstate.ResourceChanges, outputChanges map[string][]string) Writer {
 	return HTMLWriter{
 		ResourceChanges: changes,
+		MovedResources:  movedResources,
 		OutputChanges:   outputChanges,
 	}
 }
