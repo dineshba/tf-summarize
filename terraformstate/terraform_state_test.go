@@ -130,11 +130,14 @@ func TestResourceChangeColorAndSuffixImport(t *testing.T) {
 }
 
 func TestFilterNoOpResources(t *testing.T) {
+	identityImport := &ResourceChange{Address: "no-op5", Change: &Change{Actions: Actions{ActionNoop}, Importing: &Importing{Identity: struct{ Account string }{Account: "account ID"}}}}
 	resourceChanges := ResourceChanges{
 		&ResourceChange{Address: "no-op1", Change: &Change{Actions: Actions{ActionNoop}}},
 		&ResourceChange{Address: "no-op3", Change: &Change{Actions: Actions{ActionNoop}, Importing: nil}},
 		&ResourceChange{Address: "no-op2", Change: &Change{Actions: Actions{ActionNoop}, Importing: &Importing{ID: ""}}},
+		&ResourceChange{Address: "no-op4", Change: &Change{Actions: Actions{ActionNoop}, Importing: &Importing{Identity: nil}}},
 		&ResourceChange{Address: "create", Change: &Change{Actions: Actions{ActionCreate}}},
+		identityImport,
 	}
 	plan := tfjson.Plan{ResourceChanges: resourceChanges}
 
@@ -142,6 +145,7 @@ func TestFilterNoOpResources(t *testing.T) {
 
 	expectedResourceChangesAfterFiltering := ResourceChanges{
 		&ResourceChange{Address: "create", Change: &Change{Actions: Actions{ActionCreate}}},
+		identityImport,
 	}
 	assert.Equal(t, expectedResourceChangesAfterFiltering, plan.ResourceChanges)
 }

@@ -83,7 +83,8 @@ func importedResources(resources ResourceChanges) ResourceChanges {
 		}
 
 		id := r.Change.Importing.ID
-		if id != "" {
+		identity := r.Change.Importing.Identity
+		if id != "" || identity != nil {
 			acc = append(acc, r)
 		}
 	}
@@ -93,7 +94,13 @@ func importedResources(resources ResourceChanges) ResourceChanges {
 func FilterNoOpResources(ts *tfjson.Plan) {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
-		if len(r.Change.Actions) == 1 && r.Change.Actions[0] == "no-op" && (r.Change.Importing == nil || r.Change.Importing.ID == "") {
+		// ID-based importing
+		oldImporting := r.Change.Importing != nil && r.Change.Importing.ID != ""
+
+		// New identity-based importing introduced in terraform 1.12
+		newImporting := r.Change.Importing != nil && r.Change.Importing.Identity != nil
+
+		if r.Change.Actions.NoOp() && !oldImporting && !newImporting {
 			continue
 		}
 		acc = append(acc, r)
