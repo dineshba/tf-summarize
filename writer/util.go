@@ -2,7 +2,6 @@ package writer
 
 import (
 	"embed"
-	"io/fs"
 	"regexp"
 )
 
@@ -10,10 +9,6 @@ import (
 //
 //go:embed templates
 var templates embed.FS
-
-var getFS = func() fs.FS {
-	return templates
-}
 
 func hasOutputChanges(opChanges map[string][]string) bool {
 	hasChanges := false

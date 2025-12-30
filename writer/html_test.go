@@ -3,56 +3,14 @@ package writer
 import (
 	"bytes"
 	"testing"
-	"testing/fstest"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	. "github.com/hashicorp/terraform-json"
 )
 
-func TestHTMLWriterWithMockFileSystem(t *testing.T) {
-	origFS := cfs
-	cfs = fstest.MapFS{
-		"templates/resourceChanges.html": &fstest.MapFile{
-			Data: []byte(`<table>
-  <tr>
-    <th>CHANGE</th>
-    <th>RESOURCE</th>
-  </tr>{{ range $change, $resources := .ResourceChanges }}{{ $length := len $resources }}{{ if gt $length 0 }}
-  <tr>
-    <td>{{ $change }}</td>
-    <td>
-      <ul>{{ range $i, $r := $resources }}
-        <li><code>{{ $r.Address }}</code></li>{{ end }}
-      </ul>
-    </td>
-  </tr>{{ end }}{{ end }}
-</table>
-`),
-		},
-		"templates/outputChanges.html": &fstest.MapFile{
-			Data: []byte(`<table>
-  <tr>
-    <th>CHANGE</th>
-    <th>OUTPUT</th>
-  </tr>{{ range $change, $outputs := .OutputChanges }}{{ $length := len $outputs }}{{ if gt $length 0 }}
-  <tr>
-    <td>{{ $change }}</td>
-    <td>
-      <ul>{{ range $i, $o := $outputs }}
-        <li><code>{{ $o }}</code></li>{{ end }}
-      </ul>
-    </td>
-  </tr>{{ end }}{{ end }}
-</table>
-`),
-		},
-	}
-	t.Cleanup(func() {
-		cfs = origFS
-	})
-
+func TestHTMLWriter(t *testing.T) {
 	resourceChanges := map[string]terraformstate.ResourceChanges{
-		"module.test": {
+		"update": {
 			{
 				Address: "aws_instance.example",
 				Name:    "example",
@@ -64,11 +22,23 @@ func TestHTMLWriterWithMockFileSystem(t *testing.T) {
 			},
 		},
 	}
+	movedResources := map[string]terraformstate.ResourceChanges{
+		"moved": {
+			{
+				Address:         "aws_instance.foo",
+				PreviousAddress: "aws_instance.bar",
+				Name:            "foo",
+				Change: &Change{
+					Actions: Actions{},
+				},
+			},
+		},
+	}
 	outputChanges := map[string][]string{
 		"output_key": {"output_value"},
 	}
 
-	htmlWriter := NewHTMLWriter(resourceChanges, outputChanges)
+	htmlWriter := NewHTMLWriter(resourceChanges, movedResources, outputChanges)
 	var buf bytes.Buffer
 
 	err := htmlWriter.Write(&buf)
@@ -82,10 +52,18 @@ func TestHTMLWriterWithMockFileSystem(t *testing.T) {
     <th>RESOURCE</th>
   </tr>
   <tr>
-    <td>module.test</td>
+    <td>update</td>
     <td>
       <ul>
         <li><code>aws_instance.example</code></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>moved</td>
+    <td>
+      <ul>
+        <li><code>aws_instance.bar</code> to <code>aws_instance.foo</code></li>
       </ul>
     </td>
   </tr>
@@ -106,7 +84,7 @@ func TestHTMLWriterWithMockFileSystem(t *testing.T) {
 </table>
 `
 	if buf.String() != expectedOutput {
-		t.Errorf("expected %q, got %q", expectedOutput, buf.String())
+		t.Errorf("expected %s, got %s", expectedOutput, buf.String())
 	}
 
 }

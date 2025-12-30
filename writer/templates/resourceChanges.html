@@ -6,8 +6,17 @@
   <tr>
     <td>{{ $change }}</td>
     <td>
+      <ul>{{ range $i, $r := $resources }}{{ if eq $change "moved" }}
+        <li><code>{{ $r.PreviousAddress }}</code> to <code>{{ $r.Address }}</code></li>{{ else }}
+        <li><code>{{ $r.Address }}</code></li>{{ end }}{{ end }}
+      </ul>
+    </td>
+  </tr>{{ end }}{{ end }}{{ range $change, $resources := .MovedResources }}{{ $length := len $resources }}{{ if gt $length 0 }}
+  <tr>
+    <td>{{ $change }}</td>
+    <td>
       <ul>{{ range $i, $r := $resources }}
-        <li><code>{{ $r.Address }}</code></li>{{ end }}
+        <li><code>{{ $r.PreviousAddress }}</code> to <code>{{ $r.Address }}</code></li>{{ end }}
       </ul>
     </td>
   </tr>{{ end }}{{ end }}
