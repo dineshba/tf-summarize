@@ -16,6 +16,7 @@ type TableWriter struct {
 }
 
 var tableOrder = []string{"import", "add", "update", "recreate", "delete"}
+var tableColor = map[string]string{"import": "\033[34;1m", "add": "\033[32;1m", "update": "\033[33;1m", "recreate": "\033[36;1m", "delete": "\033[31;1m"}
 
 func (t TableWriter) Write(writer io.Writer) error {
 	tableString := make([][]string, 0, 4)
@@ -27,7 +28,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 			if t.mdEnabled {
 				tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedResource.Address)})
 			} else {
-				tableString = append(tableString, []string{change, changedResource.Address})
+				tableString = append(tableString, []string{tableColor[change] + change + "\033[0m", changedResource.Address})
 			}
 		}
 	}
