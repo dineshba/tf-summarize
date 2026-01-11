@@ -46,26 +46,26 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 	err := tw.Write(&output)
 	assert.NoError(t, err)
 
-	expectedOutput := `+--------+--------------------------------------------------+
-| CHANGE |                     RESOURCE                     |
-+--------+--------------------------------------------------+
-| add    | aws_instance.example1                            |
-+--------+--------------------------------------------------+
-| update | aws_instance.example3                            |
-+        +--------------------------------------------------+
-|        | aws_instance.example4.tag["Custom Instance Tag"] |
-+--------+--------------------------------------------------+
-| delete | aws_instance.example2                            |
-+--------+--------------------------------------------------+
-| moved  | aws_instance.old to aws_instance.new             |
-+--------+--------------------------------------------------+
-+--------+--------------------------------------------------------+
-| CHANGE |                         OUTPUT                         |
-+--------+--------------------------------------------------------+
-| update | output.example                                         |
-+        +--------------------------------------------------------+
-|        | output.long_resource_name.this["Custom/Resource Name"] |
-+--------+--------------------------------------------------------+
+	expectedOutput := `+------------+--------------------------------------------------+
+|   CHANGE   |                     RESOURCE                     |
++------------+--------------------------------------------------+
+| add (1)    | aws_instance.example1                            |
++------------+--------------------------------------------------+
+| update (2) | aws_instance.example3                            |
++            +--------------------------------------------------+
+|            | aws_instance.example4.tag["Custom Instance Tag"] |
++------------+--------------------------------------------------+
+| delete (1) | aws_instance.example2                            |
++------------+--------------------------------------------------+
+| moved      | aws_instance.old to aws_instance.new             |
++------------+--------------------------------------------------+
++------------+--------------------------------------------------------+
+|   CHANGE   |                         OUTPUT                         |
++------------+--------------------------------------------------------+
+| update (2) | output.example                                         |
++            +--------------------------------------------------------+
+|            | output.long_resource_name.this["Custom/Resource Name"] |
++------------+--------------------------------------------------------+
 `
 
 	assert.Equal(t, expectedOutput, output.String())
@@ -96,16 +96,16 @@ func TestTableWriter_Write_WithMarkdown(t *testing.T) {
 	err := tw.Write(&output)
 	assert.NoError(t, err)
 
-	expectedOutput := `| CHANGE |                 RESOURCE                 |
-|--------|------------------------------------------|
-| add    | ` + "`aws_instance.example1`" + `                  |
-| delete | ` + "`aws_instance.example2`" + `                  |
-| moved  | ` + "`aws_instance.old` to `aws_instance.new`" + ` |
+	expectedOutput := `|   CHANGE   |                 RESOURCE                 |
+|------------|------------------------------------------|
+| add (1)    | ` + "`aws_instance.example1`" + `                  |
+| delete (1) | ` + "`aws_instance.example2`" + `                  |
+| moved      | ` + "`aws_instance.old` to `aws_instance.new`" + ` |
 
-| CHANGE |                          OUTPUT                          |
-|--------|----------------------------------------------------------|
-| update | ` + "`output.example`" + `                                         |
-|        | ` + "`output.long_resource_name.this[\"Custom/Resource Name\"]`" + ` |
+|   CHANGE   |                          OUTPUT                          |
+|------------|----------------------------------------------------------|
+| update (2) | ` + "`output.example`" + `                                         |
+|            | ` + "`output.long_resource_name.this[\"Custom/Resource Name\"]`" + ` |
 `
 
 	assert.Equal(t, expectedOutput, output.String())

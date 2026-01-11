@@ -4,7 +4,7 @@
     <th>OUTPUT</th>
   </tr>{{ range $change, $outputs := .OutputChanges }}{{ $length := len $outputs }}{{ if gt $length 0 }}
   <tr>
-    <td>{{ $change }}</td>
+    <td>{{ $change }} ({{ len $outputs }})</td>
     <td>
       <ul>{{ range $i, $o := $outputs }}
         <li><code>{{ $o }}</code></li>{{ end }}

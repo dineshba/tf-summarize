@@ -52,7 +52,7 @@ func TestHTMLWriter(t *testing.T) {
     <th>RESOURCE</th>
   </tr>
   <tr>
-    <td>update</td>
+    <td>update (1)</td>
     <td>
       <ul>
         <li><code>aws_instance.example</code></li>
@@ -74,7 +74,7 @@ func TestHTMLWriter(t *testing.T) {
     <th>OUTPUT</th>
   </tr>
   <tr>
-    <td>output_key</td>
+    <td>output_key (1)</td>
     <td>
       <ul>
         <li><code>output_value</code></li>

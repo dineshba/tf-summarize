@@ -22,12 +22,13 @@ func (t TableWriter) Write(writer io.Writer) error {
 
 	for _, change := range tableOrder {
 		changedResources := t.changes[change]
+		resourceCount := len(changedResources)
 
 		for _, changedResource := range changedResources {
 			if t.mdEnabled {
-				tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedResource.Address)})
+				tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, resourceCount), fmt.Sprintf("`%s`", changedResource.Address)})
 			} else {
-				tableString = append(tableString, []string{change, changedResource.Address})
+				tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, resourceCount), changedResource.Address})
 			}
 		}
 	}
@@ -62,11 +63,12 @@ func (t TableWriter) Write(writer io.Writer) error {
 		tableString = make([][]string, 0, 4)
 		for _, change := range tableOrder {
 			changedOutputs := t.outputChanges[change]
+			outputCount := len(changedOutputs)
 			for _, changedOutput := range changedOutputs {
 				if t.mdEnabled {
-					tableString = append(tableString, []string{change, fmt.Sprintf("`%s`", changedOutput)})
+					tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, outputCount), fmt.Sprintf("`%s`", changedOutput)})
 				} else {
-					tableString = append(tableString, []string{change, changedOutput})
+					tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, outputCount), changedOutput})
 				}
 			}
 		}
