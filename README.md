@@ -8,27 +8,27 @@
 `tf-summarize` is a command-line utility to print the summary of the terraform plan
 
 <!-- TOC -->
-  * [tf-summarize (Terraform Summarizer)](#tf-summarize-terraform-summarizer)
-    * [Demo](#demo)
-    * [Why do we need it ?](#why-do-we-need-it-)
-    * [Install](#install)
-      * [Using Go](#using-go)
-      * [Using Brew](#using-brew)
-      * [Using asdf](#using-asdf)
-      * [Using Docker](#using-docker)
-      * [Using Github action](#using-github-action)
-      * [Download zip in release page](#download-zip-in-release-page)
-      * [Clone and Build Binary](#clone-and-build-binary)
-    * [Usage](#usage)
-    * [Examples](#examples)
-      * [GitHub Actions Workflow](#github-actions-workflow)
-        * [Using setup-tf-summarize action](#using-setup-tf-summarize-action)
-        * [Other approach](#other-approach)
-      * [Codefresh example](#codefresh-example)
-      * [Comment terraform plan summary in PRs](#comment-terraform-plan-summary-in-prs)
-      * [Interactive summary review](#interactive-summary-review)
-    * [Screenshot](#screenshot)
-    * [TODO](#todo)
+* [tf-summarize (Terraform Summarizer)](#tf-summarize-terraform-summarizer)
+  * [Demo](#demo)
+  * [Why do we need it ?](#why-do-we-need-it-)
+  * [Install](#install)
+    * [Using Go](#using-go)
+    * [Using Brew](#using-brew)
+    * [Using asdf](#using-asdf)
+    * [Using Docker](#using-docker)
+    * [Using Github action](#using-github-action)
+    * [Download zip in release page](#download-zip-in-release-page)
+    * [Clone and Build Binary](#clone-and-build-binary)
+  * [Usage](#usage)
+  * [Examples](#examples)
+    * [GitHub Actions Workflow](#github-actions-workflow)
+      * [Using setup-tf-summarize action](#using-setup-tf-summarize-action)
+      * [Other approach](#other-approach)
+    * [Codefresh example](#codefresh-example)
+    * [Comment terraform plan summary in PRs](#comment-terraform-plan-summary-in-prs)
+    * [Interactive summary review](#interactive-summary-review)
+  * [Screenshot](#screenshot)
+  * [TODO](#todo)
 <!-- TOC -->
 ### Demo
 
@@ -38,22 +38,25 @@ If demo is slower for you, please see [examples](#examples) and [screenshot](#sc
 
 ### Why do we need it ?
 
-- Most of the time, we make changes to the terraform files or tf-var files and run the plan command. And we precisely know which resources will get affected. In those time, we would like to just see the resource name and it's change.
-- When our plan have more than say 10 changes, we will first see what are the deleted changes, or we will just see the list of resources that get affected.
+* Most of the time, we make changes to the terraform files or tf-var files and run the plan command. And we precisely know which resources will get affected. In those time, we would like to just see the resource name and it's change.
+* When our plan have more than say 10 changes, we will first see what are the deleted changes, or we will just see the list of resources that get affected.
 
 ### Install
 
 #### Using Go
+
 ```sh
 go install github.com/dineshba/tf-summarize@latest
 ```
 
 #### Using Brew
+
 ```sh
 brew install tf-summarize
 ```
 
 #### Using asdf
+
 ```sh
 asdf plugin add tf-summarize
 asdf install tf-summarize latest
@@ -62,6 +65,7 @@ asdf install tf-summarize latest
 > See the asdf [plugin source](https://github.com/adamcrews/asdf-tf-summarize#install) for more information.
 
 #### Using Docker
+
 ```sh
 docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize -v # prints version
 docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize tfplan.json
@@ -90,12 +94,14 @@ steps:
 For more customization options, kindly refer to the [documentation here](https://github.com/kishaningithub/setup-tf-summarize#usage)
 
 #### Download zip in release page
+
 1. Go to release page [https://github.com/dineshba/terraform-plan-summary/releases](https://github.com/dineshba/terraform-plan-summary/releases)
 2. Download the zip for your OS and unzip it
 3. Copy it to local bin using `cp tf-summarize /usr/local/bin/tf-summarize` or to location which is part of `$PATH`
 4. (For Mac Only) Give access to run if prompted. [Refer here](https://stackoverflow.com/a/19551359/5305962)
 
 #### Clone and Build Binary
+
 1. Clone this repo
 2. Build binary using `make build` or `go build -o tf-summarize .`
 3. Install it to local bin using `make install` or `cp tf-summarize /usr/local/bin/tf-summarize`
@@ -199,7 +205,7 @@ A full example is available at [`example/codefresh/codefresh.yaml`](/example/cod
     commands:
       - terraform plan -out=tfplan
       - terraform show -json tfplan > output.json
-  
+
   tfSummarize:
     title: Show Changes
     image: ghcr.io/dineshba/tf-summarize
@@ -209,7 +215,7 @@ A full example is available at [`example/codefresh/codefresh.yaml`](/example/cod
       - tf-summarize output.json
 ```
 
-> :warning: **Not maintained by [dineshba](https://github.com/dineshba)** : The above example is maintained by [userbradley](https://github.com/userbradley) - Any questions related please tag `@userbradley` on an issue 
+> :warning: **Not maintained by [dineshba](https://github.com/dineshba)** : The above example is maintained by [userbradley](https://github.com/userbradley) - Any questions related please tag `@userbradley` on an issue
 
 #### Comment terraform plan summary in PRs
 
@@ -217,17 +223,19 @@ Refer [this example](https://github.com/dineshba/tf-summarize/blob/demo-pr/.gith
 
 #### Interactive summary review
 
-You can use tool [fx](https://github.com/antonmedv/fx) to review the summary fo the terraform change
+You can use tool [fx](https://github.com/antonmedv/fx) to review the summary of the terraform change
+
 ```sh
 tf-summarize -json tfplan | fx
 ```
 
 ### Screenshot
+
 ![screenshot](example/tf-summarize-screenshot.png)
 
 ### TODO
 
-- [x] Read terraform state file directly. (Currently need to convert to json and pass it)
-- [ ] Directly run the terraform plan and show the summary
-- [ ] Able to show summary of the current terraform state
-- [x] Include version subcommand in binary
+* [x] Read terraform state file directly. (Currently need to convert to json and pass it)
+* [ ] Directly run the terraform plan and show the summary
+* [ ] Able to show summary of the current terraform state
+* [x] Include version subcommand in binary
