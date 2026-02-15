@@ -1,5 +1,6 @@
 TERRAFORM_VERSION:=$(shell cat example/.terraform-version)
 GORELEASER=go run github.com/goreleaser/goreleaser/v2@v2.13.3
+VERSION:=$(shell cat VERSION)
 
 define generate-example
 	docker run \
@@ -42,9 +43,20 @@ example: ## generate example Terraform plan
 	$(call generate-example,$(TERRAFORM_VERSION))
 .PHONY: example
 
-build:
+build: # build and test
 	$(GORELEASER) release \
 	--snapshot \
 	--skip=publish,sign \
 	--clean
 .PHONY: build
+
+tag: # create $(VERSION) git tag
+	echo "creating git tag $(VERSION)"
+	git tag $(VERSION)
+	git push origin $(VERSION)
+.PHONY: tag
+
+release: # release $(VERSION)
+	$(GORELEASER) release \
+		--clean
+.PHONY: release
