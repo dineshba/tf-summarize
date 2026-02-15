@@ -1,4 +1,4 @@
-name: Build
+name: CI/CD
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
-          
+
       - name: Linter
         uses: docker://morphy/revive-action:v2
 
