@@ -1,3 +1,4 @@
+NAME:=tf-summarize
 TERRAFORM_VERSION:=$(shell cat example/.terraform-version)
 GORELEASER=go run github.com/goreleaser/goreleaser/v2@v2.13.3
 VERSION:=$(shell cat VERSION)
@@ -22,14 +23,13 @@ default: build
 help: ## prints help (only for tasks with comment)
 	@grep -E '^[a-zA-Z._-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-EXECUTABLE_NAME=tf-summarize
-COMMIT?=$(shell git describe --always 2> /dev/null)
-TF_SUMMARIZE_VERSION?="development-$(COMMIT)"
-build: ## build the binary
-	go build -o $(EXECUTABLE_NAME) -ldflags="-X 'main.version=$(TF_SUMMARIZE_VERSION)'" .
+version: # print version
+	@echo $(VERSION)
+.PHONY: version
 
+# TODO: dynamically set architecture, which is currently hard-coded to amd64
 install: build ## build and install to /usr/local/bin/
-	cp $(EXECUTABLE_NAME) /usr/local/bin/$(EXECUTABLE_NAME)
+	cp dist/$(NAME)_$(shell echo $(shell uname) | tr '[:upper:]' '[:lower:]')_amd64*/$(NAME) /usr/local/bin/$(NAME)
 
 test: lint ## go test
 	go test -v ./... -count=1
@@ -43,20 +43,20 @@ example: ## generate example Terraform plan
 	$(call generate-example,$(TERRAFORM_VERSION))
 .PHONY: example
 
-build: # build and test
+build: ## build and test
 	$(GORELEASER) release \
 	--snapshot \
 	--skip=publish,sign \
 	--clean
 .PHONY: build
 
-tag: # create $(VERSION) git tag
+tag: ## create $(VERSION) git tag
 	echo "creating git tag $(VERSION)"
 	git tag $(VERSION)
 	git push origin $(VERSION)
 .PHONY: tag
 
-release: # release $(VERSION)
+release: ## release $(VERSION)
 	$(GORELEASER) release \
 		--clean
 .PHONY: release
