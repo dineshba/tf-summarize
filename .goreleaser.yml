@@ -5,6 +5,7 @@ before:
   hooks:
     # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
+    - make test
 dockers:
 - dockerfile: Dockerfile
   image_templates:
