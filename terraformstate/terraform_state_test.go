@@ -3,48 +3,47 @@ package terraformstate
 import (
 	"testing"
 
-	. "github.com/hashicorp/terraform-json"
 	tfjson "github.com/hashicorp/terraform-json"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestResourceChangeColor(t *testing.T) {
-	ExpectedColors := map[Action]string{
-		ActionCreate: ColorGreen,
-		ActionDelete: ColorRed,
-		ActionUpdate: ColorYellow,
+	ExpectedColors := map[tfjson.Action]string{
+		tfjson.ActionCreate: ColorGreen,
+		tfjson.ActionDelete: ColorRed,
+		tfjson.ActionUpdate: ColorYellow,
 	}
 
 	for action, expectedColor := range ExpectedColors {
-		create := &ResourceChange{Change: &Change{Actions: []Action{action}}}
+		create := &tfjson.ResourceChange{Change: &tfjson.Change{Actions: []tfjson.Action{action}}}
 		color, _ := GetColorPrefixAndSuffixText(create)
 
 		assert.Equal(t, color, expectedColor)
 	}
 
-	CreateDelete := &ResourceChange{Change: &Change{Actions: []Action{ActionCreate, ActionDelete}}}
+	CreateDelete := &tfjson.ResourceChange{Change: &tfjson.Change{Actions: []tfjson.Action{tfjson.ActionCreate, tfjson.ActionDelete}}}
 	color, _ := GetColorPrefixAndSuffixText(CreateDelete)
 	assert.Equal(t, color, ColorMagenta)
 
-	DeleteCreate := &ResourceChange{Change: &Change{Actions: []Action{ActionDelete, ActionCreate}}}
+	DeleteCreate := &tfjson.ResourceChange{Change: &tfjson.Change{Actions: []tfjson.Action{tfjson.ActionDelete, tfjson.ActionCreate}}}
 	color, _ = GetColorPrefixAndSuffixText(DeleteCreate)
 	assert.Equal(t, color, ColorMagenta)
 }
 
 func TestGetAllResourceChanges(t *testing.T) {
 	resourceChanges := ResourceChanges{
-		&ResourceChange{Address: "create2", Change: &Change{Actions: Actions{ActionCreate}}},
-		&ResourceChange{Address: "create1", Change: &Change{Actions: Actions{ActionCreate}}},
-		&ResourceChange{Address: "delete2", Change: &Change{Actions: Actions{ActionDelete}}},
-		&ResourceChange{Address: "delete1", Change: &Change{Actions: Actions{ActionDelete}}},
-		&ResourceChange{Address: "update2", Change: &Change{Actions: Actions{ActionUpdate}}},
-		&ResourceChange{Address: "update1", Change: &Change{Actions: Actions{ActionUpdate}}},
-		&ResourceChange{Address: "import2", Change: &Change{Importing: &Importing{ID: "id1"}}},
-		&ResourceChange{Address: "import1", Change: &Change{Importing: &Importing{ID: "id2"}}},
-		&ResourceChange{Address: "move1", PreviousAddress: "move", Change: &Change{Actions: Actions{}}},
-		&ResourceChange{Address: "recreate2", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
-		&ResourceChange{Address: "recreate1", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
+		&tfjson.ResourceChange{Address: "create2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
+		&tfjson.ResourceChange{Address: "create1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
+		&tfjson.ResourceChange{Address: "delete2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
+		&tfjson.ResourceChange{Address: "delete1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
+		&tfjson.ResourceChange{Address: "update2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
+		&tfjson.ResourceChange{Address: "update1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
+		&tfjson.ResourceChange{Address: "import2", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id1"}}},
+		&tfjson.ResourceChange{Address: "import1", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id2"}}},
+		&tfjson.ResourceChange{Address: "move1", PreviousAddress: "move", Change: &tfjson.Change{Actions: tfjson.Actions{}}},
+		&tfjson.ResourceChange{Address: "recreate2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
+		&tfjson.ResourceChange{Address: "recreate1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
 	}
 	plan := tfjson.Plan{ResourceChanges: resourceChanges}
 
@@ -52,24 +51,24 @@ func TestGetAllResourceChanges(t *testing.T) {
 
 	expectedResourceChanges := map[string]ResourceChanges{
 		"add": {
-			&ResourceChange{Address: "create1", Change: &Change{Actions: Actions{ActionCreate}}},
-			&ResourceChange{Address: "create2", Change: &Change{Actions: Actions{ActionCreate}}},
+			&tfjson.ResourceChange{Address: "create1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
+			&tfjson.ResourceChange{Address: "create2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
 		},
 		"delete": {
-			&ResourceChange{Address: "delete1", Change: &Change{Actions: Actions{ActionDelete}}},
-			&ResourceChange{Address: "delete2", Change: &Change{Actions: Actions{ActionDelete}}},
+			&tfjson.ResourceChange{Address: "delete1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
+			&tfjson.ResourceChange{Address: "delete2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
 		},
 		"update": {
-			&ResourceChange{Address: "update1", Change: &Change{Actions: Actions{ActionUpdate}}},
-			&ResourceChange{Address: "update2", Change: &Change{Actions: Actions{ActionUpdate}}},
+			&tfjson.ResourceChange{Address: "update1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
+			&tfjson.ResourceChange{Address: "update2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
 		},
 		"recreate": {
-			&ResourceChange{Address: "recreate1", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
-			&ResourceChange{Address: "recreate2", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
+			&tfjson.ResourceChange{Address: "recreate1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
+			&tfjson.ResourceChange{Address: "recreate2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
 		},
 		"import": {
-			&ResourceChange{Address: "import1", Change: &Change{Importing: &Importing{ID: "id2"}}},
-			&ResourceChange{Address: "import2", Change: &Change{Importing: &Importing{ID: "id1"}}},
+			&tfjson.ResourceChange{Address: "import1", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id2"}}},
+			&tfjson.ResourceChange{Address: "import2", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id1"}}},
 		},
 	}
 
@@ -78,17 +77,17 @@ func TestGetAllResourceChanges(t *testing.T) {
 
 func TestGetAllResourceMoves(t *testing.T) {
 	resourceChanges := ResourceChanges{
-		&ResourceChange{Address: "create2", Change: &Change{Actions: Actions{ActionCreate}}},
-		&ResourceChange{Address: "create1", Change: &Change{Actions: Actions{ActionCreate}}},
-		&ResourceChange{Address: "delete2", Change: &Change{Actions: Actions{ActionDelete}}},
-		&ResourceChange{Address: "delete1", Change: &Change{Actions: Actions{ActionDelete}}},
-		&ResourceChange{Address: "update2", Change: &Change{Actions: Actions{ActionUpdate}}},
-		&ResourceChange{Address: "update1", Change: &Change{Actions: Actions{ActionUpdate}}},
-		&ResourceChange{Address: "import2", Change: &Change{Importing: &Importing{ID: "id1"}}},
-		&ResourceChange{Address: "import1", Change: &Change{Importing: &Importing{ID: "id2"}}},
-		&ResourceChange{Address: "move1", PreviousAddress: "move", Change: &Change{Actions: Actions{}}},
-		&ResourceChange{Address: "recreate2", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
-		&ResourceChange{Address: "recreate1", Change: &Change{Actions: Actions{ActionDelete, ActionCreate}}},
+		&tfjson.ResourceChange{Address: "create2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
+		&tfjson.ResourceChange{Address: "create1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
+		&tfjson.ResourceChange{Address: "delete2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
+		&tfjson.ResourceChange{Address: "delete1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
+		&tfjson.ResourceChange{Address: "update2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
+		&tfjson.ResourceChange{Address: "update1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
+		&tfjson.ResourceChange{Address: "import2", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id1"}}},
+		&tfjson.ResourceChange{Address: "import1", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id2"}}},
+		&tfjson.ResourceChange{Address: "move1", PreviousAddress: "move", Change: &tfjson.Change{Actions: tfjson.Actions{}}},
+		&tfjson.ResourceChange{Address: "recreate2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
+		&tfjson.ResourceChange{Address: "recreate1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
 	}
 	plan := tfjson.Plan{ResourceChanges: resourceChanges}
 
@@ -96,7 +95,7 @@ func TestGetAllResourceMoves(t *testing.T) {
 
 	expectedResourceMoves := map[string]ResourceChanges{
 		"moved": {
-			&ResourceChange{Address: "move1", PreviousAddress: "move", Change: &Change{Actions: Actions{}}},
+			&tfjson.ResourceChange{Address: "move1", PreviousAddress: "move", Change: &tfjson.Change{Actions: tfjson.Actions{}}},
 		},
 	}
 
@@ -105,13 +104,13 @@ func TestGetAllResourceMoves(t *testing.T) {
 
 func TestGetAllOutputChanges(t *testing.T) {
 
-	outputChanges := map[string]*Change{
-		"create2": {Actions: Actions{ActionCreate}},
-		"create1": {Actions: Actions{ActionCreate}},
-		"delete2": {Actions: Actions{ActionDelete}},
-		"delete1": {Actions: Actions{ActionDelete}},
-		"update2": {Actions: Actions{ActionUpdate}},
-		"update1": {Actions: Actions{ActionUpdate}},
+	outputChanges := map[string]*tfjson.Change{
+		"create2": {Actions: tfjson.Actions{tfjson.ActionCreate}},
+		"create1": {Actions: tfjson.Actions{tfjson.ActionCreate}},
+		"delete2": {Actions: tfjson.Actions{tfjson.ActionDelete}},
+		"delete1": {Actions: tfjson.Actions{tfjson.ActionDelete}},
+		"update2": {Actions: tfjson.Actions{tfjson.ActionUpdate}},
+		"update1": {Actions: tfjson.Actions{tfjson.ActionUpdate}},
 	}
 
 	plan := tfjson.Plan{OutputChanges: outputChanges}
@@ -128,29 +127,29 @@ func TestGetAllOutputChanges(t *testing.T) {
 }
 
 func TestResourceChangeSuffix(t *testing.T) {
-	ExpectedSuffix := map[Action]string{
-		ActionCreate: "(+)",
-		ActionDelete: "(-)",
-		ActionUpdate: "(~)",
+	ExpectedSuffix := map[tfjson.Action]string{
+		tfjson.ActionCreate: "(+)",
+		tfjson.ActionDelete: "(-)",
+		tfjson.ActionUpdate: "(~)",
 	}
 
 	for action, expectedSuffix := range ExpectedSuffix {
-		create := &ResourceChange{Change: &Change{Actions: []Action{action}}}
+		create := &tfjson.ResourceChange{Change: &tfjson.Change{Actions: []tfjson.Action{action}}}
 		_, suffix := GetColorPrefixAndSuffixText(create)
 
 		assert.Equal(t, suffix, expectedSuffix)
 	}
-	CreateDelete := &ResourceChange{Change: &Change{Actions: []Action{ActionCreate, ActionDelete}}}
+	CreateDelete := &tfjson.ResourceChange{Change: &tfjson.Change{Actions: []tfjson.Action{tfjson.ActionCreate, tfjson.ActionDelete}}}
 	_, suffix := GetColorPrefixAndSuffixText(CreateDelete)
 	assert.Equal(t, suffix, "(+/-)")
 
-	DeleteCreate := &ResourceChange{Change: &Change{Actions: []Action{ActionDelete, ActionCreate}}}
+	DeleteCreate := &tfjson.ResourceChange{Change: &tfjson.Change{Actions: []tfjson.Action{tfjson.ActionDelete, tfjson.ActionCreate}}}
 	_, suffix = GetColorPrefixAndSuffixText(DeleteCreate)
 	assert.Equal(t, suffix, "(-/+)")
 }
 
 func TestResourceChangeColorAndSuffixImport(t *testing.T) {
-	importing := &ResourceChange{Change: &Change{Importing: &Importing{ID: "id"}}}
+	importing := &tfjson.ResourceChange{Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id"}}}
 	color, suffix := GetColorPrefixAndSuffixText(importing)
 
 	assert.Equal(t, color, ColorCyan)
@@ -158,13 +157,13 @@ func TestResourceChangeColorAndSuffixImport(t *testing.T) {
 }
 
 func TestFilterNoOpResources(t *testing.T) {
-	identityImport := &ResourceChange{Address: "no-op5", Change: &Change{Actions: Actions{ActionNoop}, Importing: &Importing{Identity: struct{ Account string }{Account: "account ID"}}}}
+	identityImport := &tfjson.ResourceChange{Address: "no-op5", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}, Importing: &tfjson.Importing{Identity: struct{ Account string }{Account: "account ID"}}}}
 	resourceChanges := ResourceChanges{
-		&ResourceChange{Address: "no-op1", Change: &Change{Actions: Actions{ActionNoop}}},
-		&ResourceChange{Address: "no-op3", Change: &Change{Actions: Actions{ActionNoop}, Importing: nil}},
-		&ResourceChange{Address: "no-op2", Change: &Change{Actions: Actions{ActionNoop}, Importing: &Importing{ID: ""}}},
-		&ResourceChange{Address: "no-op4", Change: &Change{Actions: Actions{ActionNoop}, Importing: &Importing{Identity: nil}}},
-		&ResourceChange{Address: "create", Change: &Change{Actions: Actions{ActionCreate}}},
+		&tfjson.ResourceChange{Address: "no-op1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}},
+		&tfjson.ResourceChange{Address: "no-op3", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}, Importing: nil}},
+		&tfjson.ResourceChange{Address: "no-op2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}, Importing: &tfjson.Importing{ID: ""}}},
+		&tfjson.ResourceChange{Address: "no-op4", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}, Importing: &tfjson.Importing{Identity: nil}}},
+		&tfjson.ResourceChange{Address: "create", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
 		identityImport,
 	}
 	plan := tfjson.Plan{ResourceChanges: resourceChanges}
@@ -172,7 +171,7 @@ func TestFilterNoOpResources(t *testing.T) {
 	FilterNoOpResources(&plan)
 
 	expectedResourceChangesAfterFiltering := ResourceChanges{
-		&ResourceChange{Address: "create", Change: &Change{Actions: Actions{ActionCreate}}},
+		&tfjson.ResourceChange{Address: "create", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
 		identityImport,
 	}
 	assert.Equal(t, expectedResourceChangesAfterFiltering, plan.ResourceChanges)

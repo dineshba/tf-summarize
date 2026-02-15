@@ -12,7 +12,6 @@ import (
 
 	"github.com/dineshba/tf-summarize/testdata/mocks"
 
-	. "github.com/hashicorp/terraform-json"
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
@@ -44,13 +43,13 @@ func createMockChanges() map[string]terraformstate.ResourceChanges {
 		"add": {
 			{
 				Address: "aws_instance.example1",
-				Change:  &Change{Actions: Actions{ActionCreate}},
+				Change:  &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}},
 			},
 		},
 		"delete": {
 			{
 				Address: "aws_instance.example2",
-				Change:  &Change{Actions: Actions{ActionDelete}},
+				Change:  &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}},
 			},
 		},
 	}

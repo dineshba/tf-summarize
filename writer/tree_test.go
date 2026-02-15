@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
-	. "github.com/hashicorp/terraform-json"
 	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +13,7 @@ import (
 func TestTreeWriter_Write_DrawableTrue(t *testing.T) {
 
 	changes := terraformstate.ResourceChanges{
-		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &Change{Actions: Actions{ActionNoop}}},
+		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}},
 	}
 
 	tw := NewTreeWriter(changes, true)
@@ -51,7 +50,7 @@ func TestTreeWriter_Write_DrawableTrue(t *testing.T) {
 func TestTreeWriter_Write_NonDrawable(t *testing.T) {
 
 	changes := terraformstate.ResourceChanges{
-		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &Change{Actions: Actions{ActionNoop}}},
+		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}},
 	}
 
 	tw := NewTreeWriter(changes, false)
@@ -77,7 +76,7 @@ func TestTreeWriter_Write_NonDrawable(t *testing.T) {
 func TestTreeWriter_Write_NonDrawable_PrintTreeError(t *testing.T) {
 
 	changes := terraformstate.ResourceChanges{
-		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &Change{Actions: Actions{ActionNoop}}},
+		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}},
 	}
 	tw := NewTreeWriter(changes, false)
 	faultyWriter := &errorWriter{}
@@ -87,7 +86,7 @@ func TestTreeWriter_Write_NonDrawable_PrintTreeError(t *testing.T) {
 
 func TestTreeWriter_Write_PrintTreeError(t *testing.T) {
 	changes := terraformstate.ResourceChanges{
-		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &Change{Actions: Actions{ActionNoop}}},
+		&tfjson.ResourceChange{Address: "module.test.azapi_resource.logical_network", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}},
 	}
 	tw := NewTreeWriter(changes, true)
 	faultyWriter := &errorWriter{}

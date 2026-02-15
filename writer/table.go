@@ -81,7 +81,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 		if t.mdEnabled {
 			// Without a line break separating each table, a single malformed markdown table is printed.
 			// Printing an empty newline ensures distinct, separate tables are rendered.
-			fmt.Fprint(writer, tablewriter.NEWLINE)
+			_, _ = fmt.Fprint(writer, tablewriter.NEWLINE)
 
 			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 			table.SetCenterSeparator("|")
