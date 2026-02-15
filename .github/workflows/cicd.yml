@@ -25,8 +25,5 @@ jobs:
       - name: Linter
         uses: docker://morphy/revive-action:v2
 
-      - name: Test
-        run: go test -v ./...
-
       - name: Build
-        run: go build
+        run: make

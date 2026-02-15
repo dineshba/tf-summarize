@@ -1,4 +1,5 @@
 TERRAFORM_VERSION:=$(shell cat example/.terraform-version)
+GORELEASER=go run github.com/goreleaser/goreleaser/v2@v2.13.3
 
 define generate-example
 	docker run \
@@ -13,6 +14,8 @@ define generate-example
 				terraform plan -out tfplan && \
 				terraform show -json tfplan > tfplan.json"
 endef
+
+default: build
 
 .PHONY: help
 help: ## prints help (only for tasks with comment)
@@ -38,3 +41,10 @@ lint: ## lint source code
 example: ## generate example Terraform plan
 	$(call generate-example,$(TERRAFORM_VERSION))
 .PHONY: example
+
+build:
+	$(GORELEASER) release \
+	--snapshot \
+	--skip=publish,sign \
+	--clean
+.PHONY: build
