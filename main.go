@@ -26,7 +26,7 @@ func main() {
 	outputFileName := flag.String("out", "", "[Optional] write output to file")
 
 	flag.Usage = func() {
-		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s [args] [tf-plan.json|tfplan]\n\n", os.Args[0])
+		fmt.Fprint(flag.CommandLine.Output(), "Usage of "+os.Args[0]+" [args] [tf-plan.json|tfplan]\n\n")
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -79,7 +79,7 @@ func main() {
 
 func logIfErrorAndExit(format string, err error, callback func()) {
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, fmt.Sprintf("%s\n", format), err.Error())
+		fmt.Fprintf(os.Stderr, format+"\n", err.Error())
 		callback()
 		os.Exit(1)
 	}
