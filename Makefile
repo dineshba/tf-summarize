@@ -28,7 +28,7 @@ install: build ## build and install to /usr/local/bin/
 	cp $(EXECUTABLE_NAME) /usr/local/bin/$(EXECUTABLE_NAME)
 
 test: lint ## go test
-	go test ./... -count=1
+	go test -v ./... -count=1
 
 i: install ## build and install to /usr/local/bin/
 
