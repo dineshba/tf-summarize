@@ -86,7 +86,7 @@ jobs:
           echo "skipped: ${{ steps.ensure-unpublished-version.outputs.skipped }}"
           echo "exists: ${{ steps.ensure-unpublished-version.outputs.exists }}"
 
-  goreleaser:
+  release:
     if: github.ref == 'refs/heads/main' && needs.ensure-unpublished-version.outputs.skipped != 'true'
     needs: ensure-unpublished-version
     runs-on: ubuntu-latest
