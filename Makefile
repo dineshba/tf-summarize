@@ -1,6 +1,8 @@
 NAME:=tf-summarize
 TERRAFORM_VERSION:=$(shell cat example/.terraform-version)
 GORELEASER=go run github.com/goreleaser/goreleaser/v2@v2.13.3
+GOLANGCI_LINT=go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.6.0
+GOSEC=go run github.com/securego/gosec/v2/cmd/gosec@v2.23.0
 VERSION:=$(shell cat VERSION)
 
 define generate-example
@@ -37,7 +39,12 @@ test: lint ## go test
 i: install ## build and install to /usr/local/bin/
 
 lint: ## lint source code
-	golangci-lint run --timeout 10m -v
+	$(GOLANGCI_LINT) run --timeout 10m -v
+.PHONY: lint
+
+gosec: ## run gosec security scanner
+	$(GOSEC) -exclude=G204,G705 ./...
+.PHONY: lint
 
 example: ## generate example Terraform plan
 	$(call generate-example,$(TERRAFORM_VERSION))

@@ -16,16 +16,8 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Run Gosec Security Scanner
-        run: |
-          go install github.com/securego/gosec/v2/cmd/gosec@v2.23.0
-          gosec -exclude=G204,G705 ./...
-
-      - name: Install golangci-lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: v2.6
-          install-mode: goinstall
+      - name: Security scan
+        run: make gosec
 
       - name: Linter
         uses: docker://morphy/revive-action:v2
@@ -133,12 +125,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      -
-        name: Install golangci-lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: v2.6
 
       -
         name: Create release tag
