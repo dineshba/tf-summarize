@@ -5,10 +5,12 @@ import (
 	"os"
 )
 
+// FileReader reads Terraform plan JSON from a file.
 type FileReader struct {
 	fileName string
 }
 
+// Name returns the file name.
 func (f FileReader) Name() string {
 	return f.fileName
 }
@@ -27,6 +29,7 @@ func (f FileReader) Read() ([]byte, error) {
 	return readFile(file)
 }
 
+// NewFileReader returns a Reader that reads from the named file.
 func NewFileReader(name string) Reader {
 	return FileReader{fileName: name}
 }
