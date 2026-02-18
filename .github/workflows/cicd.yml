@@ -41,26 +41,26 @@ jobs:
         run: |
           pr_num="${{ github.event.pull_request.number }}"
           git fetch origin refs/pull/${pr_num}/head:refs/remotes/origin/pull/${pr_num}/head
-          echo "COMMIT_MESSAGE="$(git log -1 --pretty=format:"%B" origin/pull/${pr_num}/head)"" >> $GITHUB_ENV
-          echo "PR_NUM="${pr_num}"" >> $GITHUB_ENV
+          echo "COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s" origin/pull/${pr_num}/head)" >> $GITHUB_ENV
+          echo "PR_NUM=${pr_num}" >> $GITHUB_ENV
 
       - name: Get commit message (push, etc.)
         if: ${{ github.event_name != 'pull_request' }}
-        run: echo "COMMIT_MESSAGE="$(git log -1 --pretty=%B)"" >> $GITHUB_ENV
+        run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=%s)" >> $GITHUB_ENV
 
       - name: Get commit author (pull request)
         if: ${{ github.event_name == 'pull_request' }}
-        run: echo "COMMIT_AUTHOR="$(git log -1 --pretty=format:"%an" origin/pull/${PR_NUM}/head)"" >> $GITHUB_ENV
+        run: echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an" origin/pull/${PR_NUM}/head)" >> $GITHUB_ENV
 
       - name: Get commit author (push, etc.)
         if: ${{ github.event_name != 'pull_request' }}
-        run: echo "COMMIT_AUTHOR="$(git log -1 --pretty=%an)"" >> $GITHUB_ENV
+        run: echo "COMMIT_AUTHOR=$(git log -1 --pretty=%an)" >> $GITHUB_ENV
 
       - name: Get commit details
         id: commit-details
         run: |
-          echo "commit-author="${COMMIT_AUTHOR}"" >> $GITHUB_OUTPUT
-          echo "commit-message="${COMMIT_MESSAGE}"" >> $GITHUB_OUTPUT
+          echo "commit-author=${COMMIT_AUTHOR}" >> $GITHUB_OUTPUT
+          echo "commit-message=${COMMIT_MESSAGE}" >> $GITHUB_OUTPUT
 
       - name: Show commit details
         run: |
