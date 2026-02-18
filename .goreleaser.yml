@@ -5,6 +5,7 @@ before:
   hooks:
     # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
+    - make test
 dockers:
 - dockerfile: Dockerfile
   image_templates:
@@ -49,6 +50,8 @@ builds:
         goarch: '386'
       - goos: windows
         goarch: '386'
+      - goos: windows
+        goarch: arm
     binary: 'tf-summarize'
 archives:
   - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'

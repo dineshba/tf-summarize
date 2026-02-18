@@ -125,13 +125,14 @@ func (f *Formatter) processMap(m map[string]interface{}, depth int) string {
 		v := f.pretty(val, depth+1)
 
 		// Add color based on the key value
-		if key == "(+)" {
+		switch key {
+		case "(+)":
 			v = f.AddColor.SprintFunc()(v)
-		} else if key == "(-)" {
+		case "(-)":
 			v = f.RemoveColor.SprintFunc()(v)
-		} else if key == "(~)" {
+		case "(~)":
 			v = f.UpdateColor.SprintFunc()(v)
-		} else if key == "(+/-)" {
+		case "(+/-)":
 			v = f.RecreateColor.SprintFunc()(v)
 		}
 

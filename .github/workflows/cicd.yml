@@ -1,0 +1,133 @@
+name: CI/CD
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Security scan
+        run: make gosec
+
+      - name: Linter
+        uses: docker://morphy/revive-action:v2
+
+      - name: Build
+        run: make
+
+  ensure-unpublished-version:
+    runs-on: ubuntu-latest
+    needs: build
+    outputs:
+      commit-author: ${{ steps.commit-author.outputs.commit-author }}
+      commit-message: ${{ steps.commit-message.outputs.commit-message }}
+      skipped: ${{ steps.ensure-unpublished-version.outputs.skipped }}
+      exists: ${{ steps.ensure-unpublished-version.outputs.exists }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Get commit message (pull_request)
+        if: github.event_name == 'pull_request'
+        run: |
+          pr_num="${{ github.event.pull_request.number }}"
+          git fetch origin refs/pull/${pr_num}/head:refs/remotes/origin/pull/${pr_num}/head
+          echo "COMMIT_MESSAGE="$(git log -1 --pretty=format:"%B" origin/pull/${pr_num}/head)"" >> $GITHUB_ENV
+          echo "PR_NUM="${pr_num}"" >> $GITHUB_ENV
+
+      - name: Get commit message (push, etc.)
+        if: ${{ github.event_name != 'pull_request' }}
+        run: echo "COMMIT_MESSAGE="$(git log -1 --pretty=%B)"" >> $GITHUB_ENV
+
+      - name: Get commit author (pull request)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: echo "COMMIT_AUTHOR="$(git log -1 --pretty=format:"%an" origin/pull/${PR_NUM}/head)"" >> $GITHUB_ENV
+
+      - name: Get commit author (push, etc.)
+        if: ${{ github.event_name != 'pull_request' }}
+        run: echo "COMMIT_AUTHOR="$(git log -1 --pretty=%an)"" >> $GITHUB_ENV
+
+      - name: Get commit details
+        id: commit-details
+        run: |
+          echo "commit-author="${COMMIT_AUTHOR}"" >> $GITHUB_OUTPUT
+          echo "commit-message="${COMMIT_MESSAGE}"" >> $GITHUB_OUTPUT
+
+      - name: Show commit details
+        run: |
+          echo "author: ${{ steps.commit-details.outputs.commit-author }}"
+          echo "commit message: ${{ steps.commit-details.outputs.commit-message }}"
+
+      - name: Get version
+        run: echo "VERSION=$(make version)" >> $GITHUB_ENV
+
+      - uses: mdb/ensure-unpublished-release-action@v1
+        id: ensure-unpublished-version
+        with:
+          tag: ${{ env.VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          skip-authors: 'dependabot[bot]'
+          author: ${{ steps.commit-details.outputs.commit-author }}
+          skip-commit-message-pattern: '[skip release]'
+          commit-message: ${{ steps.commit-details.outputs.commit-message }}
+
+      - name: Show ensure-unpublished-version outputs
+        if: ${{ always() }}
+        run: |
+          echo "skipped: ${{ steps.ensure-unpublished-version.outputs.skipped }}"
+          echo "exists: ${{ steps.ensure-unpublished-version.outputs.exists }}"
+
+  release:
+    if: github.ref == 'refs/heads/main' && needs.ensure-unpublished-version.outputs.skipped != 'true'
+    needs: ensure-unpublished-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release tag
+        run: make tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run GoReleaser
+        run: make release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}

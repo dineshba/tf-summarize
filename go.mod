@@ -1,6 +1,6 @@
 module github.com/dineshba/tf-summarize
 
-go 1.21
+go 1.26
 
 require (
 	github.com/fatih/color v1.15.0
