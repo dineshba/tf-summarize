@@ -8,6 +8,7 @@ import (
 	"github.com/dineshba/tf-summarize/tree"
 )
 
+// TreeWriter writes resource changes in a tree format.
 type TreeWriter struct {
 	changes  terraformstate.ResourceChanges
 	drawable bool
@@ -31,6 +32,7 @@ func (t TreeWriter) Write(writer io.Writer) error {
 	return nil
 }
 
+// NewTreeWriter returns a new TreeWriter.
 func NewTreeWriter(changes terraformstate.ResourceChanges, drawable bool) Writer {
 	return TreeWriter{changes: changes, drawable: drawable}
 }

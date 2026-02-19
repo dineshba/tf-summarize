@@ -109,6 +109,6 @@ func TestTreeWriter_Write_EmptyChanges(t *testing.T) {
 // Custom faulty writer to simulate write errors
 type errorWriter struct{}
 
-func (ew *errorWriter) Write(p []byte) (n int, err error) {
+func (ew *errorWriter) Write(_ []byte) (n int, err error) {
 	return 0, errors.New("simulated write error")
 }

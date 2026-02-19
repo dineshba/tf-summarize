@@ -11,6 +11,7 @@ import (
 	"github.com/nsf/jsondiff"
 )
 
+// JSONWriter writes resource changes in JSON format.
 type JSONWriter struct {
 	changes terraformstate.ResourceChanges
 }
@@ -64,6 +65,7 @@ func treeValue(t tree.Tree) interface{} {
 	return resultMap
 }
 
+// NewJSONWriter returns a new JSONWriter.
 func NewJSONWriter(changes terraformstate.ResourceChanges) Writer {
 	return JSONWriter{changes: changes}
 }

@@ -18,22 +18,22 @@ import (
 // Mock tree writer
 type mockTreeWriter struct{}
 
-func (m *mockTreeWriter) Write(writer io.Writer) error {
+func (m *mockTreeWriter) Write(_ io.Writer) error {
 	return nil
 }
 
-func NewMockTreeWriter(changes []*tfjson.ResourceChange, drawable bool) Writer {
+func NewMockTreeWriter(_ []*tfjson.ResourceChange, _ bool) Writer {
 	return &mockTreeWriter{}
 }
 
 // Mock tree writer to simulate an error during treeWriter.Write
 type mockTreeWriterWithError struct{}
 
-func (m *mockTreeWriterWithError) Write(writer io.Writer) error {
+func (m *mockTreeWriterWithError) Write(_ io.Writer) error {
 	return errors.New("tree writer error")
 }
 
-func NewMockTreeWriterWithError(changes []*tfjson.ResourceChange, drawable bool) Writer {
+func NewMockTreeWriterWithError(_ []*tfjson.ResourceChange, _ bool) Writer {
 	return &mockTreeWriterWithError{}
 }
 
