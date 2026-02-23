@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
-	. "github.com/hashicorp/terraform-json"
+	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/nsf/jsondiff"
 )
 
@@ -26,10 +26,10 @@ func TestJSONWriter(t *testing.T) {
 					Address: "module.test.azapi_resource.logical_network",
 					Type:    "aws_instance",
 					Name:    "example",
-					Change: &Change{
+					Change: &tfjson.Change{
 						Before:  map[string]interface{}{"name": "old_instance"},
 						After:   map[string]interface{}{"name": "new_instance"},
-						Actions: Actions{ActionCreate},
+						Actions: tfjson.Actions{tfjson.ActionCreate},
 					},
 				},
 			},
@@ -53,10 +53,10 @@ func TestJSONWriter(t *testing.T) {
 					Address: "module.test.aws_s3_bucket.example",
 					Type:    "aws_s3_bucket",
 					Name:    "example",
-					Change: &Change{
+					Change: &tfjson.Change{
 						Before:  map[string]interface{}{"name": "old_bucket"},
 						After:   map[string]interface{}{"name": "new_bucket"},
-						Actions: Actions{ActionUpdate},
+						Actions: tfjson.Actions{tfjson.ActionUpdate},
 					},
 				},
 			},
@@ -85,10 +85,10 @@ func TestJSONWriter(t *testing.T) {
 					Address: "module.test.aws_security_group.example",
 					Type:    "aws_security_group",
 					Name:    "example",
-					Change: &Change{
+					Change: &tfjson.Change{
 						Before:  map[string]interface{}{"name": "old_sg"},
 						After:   map[string]interface{}{"name": "new_sg"},
-						Actions: Actions{ActionDelete},
+						Actions: tfjson.Actions{tfjson.ActionDelete},
 					},
 				},
 			},

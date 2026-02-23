@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/dineshba/tf-summarize/terraformstate"
-	. "github.com/hashicorp/terraform-json"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 func TestHTMLWriter(t *testing.T) {
@@ -14,10 +14,10 @@ func TestHTMLWriter(t *testing.T) {
 			{
 				Address: "aws_instance.example",
 				Name:    "example",
-				Change: &Change{
+				Change: &tfjson.Change{
 					Before:  map[string]interface{}{"name": "old_instance"},
 					After:   map[string]interface{}{"name": "new_instance"},
-					Actions: Actions{ActionCreate},
+					Actions: tfjson.Actions{tfjson.ActionCreate},
 				},
 			},
 		},
@@ -28,8 +28,8 @@ func TestHTMLWriter(t *testing.T) {
 				Address:         "aws_instance.foo",
 				PreviousAddress: "aws_instance.bar",
 				Name:            "foo",
-				Change: &Change{
-					Actions: Actions{},
+				Change: &tfjson.Change{
+					Actions: tfjson.Actions{},
 				},
 			},
 		},

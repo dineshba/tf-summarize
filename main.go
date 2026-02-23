@@ -1,3 +1,4 @@
+// Package main provides the tf-summarize CLI tool for summarizing Terraform plan output.
 package main
 
 import (

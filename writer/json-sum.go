@@ -7,11 +7,12 @@ import (
 	"github.com/dineshba/tf-summarize/terraformstate"
 )
 
-type JsonSumWriter struct {
+// JSONSumWriter writes a JSON summary of change counts by action type.
+type JSONSumWriter struct {
 	changes map[string]terraformstate.ResourceChanges
 }
 
-func (t JsonSumWriter) Write(writer io.Writer) error {
+func (t JSONSumWriter) Write(writer io.Writer) error {
 	result := make(map[string]int, len(t.changes))
 	for k, v := range t.changes {
 		result[k] = len(v)
@@ -21,6 +22,7 @@ func (t JsonSumWriter) Write(writer io.Writer) error {
 	return err
 }
 
-func NewJsonSumWriter(changes map[string]terraformstate.ResourceChanges) Writer {
-	return JsonSumWriter{changes: changes}
+// NewJSONSumWriter returns a new JSONSumWriter.
+func NewJSONSumWriter(changes map[string]terraformstate.ResourceChanges) Writer {
+	return JSONSumWriter{changes: changes}
 }

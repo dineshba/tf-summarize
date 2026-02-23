@@ -1,3 +1,4 @@
+// Package terraformstate provides utilities for parsing and categorizing Terraform plan state.
 package terraformstate
 
 import (
@@ -8,15 +9,20 @@ import (
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
-const ColorReset = "\033[0m"
-const ColorRed = "\033[31m"
-const ColorGreen = "\033[32m"
-const ColorMagenta = "\033[35m"
-const ColorYellow = "\033[33m"
-const ColorCyan = "\033[36m"
+// ANSI color codes for terminal output.
+const (
+	ColorReset   = "\033[0m"
+	ColorRed     = "\033[31m"
+	ColorGreen   = "\033[32m"
+	ColorMagenta = "\033[35m"
+	ColorYellow  = "\033[33m"
+	ColorCyan    = "\033[36m"
+)
 
-type ResourceChanges = []*tfjson.ResourceChange //Type alias for brevity
+// ResourceChanges is a type alias for a slice of ResourceChange pointers.
+type ResourceChanges = []*tfjson.ResourceChange
 
+// GetColorPrefixAndSuffixText returns the ANSI color prefix and action suffix for a resource change.
 func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	var colorPrefix, suffix string
 	actions := (*rc).Change.Actions
@@ -44,6 +50,7 @@ func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 	return colorPrefix, suffix
 }
 
+// Parse unmarshals JSON input into a Terraform Plan.
 func Parse(input []byte) (tfjson.Plan, error) {
 	plan := tfjson.Plan{}
 	err := json.Unmarshal(input, &plan)
@@ -102,6 +109,7 @@ func movedResources(resources ResourceChanges) ResourceChanges {
 	return acc
 }
 
+// FilterNoOpResources removes no-op resource changes from the plan, preserving imports.
 func FilterNoOpResources(ts *tfjson.Plan) {
 	acc := make(ResourceChanges, 0)
 	for _, r := range ts.ResourceChanges {
@@ -119,6 +127,7 @@ func FilterNoOpResources(ts *tfjson.Plan) {
 	ts.ResourceChanges = acc
 }
 
+// GetAllResourceChanges categorizes resource changes by action type.
 func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 	addedResources := addedResources(plan.ResourceChanges)
 	deletedResources := deletedResources(plan.ResourceChanges)
@@ -156,6 +165,7 @@ func GetAllResourceMoves(plan tfjson.Plan) map[string]ResourceChanges {
 	}
 }
 
+// GetAllOutputChanges categorizes output changes by action type.
 func GetAllOutputChanges(plan tfjson.Plan) map[string][]string {
 	// create, update, and delete are the only available actions for outputChanges
 	// https://developer.hashicorp.com/terraform/internals/json-format

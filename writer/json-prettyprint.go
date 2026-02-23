@@ -1,5 +1,5 @@
-// Package prettyjson provides JSON pretty print.
-// Below code is Inspired from https://github.com/hokaccha/go-prettyjson
+// Package writer provides output formatters for Terraform plan summaries.
+// The JSON pretty print code is inspired from https://github.com/hokaccha/go-prettyjson.
 package writer
 
 import (
@@ -13,6 +13,7 @@ import (
 	"github.com/fatih/color"
 )
 
+// Formatter controls JSON pretty-printing with color support.
 type Formatter struct {
 	AddColor        *color.Color
 	RemoveColor     *color.Color

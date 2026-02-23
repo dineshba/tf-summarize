@@ -8,6 +8,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
+// TableWriter writes resource changes in a table format.
 type TableWriter struct {
 	mdEnabled     bool
 	changes       map[string]terraformstate.ResourceChanges
@@ -95,6 +96,7 @@ func (t TableWriter) Write(writer io.Writer) error {
 	return nil
 }
 
+// NewTableWriter returns a new TableWriter.
 func NewTableWriter(changes map[string]terraformstate.ResourceChanges, moves map[string]terraformstate.ResourceChanges, outputChanges map[string][]string, mdEnabled bool) Writer {
 	return TableWriter{
 		changes:       changes,

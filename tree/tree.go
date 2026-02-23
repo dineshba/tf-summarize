@@ -1,3 +1,4 @@
+// Package tree provides a tree data structure for organizing Terraform resource changes.
 package tree
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/m1gwings/treedrawer/tree"
 )
 
+// Tree represents a node in a hierarchical view of Terraform resource changes.
 type Tree struct {
 	Name     string
 	level    int
@@ -20,22 +22,27 @@ func (t Tree) String() string {
 	return fmt.Sprintf("{name: %s, children: %+v}", t.Name, t.Children)
 }
 
+// IsAddition returns true if the resource change is a creation.
 func (t Tree) IsAddition() bool {
 	return t.Value.Change.Actions[0] == "create"
 }
 
+// IsRemoval returns true if the resource change is a deletion.
 func (t Tree) IsRemoval() bool {
 	return t.Value.Change.Actions[0] == "delete"
 }
 
+// IsUpdate returns true if the resource change is an update.
 func (t Tree) IsUpdate() bool {
 	return t.Value.Change.Actions[0] == "update"
 }
 
+// IsRecreate returns true if the resource change is a destroy-and-recreate.
 func (t Tree) IsRecreate() bool {
 	return len(t.Value.Change.Actions) == 2
 }
 
+// IsImport returns true if the resource change is an import.
 func (t Tree) IsImport() bool {
 	if t.Value.Change.Importing == nil {
 		return false
@@ -43,8 +50,10 @@ func (t Tree) IsImport() bool {
 	return t.Value.Change.Importing.ID != ""
 }
 
+// Trees is a slice of Tree pointers.
 type Trees []*Tree
 
+// DrawableTree converts Trees into a drawable tree structure.
 func (t Trees) DrawableTree() *tree.Tree {
 	newTree := tree.NewTree(tree.NodeString("."))
 	for _, t1 := range t {
@@ -53,6 +62,7 @@ func (t Trees) DrawableTree() *tree.Tree {
 	return newTree
 }
 
+// AddChild adds this tree node as a child of the given parent drawable tree.
 func (t *Tree) AddChild(parent *tree.Tree) {
 	isLeafNode := len(t.Children) == 0
 
@@ -83,6 +93,7 @@ func (t Trees) String() string {
 	return strings.TrimPrefix(result, ",")
 }
 
+// CreateTree builds a hierarchical tree from a flat list of resource changes.
 func CreateTree(changes terraformstate.ResourceChanges) Trees {
 	result := &Tree{Name: ".", Children: Trees{}, level: 0}
 	for _, r := range changes {

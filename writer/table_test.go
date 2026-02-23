@@ -7,7 +7,7 @@ import (
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/stretchr/testify/assert"
 
-	. "github.com/hashicorp/terraform-json"
+	tfjson "github.com/hashicorp/terraform-json"
 )
 
 func TestTableWriter_Write_NoMarkdown(t *testing.T) {
@@ -16,11 +16,11 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 	changes["update"] = terraformstate.ResourceChanges{
 		{
 			Address: "aws_instance.example3",
-			Change:  &Change{Actions: Actions{ActionUpdate}},
+			Change:  &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}},
 		},
 		{
 			Address: "aws_instance.example4.tag[\"Custom Instance Tag\"]",
-			Change:  &Change{Actions: Actions{ActionUpdate}},
+			Change:  &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}},
 		},
 	}
 
@@ -29,7 +29,7 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 			{
 				Address:         "aws_instance.new",
 				PreviousAddress: "aws_instance.old",
-				Change:          &Change{Actions: Actions{}},
+				Change:          &tfjson.Change{Actions: tfjson.Actions{}},
 			},
 		},
 	}
@@ -79,7 +79,7 @@ func TestTableWriter_Write_WithMarkdown(t *testing.T) {
 			{
 				Address:         "aws_instance.new",
 				PreviousAddress: "aws_instance.old",
-				Change:          &Change{Actions: Actions{}},
+				Change:          &tfjson.Change{Actions: tfjson.Actions{}},
 			},
 		},
 	}
