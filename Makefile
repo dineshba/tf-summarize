@@ -57,10 +57,10 @@ build: ## build and test
 	--clean
 .PHONY: build
 
-tag: ## create v$(VERSION) git tag
-	echo "creating git tag v$(VERSION)"
-	git tag v$(VERSION)
-	git push origin v$(VERSION)
+tag: ## create $(VERSION) git tag
+	echo "creating git tag $(VERSION)"
+	git tag $(VERSION)
+	git push origin $(VERSION)
 .PHONY: tag
 
 release: ## release $(VERSION)
