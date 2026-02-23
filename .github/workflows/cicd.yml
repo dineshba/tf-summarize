@@ -68,7 +68,7 @@ jobs:
           echo "commit message: ${{ steps.commit-details.outputs.commit-message }}"
 
       - name: Get version
-        run: echo "VERSION=$(make version)" >> $GITHUB_ENV
+        run: echo "VERSION=v$(make version)" >> $GITHUB_ENV
 
       - uses: mdb/ensure-unpublished-release-action@v1
         id: ensure-unpublished-version
