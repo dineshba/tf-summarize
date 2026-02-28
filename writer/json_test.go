@@ -106,6 +106,30 @@ func TestJSONWriter(t *testing.T) {
 				},
 			},
 		},
+		{
+			args: terraformstate.ResourceChanges{
+				{
+					Address:         "module.test.aws_instance.new_name",
+					PreviousAddress: "module.test.aws_instance.old_name",
+					Type:            "aws_instance",
+					Name:            "new_name",
+					Change: &tfjson.Change{
+						Actions: tfjson.Actions{tfjson.ActionNoop},
+					},
+				},
+			},
+			expectedOutput: map[string]interface{}{
+				"module": map[string]interface{}{
+					"test": map[string]interface{}{
+						"aws_instance": map[string]interface{}{
+							"new_name": map[string]interface{}{
+								"(\u2192)": "module.test.aws_instance.old_name",
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	// Iterate through test cases

@@ -8,11 +8,18 @@ import (
 	"github.com/dineshba/tf-summarize/terraformstate"
 )
 
+// htmlChangeOrder defines the deterministic rendering order for resource changes in HTML output.
+var htmlChangeOrder = []string{"import", "add", "update", "recreate", "delete", "moved"}
+
+// htmlOutputOrder defines the deterministic rendering order for output changes in HTML output.
+var htmlOutputOrder = []string{"add", "update", "delete"}
+
 // HTMLWriter is a Writer that writes HTML.
 type HTMLWriter struct {
 	ResourceChanges map[string]terraformstate.ResourceChanges
-	MovedResources  map[string]terraformstate.ResourceChanges
+	ChangeOrder     []string
 	OutputChanges   map[string][]string
+	OutputOrder     []string
 }
 
 // Write outputs the HTML summary to the io.Writer it's passed.
@@ -42,10 +49,11 @@ func (t HTMLWriter) Write(writer io.Writer) error {
 }
 
 // NewHTMLWriter returns a new HTMLWriter with the configuration it's passed.
-func NewHTMLWriter(changes map[string]terraformstate.ResourceChanges, movedResources map[string]terraformstate.ResourceChanges, outputChanges map[string][]string) Writer {
+func NewHTMLWriter(changes map[string]terraformstate.ResourceChanges, outputChanges map[string][]string) Writer {
 	return HTMLWriter{
 		ResourceChanges: changes,
-		MovedResources:  movedResources,
+		ChangeOrder:     htmlChangeOrder,
 		OutputChanges:   outputChanges,
+		OutputOrder:     htmlOutputOrder,
 	}
 }

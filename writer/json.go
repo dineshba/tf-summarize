@@ -47,6 +47,8 @@ func treeValue(t tree.Tree) interface{} {
 				fmt.Fprintf(os.Stderr, "warning: unmarshalling diff error: %s\n", err)
 				diff = fmt.Sprintf("raw diff: %s", str)
 			}
+		} else if t.IsMove() {
+			diff = t.Value.PreviousAddress
 		} else {
 			if t.IsAddition() || t.IsImport() {
 				diff = t.Value.Change.After

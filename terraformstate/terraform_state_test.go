@@ -70,36 +70,12 @@ func TestGetAllResourceChanges(t *testing.T) {
 			&tfjson.ResourceChange{Address: "import1", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id2"}}},
 			&tfjson.ResourceChange{Address: "import2", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id1"}}},
 		},
-	}
-
-	assert.Equal(t, expectedResourceChanges, result)
-}
-
-func TestGetAllResourceMoves(t *testing.T) {
-	resourceChanges := ResourceChanges{
-		&tfjson.ResourceChange{Address: "create2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
-		&tfjson.ResourceChange{Address: "create1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
-		&tfjson.ResourceChange{Address: "delete2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
-		&tfjson.ResourceChange{Address: "delete1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete}}},
-		&tfjson.ResourceChange{Address: "update2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
-		&tfjson.ResourceChange{Address: "update1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionUpdate}}},
-		&tfjson.ResourceChange{Address: "import2", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id1"}}},
-		&tfjson.ResourceChange{Address: "import1", Change: &tfjson.Change{Importing: &tfjson.Importing{ID: "id2"}}},
-		&tfjson.ResourceChange{Address: "move1", PreviousAddress: "move", Change: &tfjson.Change{Actions: tfjson.Actions{}}},
-		&tfjson.ResourceChange{Address: "recreate2", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
-		&tfjson.ResourceChange{Address: "recreate1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionDelete, tfjson.ActionCreate}}},
-	}
-	plan := tfjson.Plan{ResourceChanges: resourceChanges}
-
-	result := GetAllResourceMoves(plan)
-
-	expectedResourceMoves := map[string]ResourceChanges{
 		"moved": {
 			&tfjson.ResourceChange{Address: "move1", PreviousAddress: "move", Change: &tfjson.Change{Actions: tfjson.Actions{}}},
 		},
 	}
 
-	assert.Equal(t, expectedResourceMoves, result)
+	assert.Equal(t, expectedResourceChanges, result)
 }
 
 func TestGetAllOutputChanges(t *testing.T) {
@@ -156,8 +132,17 @@ func TestResourceChangeColorAndSuffixImport(t *testing.T) {
 	assert.Equal(t, suffix, "(i)")
 }
 
+func TestResourceChangeColorAndSuffixMoved(t *testing.T) {
+	moved := &tfjson.ResourceChange{Address: "new_addr", PreviousAddress: "old_addr", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}}
+	color, suffix := GetColorPrefixAndSuffixText(moved)
+
+	assert.Equal(t, color, ColorCyan)
+	assert.Equal(t, suffix, "(→)")
+}
+
 func TestFilterNoOpResources(t *testing.T) {
 	identityImport := &tfjson.ResourceChange{Address: "no-op5", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}, Importing: &tfjson.Importing{Identity: struct{ Account string }{Account: "account ID"}}}}
+	movedResource := &tfjson.ResourceChange{Address: "moved-new", PreviousAddress: "moved-old", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}}
 	resourceChanges := ResourceChanges{
 		&tfjson.ResourceChange{Address: "no-op1", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}}},
 		&tfjson.ResourceChange{Address: "no-op3", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}, Importing: nil}},
@@ -165,6 +150,7 @@ func TestFilterNoOpResources(t *testing.T) {
 		&tfjson.ResourceChange{Address: "no-op4", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}, Importing: &tfjson.Importing{Identity: nil}}},
 		&tfjson.ResourceChange{Address: "create", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
 		identityImport,
+		movedResource,
 	}
 	plan := tfjson.Plan{ResourceChanges: resourceChanges}
 
@@ -173,6 +159,7 @@ func TestFilterNoOpResources(t *testing.T) {
 	expectedResourceChangesAfterFiltering := ResourceChanges{
 		&tfjson.ResourceChange{Address: "create", Change: &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}}},
 		identityImport,
+		movedResource,
 	}
 	assert.Equal(t, expectedResourceChangesAfterFiltering, plan.ResourceChanges)
 }

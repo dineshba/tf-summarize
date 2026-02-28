@@ -37,6 +37,9 @@ func GetColorPrefixAndSuffixText(rc *tfjson.ResourceChange) (string, string) {
 			colorPrefix = ColorYellow
 			suffix = "(~)"
 		}
+	} else if rc.PreviousAddress != "" && rc.PreviousAddress != rc.Address {
+		colorPrefix = ColorCyan
+		suffix = "(→)"
 	} else if rc.Change.Importing != nil && rc.Change.Importing.ID != "" {
 		colorPrefix = ColorCyan
 		suffix = "(i)"
@@ -119,7 +122,10 @@ func FilterNoOpResources(ts *tfjson.Plan) {
 		// New identity-based importing introduced in terraform 1.12
 		newImporting := r.Change.Importing != nil && r.Change.Importing.Identity != nil
 
-		if r.Change.Actions.NoOp() && !oldImporting && !newImporting {
+		// Preserve moved resources (PreviousAddress set and different from Address)
+		isMoved := r.PreviousAddress != "" && r.PreviousAddress != r.Address
+
+		if r.Change.Actions.NoOp() && !oldImporting && !newImporting && !isMoved {
 			continue
 		}
 		acc = append(acc, r)
@@ -134,6 +140,7 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 	updatedResources := updatedResources(plan.ResourceChanges)
 	recreatedResources := recreatedResources(plan.ResourceChanges)
 	importedResources := importedResources(plan.ResourceChanges)
+	movedResources := movedResources(plan.ResourceChanges)
 
 	sortResources := func(resources ResourceChanges) {
 		sort.Slice(resources, func(i, j int) bool {
@@ -146,6 +153,7 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 	sortResources(updatedResources)
 	sortResources(recreatedResources)
 	sortResources(importedResources)
+	sortResources(movedResources)
 
 	return map[string]ResourceChanges{
 		"import":   importedResources,
@@ -153,15 +161,7 @@ func GetAllResourceChanges(plan tfjson.Plan) map[string]ResourceChanges {
 		"delete":   deletedResources,
 		"update":   updatedResources,
 		"recreate": recreatedResources,
-	}
-}
-
-// GetAllResourceMoves returns all resources that have moved.
-func GetAllResourceMoves(plan tfjson.Plan) map[string]ResourceChanges {
-	movedResources := movedResources(plan.ResourceChanges)
-
-	return map[string]ResourceChanges{
-		"moved": movedResources,
+		"moved":    movedResources,
 	}
 }
 

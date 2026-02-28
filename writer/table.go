@@ -12,11 +12,10 @@ import (
 type TableWriter struct {
 	mdEnabled     bool
 	changes       map[string]terraformstate.ResourceChanges
-	moves         map[string]terraformstate.ResourceChanges
 	outputChanges map[string][]string
 }
 
-var tableOrder = []string{"import", "add", "update", "recreate", "delete"}
+var tableOrder = []string{"import", "add", "update", "recreate", "delete", "moved"}
 
 func (t TableWriter) Write(writer io.Writer) error {
 	tableString := make([][]string, 0, 4)
@@ -26,20 +25,19 @@ func (t TableWriter) Write(writer io.Writer) error {
 		resourceCount := len(changedResources)
 
 		for _, changedResource := range changedResources {
-			if t.mdEnabled {
-				tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, resourceCount), fmt.Sprintf("`%s`", changedResource.Address)})
+			changeLabel := fmt.Sprintf("%s (%d)", change, resourceCount)
+			if change == "moved" {
+				if t.mdEnabled {
+					tableString = append(tableString, []string{changeLabel, fmt.Sprintf("`%s` to `%s`", changedResource.PreviousAddress, changedResource.Address)})
+				} else {
+					tableString = append(tableString, []string{changeLabel, fmt.Sprintf("%s to %s", changedResource.PreviousAddress, changedResource.Address)})
+				}
 			} else {
-				tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, resourceCount), changedResource.Address})
-			}
-		}
-	}
-
-	for move, movedResources := range t.moves {
-		for _, movedResource := range movedResources {
-			if t.mdEnabled {
-				tableString = append(tableString, []string{move, fmt.Sprintf("`%s` to `%s`", movedResource.PreviousAddress, movedResource.Address)})
-			} else {
-				tableString = append(tableString, []string{move, fmt.Sprintf("%s to %s", movedResource.PreviousAddress, movedResource.Address)})
+				if t.mdEnabled {
+					tableString = append(tableString, []string{changeLabel, fmt.Sprintf("`%s`", changedResource.Address)})
+				} else {
+					tableString = append(tableString, []string{changeLabel, changedResource.Address})
+				}
 			}
 		}
 	}
@@ -97,10 +95,9 @@ func (t TableWriter) Write(writer io.Writer) error {
 }
 
 // NewTableWriter returns a new TableWriter.
-func NewTableWriter(changes map[string]terraformstate.ResourceChanges, moves map[string]terraformstate.ResourceChanges, outputChanges map[string][]string, mdEnabled bool) Writer {
+func NewTableWriter(changes map[string]terraformstate.ResourceChanges, outputChanges map[string][]string, mdEnabled bool) Writer {
 	return TableWriter{
 		changes:       changes,
-		moves:         moves,
 		mdEnabled:     mdEnabled,
 		outputChanges: outputChanges,
 	}

@@ -2,7 +2,7 @@
   <tr>
     <th>CHANGE</th>
     <th>OUTPUT</th>
-  </tr>{{ range $change, $outputs := .OutputChanges }}{{ $length := len $outputs }}{{ if gt $length 0 }}
+  </tr>{{ range $change := .OutputOrder }}{{ $outputs := index $.OutputChanges $change }}{{ $length := len $outputs }}{{ if gt $length 0 }}
   <tr>
     <td>{{ $change }} ({{ len $outputs }})</td>
     <td>
