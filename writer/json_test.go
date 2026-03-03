@@ -130,6 +130,31 @@ func TestJSONWriter(t *testing.T) {
 				},
 			},
 		},
+		// Test case for moved resource with empty Actions slice (regression test for panic bug)
+		{
+			args: terraformstate.ResourceChanges{
+				{
+					Address:         "module.test.aws_instance.moved_with_empty_actions",
+					PreviousAddress: "module.test.aws_instance.old_location",
+					Type:            "aws_instance",
+					Name:            "moved_with_empty_actions",
+					Change: &tfjson.Change{
+						Actions: tfjson.Actions{}, // Empty Actions slice - should not panic
+					},
+				},
+			},
+			expectedOutput: map[string]interface{}{
+				"module": map[string]interface{}{
+					"test": map[string]interface{}{
+						"aws_instance": map[string]interface{}{
+							"moved_with_empty_actions": map[string]interface{}{
+								"(\u2192)": "module.test.aws_instance.old_location",
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	// Iterate through test cases

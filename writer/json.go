@@ -34,7 +34,9 @@ func treeValue(t tree.Tree) interface{} {
 	if t.Value != nil {
 		_, suffix := terraformstate.GetColorPrefixAndSuffixText(t.Value)
 		var diff interface{}
-		if t.IsUpdate() || t.IsRecreate() {
+		if t.IsMove() {
+			diff = t.Value.PreviousAddress
+		} else if t.IsUpdate() || t.IsRecreate() {
 			opts := jsondiff.DefaultJSONOptions()
 			opts.SkipMatches = true
 
@@ -47,8 +49,6 @@ func treeValue(t tree.Tree) interface{} {
 				fmt.Fprintf(os.Stderr, "warning: unmarshalling diff error: %s\n", err)
 				diff = fmt.Sprintf("raw diff: %s", str)
 			}
-		} else if t.IsMove() {
-			diff = t.Value.PreviousAddress
 		} else {
 			if t.IsAddition() || t.IsImport() {
 				diff = t.Value.Change.After
