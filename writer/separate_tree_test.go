@@ -119,6 +119,30 @@ func TestSeparateTree_Write(t *testing.T) {
 		assert.Contains(t, actualOutput, expectedDelete)
 	})
 
+	t.Run("Drawable False With Moved", func(t *testing.T) {
+		changesWithMoved := createMockChanges()
+		changesWithMoved["moved"] = terraformstate.ResourceChanges{
+			{
+				Address:         "aws_instance.new_name",
+				PreviousAddress: "aws_instance.old_name",
+				Change:          &tfjson.Change{Actions: tfjson.Actions{}},
+			},
+		}
+
+		tw := NewSeparateTree(changesWithMoved, false)
+		var buf bytes.Buffer
+		err := tw.Write(&buf)
+
+		assert.NoError(t, err)
+
+		expectedMoved := `################### MOVED ###################
+|---aws_instance
+|	|---new_name`
+
+		actualOutput := removeANSI(buf.String())
+		assert.Contains(t, actualOutput, expectedMoved)
+	})
+
 	t.Run("Error Handling", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()

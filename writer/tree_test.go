@@ -106,6 +106,25 @@ func TestTreeWriter_Write_EmptyChanges(t *testing.T) {
 	assert.Equal(t, "", buf.String())
 }
 
+func TestTreeWriter_Write_MovedResource(t *testing.T) {
+	changes := terraformstate.ResourceChanges{
+		&tfjson.ResourceChange{
+			Address:         "aws_instance.new_name",
+			PreviousAddress: "aws_instance.old_name",
+			Change:          &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}},
+		},
+	}
+
+	tw := NewTreeWriter(changes, false)
+	var buf bytes.Buffer
+	err := tw.Write(&buf)
+
+	assert.NoError(t, err)
+	output := removeANSI(buf.String())
+	assert.Contains(t, output, "aws_instance")
+	assert.Contains(t, output, "new_name(→)")
+}
+
 // Custom faulty writer to simulate write errors
 type errorWriter struct{}
 

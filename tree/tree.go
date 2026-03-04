@@ -42,6 +42,11 @@ func (t Tree) IsRecreate() bool {
 	return len(t.Value.Change.Actions) == 2
 }
 
+// IsMove returns true if the resource has been moved from a different address.
+func (t Tree) IsMove() bool {
+	return t.Value.PreviousAddress != "" && t.Value.PreviousAddress != t.Value.Address
+}
+
 // IsImport returns true if the resource change is an import.
 func (t Tree) IsImport() bool {
 	if t.Value.Change.Importing == nil {

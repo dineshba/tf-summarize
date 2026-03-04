@@ -34,7 +34,9 @@ func treeValue(t tree.Tree) interface{} {
 	if t.Value != nil {
 		_, suffix := terraformstate.GetColorPrefixAndSuffixText(t.Value)
 		var diff interface{}
-		if t.IsUpdate() || t.IsRecreate() {
+		if t.IsMove() {
+			diff = t.Value.PreviousAddress
+		} else if t.IsUpdate() || t.IsRecreate() {
 			opts := jsondiff.DefaultJSONOptions()
 			opts.SkipMatches = true
 

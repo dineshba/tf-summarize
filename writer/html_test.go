@@ -21,8 +21,6 @@ func TestHTMLWriter(t *testing.T) {
 				},
 			},
 		},
-	}
-	movedResources := map[string]terraformstate.ResourceChanges{
 		"moved": {
 			{
 				Address:         "aws_instance.foo",
@@ -35,10 +33,10 @@ func TestHTMLWriter(t *testing.T) {
 		},
 	}
 	outputChanges := map[string][]string{
-		"output_key": {"output_value"},
+		"update": {"output_value"},
 	}
 
-	htmlWriter := NewHTMLWriter(resourceChanges, movedResources, outputChanges)
+	htmlWriter := NewHTMLWriter(resourceChanges, outputChanges)
 	var buf bytes.Buffer
 
 	err := htmlWriter.Write(&buf)
@@ -60,7 +58,7 @@ func TestHTMLWriter(t *testing.T) {
     </td>
   </tr>
   <tr>
-    <td>moved</td>
+    <td>moved (1)</td>
     <td>
       <ul>
         <li><code>aws_instance.bar</code> to <code>aws_instance.foo</code></li>
@@ -74,7 +72,7 @@ func TestHTMLWriter(t *testing.T) {
     <th>OUTPUT</th>
   </tr>
   <tr>
-    <td>output_key (1)</td>
+    <td>update (1)</td>
     <td>
       <ul>
         <li><code>output_value</code></li>
@@ -84,7 +82,6 @@ func TestHTMLWriter(t *testing.T) {
 </table>
 `
 	if buf.String() != expectedOutput {
-		t.Errorf("expected %s, got %s", expectedOutput, buf.String())
+		t.Errorf("expected:\n%s\ngot:\n%s", expectedOutput, buf.String())
 	}
-
 }

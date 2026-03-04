@@ -90,6 +90,37 @@ func TestCreateTreeForTwoResourceChangesNoOverlap(t *testing.T) {
 	assert.Equal(t, expected, CreateTree(resourceChanges))
 }
 
+func TestIsMove(t *testing.T) {
+	moved := Tree{
+		Name: "new_name",
+		Value: &tfjson.ResourceChange{
+			Address:         "module.test.aws_instance.new_name",
+			PreviousAddress: "module.test.aws_instance.old_name",
+			Change:          &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}},
+		},
+	}
+	assert.True(t, moved.IsMove())
+
+	notMoved := Tree{
+		Name: "example",
+		Value: &tfjson.ResourceChange{
+			Address: "module.test.aws_instance.example",
+			Change:  &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionCreate}},
+		},
+	}
+	assert.False(t, notMoved.IsMove())
+
+	sameAddress := Tree{
+		Name: "example",
+		Value: &tfjson.ResourceChange{
+			Address:         "module.test.aws_instance.example",
+			PreviousAddress: "module.test.aws_instance.example",
+			Change:          &tfjson.Change{Actions: tfjson.Actions{tfjson.ActionNoop}},
+		},
+	}
+	assert.False(t, sameAddress.IsMove())
+}
+
 func TestCreateTreeForTwoResourceChangesOverlap(t *testing.T) {
 	resourceChanges := terraformstate.ResourceChanges{
 		&tfjson.ResourceChange{Address: "a.b"},
