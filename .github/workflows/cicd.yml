@@ -22,6 +22,16 @@ jobs:
       - name: Linter
         uses: docker://morphy/revive-action:v2
 
+      - name: Test with coverage
+        run: make test-coverage
+
+      - name: Upload coverage
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.out
+
       - name: Build
         run: make
 
