@@ -36,6 +36,10 @@ install: build ## build and install to /usr/local/bin/
 test: lint ## go test
 	go test -v ./... -count=1
 
+test-coverage: lint ## go test with coverage
+	go test -v ./... -count=1 -coverprofile=coverage.out -covermode=atomic
+	go tool cover -func=coverage.out
+
 i: install ## build and install to /usr/local/bin/
 
 lint: ## lint source code
