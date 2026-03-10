@@ -9,7 +9,7 @@ require (
 	github.com/m1gwings/treedrawer v0.3.3-beta
 	github.com/nsf/jsondiff v0.0.0-20210926074059-1e845ec5d249
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.11.1
 )
 
 require (
