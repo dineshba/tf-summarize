@@ -18,7 +18,7 @@ jobs:
         run: echo "terraform-version=$(cat example/.terraform-version)" >> $GITHUB_OUTPUT
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false
           terraform_version: ${{ steps.set-terraform-version.outputs.terraform-version }}
