@@ -59,15 +59,15 @@ func TestTreeWriter_Write_NonDrawable(t *testing.T) {
 	err := tw.Write(&buf)
 
 	assert.NoError(t, err)
-	assert.Contains(t, buf.String(), "|---module")
-	assert.Contains(t, buf.String(), "|---test")
-	assert.Contains(t, buf.String(), "|---azapi_resource")
-	assert.Contains(t, buf.String(), "|---logical_network")
+	assert.Contains(t, buf.String(), "module")
+	assert.Contains(t, buf.String(), "test")
+	assert.Contains(t, buf.String(), "azapi_resource")
+	assert.Contains(t, buf.String(), "logical_network")
 
-	expectedOutput := `|---module
-|	|---test
-|	|	|---azapi_resource
-|	|	|	|---logical_network
+	expectedOutput := `└── module
+    └── test
+        └── azapi_resource
+            └── logical_network
 `
 
 	assert.Equal(t, expectedOutput, removeANSI(buf.String()))
@@ -122,7 +122,7 @@ func TestTreeWriter_Write_MovedResource(t *testing.T) {
 	assert.NoError(t, err)
 	output := removeANSI(buf.String())
 	assert.Contains(t, output, "aws_instance")
-	assert.Contains(t, output, "new_name(→)")
+	assert.Contains(t, output, "new_name (→)")
 }
 
 // Custom faulty writer to simulate write errors

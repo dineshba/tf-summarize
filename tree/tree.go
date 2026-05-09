@@ -74,6 +74,9 @@ func (t *Tree) AddChild(parent *tree.Tree) {
 	var childNode tree.NodeString
 	if isLeafNode {
 		_, suffix := terraformstate.GetColorPrefixAndSuffixText(t.Value)
+		if suffix != "" {
+			suffix = " " + suffix
+		}
 		childNode = tree.NodeString(fmt.Sprintf("%s%s", t.Name, suffix))
 	} else {
 		childNode = tree.NodeString(t.Name)
