@@ -65,32 +65,8 @@ func TestSeparateTree_Write(t *testing.T) {
 
 		assert.NoError(t, err)
 
-		expectedAdd := `################### ADD ###################
-      ╭─╮      
-      │.│      
-      ╰┬╯      
-       │       
-╭──────┴─────╮ 
-│aws_instance│ 
-╰──────┬─────╯ 
-       │       
- ╭─────┴─────╮ 
- │example1(+)│ 
- ╰───────────╯ 
-`
-		expectedDelete := `################### DELETE ###################
-      ╭─╮      
-      │.│      
-      ╰┬╯      
-       │       
-╭──────┴─────╮ 
-│aws_instance│ 
-╰──────┬─────╯ 
-       │       
- ╭─────┴─────╮ 
- │example2(-)│ 
- ╰───────────╯ 
-`
+		expectedAdd := "################### ADD ###################\n      ╭─╮      \n      │.│      \n      ╰┬╯      \n       │       \n╭──────┴─────╮ \n│aws_instance│ \n╰──────┬─────╯ \n       │       \n╭──────┴─────╮ \n│example1 (+)│ \n╰────────────╯ \n"
+		expectedDelete := "################### DELETE ###################\n      ╭─╮      \n      │.│      \n      ╰┬╯      \n       │       \n╭──────┴─────╮ \n│aws_instance│ \n╰──────┬─────╯ \n       │       \n╭──────┴─────╮ \n│example2 (-)│ \n╰────────────╯ \n"
 
 		actualOutput := removeANSI(buf.String())
 		assert.Contains(t, actualOutput, expectedAdd)
@@ -106,12 +82,12 @@ func TestSeparateTree_Write(t *testing.T) {
 		assert.NoError(t, err)
 
 		expectedAdd := `################### ADD ###################
-|---aws_instance
-|	|---example1(+)
+└── aws_instance
+    └── example1 (+)
 `
 		expectedDelete := `################### DELETE ###################
-|---aws_instance
-|	|---example2(-)
+└── aws_instance
+    └── example2 (-)
 `
 
 		actualOutput := removeANSI(buf.String())
@@ -136,8 +112,8 @@ func TestSeparateTree_Write(t *testing.T) {
 		assert.NoError(t, err)
 
 		expectedMoved := `################### MOVED ###################
-|---aws_instance
-|	|---new_name`
+└── aws_instance
+    └── new_name`
 
 		actualOutput := removeANSI(buf.String())
 		assert.Contains(t, actualOutput, expectedMoved)

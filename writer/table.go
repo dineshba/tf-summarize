@@ -17,9 +17,22 @@ type TableWriter struct {
 
 var tableOrder = []string{"import", "add", "update", "recreate", "delete", "moved"}
 
-func (t TableWriter) Write(writer io.Writer) error {
-	tableString := make([][]string, 0, 4)
+var actionColors = map[string]tablewriter.Colors{
+	"import":   {tablewriter.FgCyanColor},
+	"add":      {tablewriter.FgGreenColor},
+	"update":   {tablewriter.FgYellowColor},
+	"recreate": {tablewriter.FgMagentaColor},
+	"delete":   {tablewriter.FgRedColor},
+	"moved":    {tablewriter.FgCyanColor},
+}
 
+func (t TableWriter) Write(writer io.Writer) error {
+	type row struct {
+		cells  []string
+		action string
+	}
+
+	rows := make([]row, 0, 4)
 	for _, change := range tableOrder {
 		changedResources := t.changes[change]
 		resourceCount := len(changedResources)
@@ -28,15 +41,15 @@ func (t TableWriter) Write(writer io.Writer) error {
 			changeLabel := fmt.Sprintf("%s (%d)", change, resourceCount)
 			if change == "moved" {
 				if t.mdEnabled {
-					tableString = append(tableString, []string{changeLabel, fmt.Sprintf("`%s` to `%s`", changedResource.PreviousAddress, changedResource.Address)})
+					rows = append(rows, row{[]string{changeLabel, fmt.Sprintf("`%s` to `%s`", changedResource.PreviousAddress, changedResource.Address)}, change})
 				} else {
-					tableString = append(tableString, []string{changeLabel, fmt.Sprintf("%s to %s", changedResource.PreviousAddress, changedResource.Address)})
+					rows = append(rows, row{[]string{changeLabel, fmt.Sprintf("%s to %s", changedResource.PreviousAddress, changedResource.Address)}, change})
 				}
 			} else {
 				if t.mdEnabled {
-					tableString = append(tableString, []string{changeLabel, fmt.Sprintf("`%s`", changedResource.Address)})
+					rows = append(rows, row{[]string{changeLabel, fmt.Sprintf("`%s`", changedResource.Address)}, change})
 				} else {
-					tableString = append(tableString, []string{changeLabel, changedResource.Address})
+					rows = append(rows, row{[]string{changeLabel, changedResource.Address}, change})
 				}
 			}
 		}
@@ -46,46 +59,61 @@ func (t TableWriter) Write(writer io.Writer) error {
 	table.SetHeader([]string{"Change", "Resource"})
 	table.SetAutoMergeCells(true)
 	table.SetAutoWrapText(false)
-	table.AppendBulk(tableString)
 
 	if t.mdEnabled {
+		for _, r := range rows {
+			table.Append(r.cells)
+		}
 		table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 		table.SetCenterSeparator("|")
 	} else {
+		for _, r := range rows {
+			colors := []tablewriter.Colors{actionColors[r.action], actionColors[r.action]}
+			table.Rich(r.cells, colors)
+		}
 		table.SetRowLine(true)
+		table.SetColumnSeparator("│")
+		table.SetRowSeparator("─")
+		table.SetCenterSeparator("┼")
 	}
 
 	table.Render()
 
-	// Disable the Output Summary if there are no outputs to display
 	if hasOutputChanges(t.outputChanges) {
-		tableString = make([][]string, 0, 4)
+		outputRows := make([]row, 0, 4)
 		for _, change := range tableOrder {
 			changedOutputs := t.outputChanges[change]
 			outputCount := len(changedOutputs)
 			for _, changedOutput := range changedOutputs {
 				if t.mdEnabled {
-					tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, outputCount), fmt.Sprintf("`%s`", changedOutput)})
+					outputRows = append(outputRows, row{[]string{fmt.Sprintf("%s (%d)", change, outputCount), fmt.Sprintf("`%s`", changedOutput)}, change})
 				} else {
-					tableString = append(tableString, []string{fmt.Sprintf("%s (%d)", change, outputCount), changedOutput})
+					outputRows = append(outputRows, row{[]string{fmt.Sprintf("%s (%d)", change, outputCount), changedOutput}, change})
 				}
 			}
 		}
+
 		table = tablewriter.NewWriter(writer)
 		table.SetHeader([]string{"Change", "Output"})
 		table.SetAutoMergeCells(true)
 		table.SetAutoWrapText(false)
-		table.AppendBulk(tableString)
 
 		if t.mdEnabled {
-			// Without a line break separating each table, a single malformed markdown table is printed.
-			// Printing an empty newline ensures distinct, separate tables are rendered.
 			_, _ = fmt.Fprint(writer, tablewriter.NEWLINE)
-
+			for _, r := range outputRows {
+				table.Append(r.cells)
+			}
 			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 			table.SetCenterSeparator("|")
 		} else {
+			for _, r := range outputRows {
+				colors := []tablewriter.Colors{actionColors[r.action], actionColors[r.action]}
+				table.Rich(r.cells, colors)
+			}
 			table.SetRowLine(true)
+			table.SetColumnSeparator("│")
+			table.SetRowSeparator("─")
+			table.SetCenterSeparator("┼")
 		}
 
 		table.Render()

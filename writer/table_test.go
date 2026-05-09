@@ -44,29 +44,29 @@ func TestTableWriter_Write_NoMarkdown(t *testing.T) {
 	err := tw.Write(&output)
 	assert.NoError(t, err)
 
-	expectedOutput := `+------------+--------------------------------------------------+
-|   CHANGE   |                     RESOURCE                     |
-+------------+--------------------------------------------------+
-| add (1)    | aws_instance.example1                            |
-+------------+--------------------------------------------------+
-| update (2) | aws_instance.example3                            |
-+            +--------------------------------------------------+
-|            | aws_instance.example4.tag["Custom Instance Tag"] |
-+------------+--------------------------------------------------+
-| delete (1) | aws_instance.example2                            |
-+------------+--------------------------------------------------+
-| moved (1)  | aws_instance.old to aws_instance.new             |
-+------------+--------------------------------------------------+
-+------------+--------------------------------------------------------+
-|   CHANGE   |                         OUTPUT                         |
-+------------+--------------------------------------------------------+
-| update (2) | output.example                                         |
-+            +--------------------------------------------------------+
-|            | output.long_resource_name.this["Custom/Resource Name"] |
-+------------+--------------------------------------------------------+
+	expectedOutput := `┼────────────┼──────────────────────────────────────────────────┼
+│   CHANGE   │                     RESOURCE                     │
+┼────────────┼──────────────────────────────────────────────────┼
+│ add (1)    │ aws_instance.example1                            │
+┼────────────┼──────────────────────────────────────────────────┼
+│ update (2) │ aws_instance.example3                            │
+┼            ┼──────────────────────────────────────────────────┼
+│            │ aws_instance.example4.tag["Custom Instance Tag"] │
+┼────────────┼──────────────────────────────────────────────────┼
+│ delete (1) │ aws_instance.example2                            │
+┼────────────┼──────────────────────────────────────────────────┼
+│ moved (1)  │ aws_instance.old to aws_instance.new             │
+┼────────────┼──────────────────────────────────────────────────┼
+┼────────────┼────────────────────────────────────────────────────────┼
+│   CHANGE   │                         OUTPUT                         │
+┼────────────┼────────────────────────────────────────────────────────┼
+│ update (2) │ output.example                                         │
+┼            ┼────────────────────────────────────────────────────────┼
+│            │ output.long_resource_name.this["Custom/Resource Name"] │
+┼────────────┼────────────────────────────────────────────────────────┼
 `
 
-	assert.Equal(t, expectedOutput, output.String())
+	assert.Equal(t, expectedOutput, removeANSI(output.String()))
 }
 
 func TestTableWriter_Write_WithMarkdown(t *testing.T) {
@@ -104,7 +104,7 @@ func TestTableWriter_Write_WithMarkdown(t *testing.T) {
 |            | ` + "`output.long_resource_name.this[\"Custom/Resource Name\"]`" + ` |
 `
 
-	assert.Equal(t, expectedOutput, output.String())
+	assert.Equal(t, expectedOutput, removeANSI(output.String()))
 }
 
 func TestTableWriter_NoChanges(t *testing.T) {
@@ -116,10 +116,10 @@ func TestTableWriter_NoChanges(t *testing.T) {
 	err := tw.Write(&output)
 	assert.NoError(t, err)
 
-	expectedOutput := `+--------+----------+
-| CHANGE | RESOURCE |
-+--------+----------+
-+--------+----------+
+	expectedOutput := `┼────────┼──────────┼
+│ CHANGE │ RESOURCE │
+┼────────┼──────────┼
+┼────────┼──────────┼
 `
 	assert.Equal(t, expectedOutput, output.String())
 }

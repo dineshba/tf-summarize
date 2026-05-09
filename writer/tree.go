@@ -23,8 +23,9 @@ func (t TreeWriter) Write(writer io.Writer) error {
 		return err
 	}
 
-	for _, t := range trees {
-		err := printTree(writer, t, "")
+	for i, t := range trees {
+		isLast := i == len(trees)-1
+		err := printTree(writer, t, "", isLast)
 		if err != nil {
 			return fmt.Errorf("error writing data to %s: %s", writer, err.Error())
 		}
@@ -37,22 +38,34 @@ func NewTreeWriter(changes terraformstate.ResourceChanges, drawable bool) Writer
 	return TreeWriter{changes: changes, drawable: drawable}
 }
 
-func printTree(writer io.Writer, tree *tree.Tree, prefixSpace string) error {
+func printTree(writer io.Writer, tree *tree.Tree, prefix string, isLast bool) error {
 	var err error
-	prefixSymbol := fmt.Sprintf("%s|---", prefixSpace)
+	connector := "├── "
+	if isLast {
+		connector = "└── "
+	}
+
 	if tree.Value != nil {
 		colorPrefix, suffix := terraformstate.GetColorPrefixAndSuffixText(tree.Value)
-		_, err = fmt.Fprintf(writer, "%s%s%s%s%s\n", prefixSymbol, colorPrefix, tree.Name, suffix, terraformstate.ColorReset)
+		if suffix != "" {
+			suffix = " " + suffix
+		}
+		_, err = fmt.Fprintf(writer, "%s%s%s%s%s\n", prefix+connector, colorPrefix, tree.Name, suffix, terraformstate.ColorReset)
 	} else {
-		_, err = fmt.Fprintf(writer, "%s%s\n", prefixSymbol, tree.Name)
+		_, err = fmt.Fprintf(writer, "%s%s\n", prefix+connector, tree.Name)
 	}
 	if err != nil {
 		return fmt.Errorf("error writing data to %s: %s", writer, err.Error())
 	}
 
-	for _, c := range tree.Children {
-		separator := "|"
-		err = printTree(writer, c, fmt.Sprintf("%s%s\t", prefixSpace, separator))
+	childPrefix := prefix + "│   "
+	if isLast {
+		childPrefix = prefix + "    "
+	}
+
+	for i, c := range tree.Children {
+		childIsLast := i == len(tree.Children)-1
+		err = printTree(writer, c, childPrefix, childIsLast)
 		if err != nil {
 			return fmt.Errorf("error writing data to %s: %s", writer, err.Error())
 		}
