@@ -62,6 +62,8 @@ asdf install tf-summarize latest
 > See the asdf [plugin source](https://github.com/adamcrews/asdf-tf-summarize#install) for more information.
 
 #### Using Docker
+
+The published images are multi-arch and run natively on both `linux/amd64` and `linux/arm64`.
 ```sh
 docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize -v # prints version
 docker run -v $PWD:/workspace -w /workspace ghcr.io/dineshba/tf-summarize tfplan.json

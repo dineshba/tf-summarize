@@ -32,6 +32,12 @@ jobs:
           name: coverage-report
           path: coverage.out
 
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build
         run: make
 
