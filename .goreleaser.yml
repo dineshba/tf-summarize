@@ -11,7 +11,6 @@ dockers:
   image_templates:
     - ghcr.io/dineshba/tf-summarize:{{ .Version }}-amd64
     - ghcr.io/dineshba/tf-summarize:latest-amd64
-    - ghcr.io/dineshba/tf-summarize:latest
   build_flag_templates:
     - "--label=org.opencontainers.image.created={{ .Date }}"
     - "--label=org.opencontainers.image.title={{ .ProjectName }}"
@@ -24,6 +23,30 @@ dockers:
   goarch: amd64
   goamd64: v1
   use: buildx
+- dockerfile: Dockerfile
+  image_templates:
+    - ghcr.io/dineshba/tf-summarize:{{ .Version }}-arm64
+    - ghcr.io/dineshba/tf-summarize:latest-arm64
+  build_flag_templates:
+    - "--label=org.opencontainers.image.created={{ .Date }}"
+    - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+    - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+    - "--label=org.opencontainers.image.version={{ .Version }}"
+    - "--platform=linux/arm64"
+    - "--target=goreleaser"
+    - "--pull"
+  goos: linux
+  goarch: arm64
+  use: buildx
+docker_manifests:
+- name_template: ghcr.io/dineshba/tf-summarize:{{ .Version }}
+  image_templates:
+    - ghcr.io/dineshba/tf-summarize:{{ .Version }}-amd64
+    - ghcr.io/dineshba/tf-summarize:{{ .Version }}-arm64
+- name_template: ghcr.io/dineshba/tf-summarize:latest
+  image_templates:
+    - ghcr.io/dineshba/tf-summarize:latest-amd64
+    - ghcr.io/dineshba/tf-summarize:latest-arm64
 builds:
   - env:
       # goreleaser does not work with CGO, it could also complicate
