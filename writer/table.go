@@ -80,9 +80,9 @@ func (t TableWriter) Write(writer io.Writer) error {
 	}
 
 	table := newChangeTable(writer, t.mdEnabled)
-	table.Header([]string{"Change", "Resource"})
-	_ = table.Bulk(tableString)
-	table.Render()
+	if err := renderChangeTable(table, []string{"Change", "Resource"}, tableString); err != nil {
+		return err
+	}
 
 	// Disable the Output Summary if there are no outputs to display
 	if hasOutputChanges(t.outputChanges) {
@@ -103,11 +103,22 @@ func (t TableWriter) Write(writer io.Writer) error {
 			_, _ = fmt.Fprint(writer, "\n")
 		}
 		table = newChangeTable(writer, t.mdEnabled)
-		table.Header([]string{"Change", "Output"})
-		_ = table.Bulk(tableString)
-		table.Render()
+		if err := renderChangeTable(table, []string{"Change", "Output"}, tableString); err != nil {
+			return err
+		}
 	}
 
+	return nil
+}
+
+func renderChangeTable(table *tablewriter.Table, header []string, rows [][]string) error {
+	table.Header(header)
+	if err := table.Bulk(rows); err != nil {
+		return fmt.Errorf("build change table: %w", err)
+	}
+	if err := table.Render(); err != nil {
+		return fmt.Errorf("render change table: %w", err)
+	}
 	return nil
 }
 
