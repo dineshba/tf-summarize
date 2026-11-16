@@ -1,5 +1,5 @@
 | CHANGE  |                                RESOURCE                                |
-|---------|------------------------------------------------------------------------|
+|:--------|:-----------------------------------------------------------------------|
 | add (7) | `github_repository.terraform_plan_summary`                             |
 |         | `module.github["demo-repository"].github_branch.development`           |
 |         | `module.github["demo-repository"].github_branch.main`                  |
@@ -9,5 +9,5 @@
 |         | `module.github["terraform-plan-summary"].github_repository.repository` |
 
 | CHANGE  |                  OUTPUT                  |
-|---------|------------------------------------------|
+|:--------|:-----------------------------------------|
 | add (1) | `terraform_plan_summary_repository_name` |

@@ -6,6 +6,8 @@ import (
 
 	"github.com/dineshba/tf-summarize/terraformstate"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 )
 
 // TableWriter writes resource changes in a table format.
@@ -16,6 +18,41 @@ type TableWriter struct {
 }
 
 var tableOrder = []string{"import", "add", "update", "recreate", "delete", "moved"}
+
+func rowCellConfig() tw.CellConfig {
+	return tw.CellConfig{
+		Merging: tw.CellMerging{Mode: tw.MergeBoth},
+		Formatting: tw.CellFormatting{
+			AutoWrap: tw.WrapNone,
+		},
+	}
+}
+
+func newChangeTable(writer io.Writer, mdEnabled bool) *tablewriter.Table {
+	cfg := tablewriter.Config{
+		Row:    rowCellConfig(),
+		Header: rowCellConfig(),
+	}
+
+	if mdEnabled {
+		return tablewriter.NewTable(writer,
+			tablewriter.WithConfig(cfg),
+			tablewriter.WithRenderer(renderer.NewMarkdown()),
+		)
+	}
+
+	return tablewriter.NewTable(writer,
+		tablewriter.WithConfig(cfg),
+		tablewriter.WithRenderer(renderer.NewBlueprint(tw.Rendition{
+			Symbols: tw.NewSymbols(tw.StyleASCII),
+			Settings: tw.Settings{
+				Separators: tw.Separators{
+					BetweenRows: tw.On,
+				},
+			},
+		})),
+	)
+}
 
 func (t TableWriter) Write(writer io.Writer) error {
 	tableString := make([][]string, 0, 4)
@@ -42,20 +79,10 @@ func (t TableWriter) Write(writer io.Writer) error {
 		}
 	}
 
-	table := tablewriter.NewWriter(writer)
-	table.SetHeader([]string{"Change", "Resource"})
-	table.SetAutoMergeCells(true)
-	table.SetAutoWrapText(false)
-	table.AppendBulk(tableString)
-
-	if t.mdEnabled {
-		table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-		table.SetCenterSeparator("|")
-	} else {
-		table.SetRowLine(true)
+	table := newChangeTable(writer, t.mdEnabled)
+	if err := renderChangeTable(table, []string{"Change", "Resource"}, tableString); err != nil {
+		return err
 	}
-
-	table.Render()
 
 	// Disable the Output Summary if there are no outputs to display
 	if hasOutputChanges(t.outputChanges) {
@@ -71,26 +98,27 @@ func (t TableWriter) Write(writer io.Writer) error {
 				}
 			}
 		}
-		table = tablewriter.NewWriter(writer)
-		table.SetHeader([]string{"Change", "Output"})
-		table.SetAutoMergeCells(true)
-		table.SetAutoWrapText(false)
-		table.AppendBulk(tableString)
-
 		if t.mdEnabled {
 			// Without a line break separating each table, a single malformed markdown table is printed.
-			// Printing an empty newline ensures distinct, separate tables are rendered.
-			_, _ = fmt.Fprint(writer, tablewriter.NEWLINE)
-
-			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-			table.SetCenterSeparator("|")
-		} else {
-			table.SetRowLine(true)
+			_, _ = fmt.Fprint(writer, "\n")
 		}
-
-		table.Render()
+		table = newChangeTable(writer, t.mdEnabled)
+		if err := renderChangeTable(table, []string{"Change", "Output"}, tableString); err != nil {
+			return err
+		}
 	}
 
+	return nil
+}
+
+func renderChangeTable(table *tablewriter.Table, header []string, rows [][]string) error {
+	table.Header(header)
+	if err := table.Bulk(rows); err != nil {
+		return fmt.Errorf("build change table: %w", err)
+	}
+	if err := table.Render(); err != nil {
+		return fmt.Errorf("render change table: %w", err)
+	}
 	return nil
 }
 
